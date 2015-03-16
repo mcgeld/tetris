@@ -1,0 +1,7 @@
+
+
+
+MyGame.initialize = (function(){
+	
+
+}());
