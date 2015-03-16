@@ -18,7 +18,7 @@ window.addEventListener('load', function() {
 		{
 			load : [
 				'preload!scripts/game.js',
-				
+				'preload!scripts/script.js'
 			],
 			complete : function() {
 				console.log('All files requested for loading...');
@@ -31,11 +31,16 @@ window.addEventListener('load', function() {
 yepnope.addPrefix('preload', function(resource) {
 	console.log('preloading: ' + resource.url);
 	
-	.status.preloadRequest += 1;
-
+	MyGame.status.preloadRequest += 1;
+	var isImage = /.+\.(jpg|png|gif)$/i.test(resource.url);
+	resource.noexec = isImage;
 	resource.autoCallback = function(e) {
-		
-	
+		if (isImage) {
+			var image = new Image();
+			image.src = resource.url;
+			MyGame.images[resource.url] = image;
+		}
+		MyGame.status.preloadComplete += 1;
 		//
 		// When everything has finished preloading, go ahead and start the game
 		if (MyGame.status.preloadComplete === MyGame.status.preloadRequest) {

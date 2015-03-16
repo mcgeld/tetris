@@ -3,8 +3,7 @@
 <head>
 	<meta charset = "UTF-8">
 	<title>Tetris</title>
-	<link rel="stylesheet" type = "text/css" href="bg.css">
-
+	<!--<link rel="stylesheet" type = "text/css" href="bg.css">-->
 	<script src = "scripts/modernizr.js"></script>
 	<script src = "scripts/loader.js"></script>
     <!--Milestones
@@ -16,9 +15,31 @@
 	
 </head>
 <body>
-    <h1>Hello Wade!</h1><br/>
-	<div class="cvs">
-		<canvas id = "canvas-main" width = "1000" height = "600" height: "100%" width: "100%"></canvas>
+    <div id="mainMenuScreen">
+		<h1>Main Menu</h1>
+		<button type="button" onclick="MyGame.toNewGame()">New Game</button>
+		<button type="button" onclick="MyGame.toHighScores()">High Scores</button>
+		<button type="button" onclick="MyGame.toControls()">Controls</button>
+		<button type="button" onclick="MyGame.toCredits()">Credits</button>
 	</div>
+	<div id="newGameScreen" hidden="true">
+		<h1>New Game</h1>
+		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+	</div>
+	<div id="highScoreScreen" hidden="true">
+		<h1>High Scores</h1>
+		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+	</div>
+	<div id="controlScreen" hidden="true">
+		<h1>Controls</h1>
+		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+	</div>
+	<div id="creditScreen" hidden="true">
+		<h1>Credits</h1>
+		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+	</div>
+	<!--<div class="cvs">
+		<canvas id = "canvas-main" width = "1000" height = "600" height: "100%" width: "100%"></canvas>
+	</div>-->
 </body>
 </html>
