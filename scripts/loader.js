@@ -17,7 +17,7 @@ window.addEventListener('load', function() {
 	Modernizr.load([
 		{
 			load : [
-				'preload!scripts/game.js',
+				'preload!scripts/input.js',
 				'preload!scripts/script.js'
 			],
 			complete : function() {
