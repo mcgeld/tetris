@@ -1,4 +1,6 @@
 var MyGame = {
+	images : {},
+	
 	status : {
 		preloadRequest : 0,
 		preloadComplete : 0
@@ -18,7 +20,10 @@ window.addEventListener('load', function() {
 		{
 			load : [
 				'preload!scripts/input.js',
-				'preload!scripts/script.js'
+				'preload!scripts/script.js',
+				'preload!scripts/game.js',
+				'preload!images/backgroundMoon.jpg',
+				'preload!images/brickTexture.jpg'
 			],
 			complete : function() {
 				console.log('All files requested for loading...');
