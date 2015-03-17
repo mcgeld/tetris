@@ -91,6 +91,7 @@ MyGame.toHighScores = function(){
 
 MyGame.toControls = function(){
 	document.getElementById('mainMenuScreen').hidden = true;
+    document.getElementById('waitingScreen').hidden = true;
 	document.getElementById('hardDropKey').innerHTML = MyGame.keyboardMap[MyGame.keys[1].key];
 	document.getElementById('softDropKey').innerHTML = MyGame.keyboardMap[MyGame.keys[2].key];
 	document.getElementById('rotateLeftKey').innerHTML = MyGame.keyboardMap[MyGame.keys[3].key];
@@ -123,7 +124,10 @@ MyGame.getSetKey = function(){
 	return MyGame.settingKey;
 }
 
-MyGame.readySetKey = function(keyNum){
+MyGame.readySetKey = function(keyNum, action){
 	MyGame.settingKey = true;
 	MyGame.keyBeingSet = keyNum;
+    document.getElementById('controlScreen').hidden = true;
+    document.getElementById('waitingScreenMessage').innerHTML = 'Please press the key you would like to configure for ' + action;
+    document.getElementById('waitingScreen').hidden = false;
 }
