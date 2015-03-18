@@ -23,7 +23,13 @@ window.addEventListener('load', function() {
 				'preload!scripts/script.js',
 				'preload!scripts/game.js',
 				'preload!images/backgroundMoon.jpg',
-				'preload!images/brickTexture.jpg'
+				'preload!images/redBrick.jpg',
+				'preload!images/yellowBrick.jpg',
+				'preload!images/greenBrick.jpg',
+				'preload!images/greyBrick.jpg',
+				'preload!images/pinkBrick.jpg',
+				'preload!images/purpleBrick.jpg',
+				'preload!images/blueBrick.jpg'
 			],
 			complete : function() {
 				console.log('All files requested for loading...');
