@@ -23,13 +23,13 @@ window.addEventListener('load', function() {
 				'preload!scripts/script.js',
 				'preload!scripts/game.js',
 				'preload!images/backgroundMoon.jpg',
-				'preload!images/redBrick.jpg',
-				'preload!images/yellowBrick.jpg',
-				'preload!images/greenBrick.jpg',
-				'preload!images/greyBrick.jpg',
-				'preload!images/pinkBrick.jpg',
-				'preload!images/purpleBrick.jpg',
-				'preload!images/blueBrick.jpg'
+				'preload!images/redBrickShape.jpg',
+				'preload!images/yellowBrickShape.jpg',
+				'preload!images/greenBrickShape.jpg',
+				'preload!images/greyBrickShape.jpg',
+				'preload!images/pinkBrickShape.jpg',
+				'preload!images/purpleBrickShape.jpg',
+				'preload!images/blueBrickShape.jpg'
 			],
 			complete : function() {
 				console.log('All files requested for loading...');
