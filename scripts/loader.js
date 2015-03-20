@@ -22,6 +22,7 @@ window.addEventListener('load', function() {
 				'preload!scripts/input.js',
 				'preload!scripts/script.js',
 				'preload!scripts/game.js',
+				'preload!scipts/classes.js',
 				'preload!images/backgroundMoon.jpg',
 				'preload!images/redBrickShape.jpg',
 				'preload!images/yellowBrickShape.jpg',
