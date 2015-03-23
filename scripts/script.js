@@ -2,28 +2,29 @@ MyGame.initialize = (function initialize(){
 	MyGame.hardDrop = function(elapsedTime){
 		MyGame.context.fillStyle = 'red';
 		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
-	}
+	};
 	
 	MyGame.softDrop = function(elapsedTime){
 		MyGame.context.fillStyle = 'green';
 		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
-	}
+	};
 	
 	MyGame.rotateLeft = function(elapsedTime){
 		MyGame.context.fillStyle = 'yellow';
 		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
-	}
+	};
 	
 	MyGame.rotateRight = function(elapsedTime){
 		MyGame.context.fillStyle = 'orange';
 		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
-	}
-	var 
-		myKeyboard = MyGame.input.Keyboard(),
+	};
+
+	var myKeyboard = MyGame.input.Keyboard(),
 		context = document.getElementById('canvas-main').getContext('2d'),
 		time = new Date().getTime(),
 		prevTime = time,
 		elapsedTime = 0;
+
 	MyGame.play = false;
 	MyGame.keyboard = myKeyboard;
 	MyGame.context = context;
@@ -36,10 +37,13 @@ MyGame.initialize = (function initialize(){
 					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.rotateLeft},
 					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.rotateRight}
 				   };
+
 	MyGame.settingKey = false;
+
 	MyGame.registerCommandKeyDown = function(key, func){
 		myKeyboard.registerCommandKeyDown(key, func);
 	};
+
 	MyGame.gameLoop = function(){
 		//UPDATE TIME//
 		time = new Date().getTime();
@@ -52,9 +56,11 @@ MyGame.initialize = (function initialize(){
 		MyGame.render();
 		requestAnimationFrame(MyGame.gameLoop);
 	};
+
 	MyGame.unregisterCommandKeyDown = function(key){
 		myKeyboard.unregisterCommandKeyDown(key);
 	};
+
 	return function(){
 		CanvasRenderingContext2D.prototype.clear = function() {
 			this.save();
@@ -73,24 +79,25 @@ MyGame.initialize = (function initialize(){
 	};
 }());
 
+
 MyGame.updateGame = function(elapsedTime){
 	MyGame.keyboard.update(elapsedTime);
-}
+};
 
 MyGame.render = function(elapsedTime){
-}
+};
 
 MyGame.toNewGame = function(){
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('newGameScreen').hidden = false;
 	MyGame.newGame();
 	MyGame.play = true;
-}
+};
 
 MyGame.toHighScores = function(){
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('highScoreScreen').hidden = false;
-}
+};
 
 MyGame.toControls = function(){
 	document.getElementById('mainMenuScreen').hidden = true;
@@ -100,12 +107,12 @@ MyGame.toControls = function(){
 	document.getElementById('rotateLeftKey').innerHTML = MyGame.keyboardMap[MyGame.keys[3].key];
 	document.getElementById('rotateRightKey').innerHTML = MyGame.keyboardMap[MyGame.keys[4].key];
 	document.getElementById('controlScreen').hidden = false;
-}
+};
 
 MyGame.toCredits = function(){
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('creditScreen').hidden = false;
-}
+};
 
 MyGame.toMainMenu = function(){
 	document.getElementById('newGameScreen').hidden = true;
@@ -113,7 +120,7 @@ MyGame.toMainMenu = function(){
 	document.getElementById('controlScreen').hidden = true;
 	document.getElementById('creditScreen').hidden = true;
 	document.getElementById('mainMenuScreen').hidden = false;
-}
+};
 
 MyGame.setKey = function(e){
 	MyGame.unregisterCommandKeyDown(MyGame.keys[MyGame.keyBeingSet].key);
@@ -121,11 +128,11 @@ MyGame.setKey = function(e){
 	MyGame.registerCommandKeyDown(MyGame.keys[MyGame.keyBeingSet].key, MyGame.keys[MyGame.keyBeingSet].func);
 	MyGame.settingKey = false;
 	MyGame.toControls();
-}
+};
 
 MyGame.getSetKey = function(){
 	return MyGame.settingKey;
-}
+};
 
 MyGame.readySetKey = function(keyNum, action){
 	MyGame.settingKey = true;
@@ -133,4 +140,4 @@ MyGame.readySetKey = function(keyNum, action){
     document.getElementById('controlScreen').hidden = true;
     document.getElementById('waitingScreenMessage').innerHTML = 'Please press the key you would like to configure for ' + action;
     document.getElementById('waitingScreen').hidden = false;
-}
+};
