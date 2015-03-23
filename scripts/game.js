@@ -32,27 +32,14 @@ MyGame.newGame = function(){
 	}
 	
 
-	var p = MyGame.classes.Piece();
-	p.draw();
+	//var p = MyGame.classes.Piece();
+	//p.draw();
 
 	//DRAW SOME BRICKS
 	for(var i = 0; i < 7; i++)
 	{
 		var imageName = 'images/' + images[i] + 'Shape.jpg';
-		/*
-		var b = MyGame.classes.Brick({
-			image: MyGame.images[imageName],
-			position: {
-				x: MyGame.bucketWidth + (MyGame.cellWidth * i),
-				y: MyGame.context.canvas.height - (MyGame.bucketBorder + (MyGame.cellWidth * (i + 1))) },
-			width: MyGame.cellWidth,
-			height: MyGame.cellWidth,
-			brickID: 1,
-			pieceID: 1
-		});
-		*/
-
-		//b.draw();
+		
 		console.log(imageName);
 		//MyGame.context.drawImage(MyGame.images[imageName], MyGame.bucketWidth + (MyGame.cellWidth * i), MyGame.context.canvas.height - (MyGame.bucketBorder + (MyGame.cellWidth * (i + 1))), MyGame.cellWidth, MyGame.cellWidth);
 	}

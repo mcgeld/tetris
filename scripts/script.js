@@ -19,6 +19,7 @@ MyGame.initialize = (function initialize(){
 		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
 	};
 
+
 	var myKeyboard = MyGame.input.Keyboard(),
 		context = document.getElementById('canvas-main').getContext('2d'),
 		time = new Date().getTime(),
@@ -44,6 +45,7 @@ MyGame.initialize = (function initialize(){
 		myKeyboard.registerCommandKeyDown(key, func);
 	};
 
+
 	MyGame.gameLoop = function(){
 		//UPDATE TIME//
 		time = new Date().getTime();
@@ -51,6 +53,10 @@ MyGame.initialize = (function initialize(){
 		prevTime = time;
 		//UPDATE GAME - GET KEYBOARD INPUT AND//
 		//MOVE NON-KEYBOARD DEPENDENT OBJECTS.//
+
+		var p = MyGame.classes.Piece();	
+		p.draw();
+
 		MyGame.updateGame(elapsedTime);
 		//RENDER GAME//
 		MyGame.render();

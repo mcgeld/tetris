@@ -50,15 +50,19 @@ MyGame.classes = (function() {
 
 	//
 	//Piece Template
-	function Piece(spec) {
+	function Piece() {
 		var that = {},
 			bricks = [],
-			//type = Math.floor(Math.random() * 11 + 1),
+			//type = Math.floor(Math.random() * 8 + 1),
+			type = 7,
 			images = ['redBrick', 'yellowBrick', 'greenBrick', 'greyBrick', 'pinkBrick', 'purpleBrick', 'blueBrick'],
-			type = 3,
+			imageType = type % 7;
 			i = 1,
-			imageName = 'images/' + images[i] + 'Shape.jpg';
 
+
+			imageName = 'images/' + images[imageType] + 'Shape.jpg';
+
+		//Fill Bricks array
 		for(i = 0; i < 4; i++){
 			bricks[i] = MyGame.classes.Brick({
 				image: MyGame.images[imageName],
@@ -72,6 +76,7 @@ MyGame.classes = (function() {
 			});
 		}
 
+		//Set Piece Shape
 		if(type === 1) {
 			I_Piece();
 		}
@@ -81,6 +86,18 @@ MyGame.classes = (function() {
 		else if(type === 3) {
 			L_Piece();
 		}
+		else if(type === 4) {
+			O_Piece();
+		}
+		else if(type === 5) {
+			S_Piece();
+		}
+		else if(type === 6) {
+			Z_Piece();
+		}
+		else if(type === 7) {
+			T_Piece();
+		}
 
 
 		that.rotate = function() {
@@ -88,7 +105,13 @@ MyGame.classes = (function() {
 		};
 
 		that.moveLeft = function() {
-
+			var x, y;
+			for(i = 0; i < 4; i++){
+				x = bricks[i].getX() - MyGame.cellWidth;
+				y = bricks[i].getY();
+				if(x >= MyGame.bucketWidth)
+					bricks[i].setPosition(x, y);
+			}
 		};
 
 		that.moveRight = function() {
@@ -139,13 +162,13 @@ MyGame.classes = (function() {
 			var x, y;
 
 			x = MyGame.bucketWidth + (MyGame.cellWidth * 3);
-			y = MyGame.bucketBorder;
+			y = MyGame.bucketBorder + MyGame.cellWidth;
 			bricks[0].setPosition(x, y);
 			
 			for(i = 1; i < 4; i++) {
 				console.log(x, y);
 				x = MyGame.bucketWidth + (MyGame.cellWidth * (2 + i));
-				y = MyGame.bucketBorder + MyGame.cellWidth;
+				y = MyGame.bucketBorder;
 				bricks[i].setPosition(x, y);
 			}
 		}
@@ -164,6 +187,74 @@ MyGame.classes = (function() {
 			}
 		}
 
+		function O_Piece() {
+			var x, y;
+
+			for(i = 0; i < 4; i++){
+				if(i < 2){
+					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 4));
+					y = MyGame.bucketBorder;
+				}
+				else if(i >= 2){
+					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 2));
+					y = MyGame.bucketBorder + MyGame.cellWidth;
+				}
+
+				bricks[i].setPosition(x, y);
+			}
+		}
+
+		function S_Piece() {
+			var x, y;
+
+			for(i = 0; i < 4; i++){
+				if(i < 2){
+					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 4));
+					y = MyGame.bucketBorder;
+				}
+				else if(i >= 2){
+					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 1));
+					y = MyGame.bucketBorder + MyGame.cellWidth;
+				}
+
+				bricks[i].setPosition(x, y);
+			}
+		}
+
+		function Z_Piece() {
+			var x, y;
+
+			for(i = 0; i < 4; i++){
+				if(i < 2){
+					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 4));
+					y = MyGame.bucketBorder;
+				}
+				else if(i >= 2){
+					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 3));
+					y = MyGame.bucketBorder + MyGame.cellWidth;
+				}
+
+				bricks[i].setPosition(x, y);
+			}
+		}
+
+		function T_Piece() {
+			var x, y;
+
+			x = MyGame.bucketWidth + (MyGame.cellWidth * 4);
+			y = MyGame.bucketBorder + MyGame.cellWidth;
+			bricks[0].setPosition(x, y);
+
+			for(i = 1; i < 4; i++){
+				x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 2));
+				y = MyGame.bucketBorder;
+				
+				bricks[i].setPosition(x, y);
+			}
+		}
+
+
+
 		return that;
 
 	}
@@ -172,6 +263,14 @@ MyGame.classes = (function() {
 	//Brick Template
 	function Brick(spec) {
 		var that = {};
+
+		that.getX = function() {
+			return spec.position.x;
+		};
+
+		that.getY = function() {
+			return spec.position.y;
+		};
 
 		that.setPosition = function(x, y) {
 			spec.position.x = x;
