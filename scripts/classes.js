@@ -55,7 +55,7 @@ MyGame.classes = (function() {
 			bricks = [],
 			//type = Math.floor(Math.random() * 8 + 1),
 			type = 7,
-			images = ['redBrick', 'yellowBrick', 'greenBrick', 'greyBrick', 'pinkBrick', 'purpleBrick', 'blueBrick'],
+			images = ['yellowBrick', 'blueBrick', 'pinkBrick', 'purpleBrick', 'greyBrick', 'redBrick', 'greenBrick'],
 			imageType = type % 7;
 			i = 1,
 
