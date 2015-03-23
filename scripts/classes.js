@@ -55,12 +55,12 @@ MyGame.classes = (function() {
 			bricks = [],
 			//type = Math.floor(Math.random() * 8 + 1),
 			type = 7,
-			images = ['yellowBrick', 'blueBrick', 'pinkBrick', 'purpleBrick', 'greyBrick', 'redBrick', 'greenBrick'],
+			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7;
 			i = 1,
 
 
-			imageName = 'images/' + images[imageType] + 'Shape.jpg';
+			imageName = 'images/' + images[imageType] + 'Plain.jpg';
 
 		//Fill Bricks array
 		for(i = 0; i < 4; i++){
@@ -161,7 +161,7 @@ MyGame.classes = (function() {
 		function J_Piece() {
 			var x, y;
 
-			x = MyGame.bucketWidth + (MyGame.cellWidth * 3);
+			x = MyGame.bucketWidth + (MyGame.cellWidth * 5);
 			y = MyGame.bucketBorder + MyGame.cellWidth;
 			bricks[0].setPosition(x, y);
 			
