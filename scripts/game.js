@@ -1,4 +1,5 @@
 MyGame.newGame = function(){
+	MyGame.grid = new Grid(MyGame.numCols, MyGame.numRows);
 	requestAnimationFrame(MyGame.gameLoop);
 }
 
@@ -7,15 +8,15 @@ MyGame.drawBackground = function() {
 	//SET SIZE VARIABLES
 	MyGame.bucketHeight = MyGame.context.canvas.height - 100;
 	MyGame.bucketWidth = MyGame.context.canvas.width * (1 / 3);
-	MyGame.cellWidth = MyGame.bucketWidth / 10;
-	MyGame.bucketBorder = (MyGame.context.canvas.height - (MyGame.cellWidth * 15)) / 2;
+	MyGame.cellWidth = MyGame.bucketWidth / MyGame.numCols;
+	MyGame.bucketBorder = (MyGame.context.canvas.height - (MyGame.cellWidth * MyGame.numRows)) / 2;
 	
 	//DRAW BACKGROUND
 	MyGame.context.drawImage(MyGame.images['images/backgroundMoon.jpg'], 0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
 
 	//DRAW GRID IN BUCKET THING
 	//DRAW VERTICAL LINES
-	for(var i = 0; i <= 10; i++)
+	for(var i = 0; i <= MyGame.numCols; i++)
 	{
 		MyGame.context.beginPath();
 		MyGame.context.moveTo(MyGame.bucketWidth + (MyGame.cellWidth * i), MyGame.bucketBorder);
@@ -25,7 +26,7 @@ MyGame.drawBackground = function() {
 		MyGame.context.stroke();
 	}
 	//DRAW HORIZONTAL LINES
-	for(var i = 0; i <= 15; i++)
+	for(var i = 0; i <= MyGame.numRows; i++)
 	{
 		MyGame.context.beginPath();
 		MyGame.context.moveTo(MyGame.bucketWidth, MyGame.bucketBorder + (MyGame.cellWidth * i));

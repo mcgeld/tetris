@@ -1,27 +1,23 @@
 
 	// 
 	//Brick Grid
-	function Grid() {
+	function Grid(cols, rows) {
 		var that = {},
 			grid,
 			i,
-			j;
-
-		that.create = function(rows, cols) {
+			j,
 			grid = [];
 
-			//Define 2D array
-			for(i = 0; i < rows; i++){
-				if(!grid[row])
-					grid[row] = [];
-			}
+		//Define 2D array
+		for(i = 0; i < rows; i++){
+			if(!grid[i])
+				grid[i] = [];
+		}
 
-			//Initialize to null
-			for(i = 0; i < rows; i++)
-				for(j = 0; j < cols; j++)
-					grid[i][j] = null;
-
-		};
+		//Initialize to null
+		for(i = 0; i < rows; i++)
+			for(j = 0; j < cols; j++)
+				grid[i][j] = null;
 
 		that.addBrick = function(brickID, pieceID, x, y){
 			var row = (x - MyGame.bucketWidth) / MyGame.cellWidth,
@@ -39,16 +35,40 @@
 
 			grid[row][col] = null;
 		};
+		
+		that.getId = function(x, y) {
+			if(grid[x][y] === null)
+			{
+				return {
+						brick: -1,
+						piece: -1
+				};
+			}
+			else
+			{
+				return grid[x][y];
+			}
+		};
+		
+		that.checkBrick = function(x, y) {
+			var row = (x - MyGame.bucketWidth) / MyGame.cellWidth,
+				col = (y - MyGame.bucketBorder) / MyGame.cellWidth;
+			if(row < 0 || col < 0 || col > MyGame.numCols - 1)
+				return -1;
+			return grid[row][col];
+		};
 
 		that.update = function(){
 			
 		};
+		
+		return that;
 
 	}
 
 	//
 	//Piece Template
-	function Piece() {
+	function Piece(id) {
 		var that = {},
 			bricks = [],
 			type = Math.floor(Math.random() * 7 + 1),
@@ -69,7 +89,7 @@
 				width: MyGame.cellWidth,
 				height: MyGame.cellWidth,
 				brickID: i + 1,
-				pieceID: 1
+				pieceID: id
 			});
 		}
 
@@ -94,10 +114,6 @@
 		}
 		else if(type === 7) {
 			T_Piece();
-		}
-
-		that.getBricks = function() {
-			return bricks;
 		}
 
 		that.rotate = function() {
@@ -166,6 +182,11 @@
 				for(i = 0; i < bricks.length; i++){
 					bricks[i].update(elapsedTime);
 				}
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		};
 
@@ -178,12 +199,11 @@
 		function canMove() {
 			var canMove = true;
 			for(i = 0; i < bricks.length; i++){
-				if(bricks[i].getY() >= 485){
+				if(bricks[i].canMove()){
 					canMove = false;
 					break;
 				}
 			}
-
 			return canMove;
 		}
 
@@ -310,15 +330,47 @@
 		that.getY = function() {
 			return spec.position.y;
 		};
+		
+		that.canMove = function() {
+			var below = MyGame.grid.checkBrick(spec.position.x, spec.position.y + MyGame.cellWidth);
+			if(below != null)
+			{
+				if(below === -1)
+				{
+					//Looking past bottom
+					return false;
+				}
+				else if(below.below.getId().piece != spec.pieceID)
+				{
+					//Different piece below
+					return false;
+				}
+				else
+				{
+					//Same piece below
+					return true;
+				}
+			}
+			else
+			{
+				return true;
+			}
+		};
 
 		that.setPosition = function(x, y) {
 			spec.position.x = x;
 			spec.position.y = y;
 		};
+		
+		that.getId = function() {
+			return {
+					piece: spec.pieceID,
+					brick: spec.brickID
+			};
+		};
 
 		that.update = function(elapsedTime) {
-			//if(spec.position.y < 450)
-				spec.position.y += MyGame.cellWidth;
+			spec.position.y += MyGame.cellWidth;
 		};
 
 		that.draw = function() {
@@ -332,6 +384,5 @@
 
 			MyGame.context.restore();
 		};
-
 		return that;
 	}

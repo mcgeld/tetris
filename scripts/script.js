@@ -1,5 +1,3 @@
-var pieceArr = [];
-
 MyGame.initialize = (function initialize(){
 	MyGame.hardDrop = function(elapsedTime){
 		MyGame.context.fillStyle = 'red';
@@ -26,10 +24,14 @@ MyGame.initialize = (function initialize(){
 		context = document.getElementById('canvas-main').getContext('2d'),
 		time = new Date().getTime(),
 		prevTime = time,
-		elapsedTime = 0;
-		
-
-
+		elapsedTime = 0,
+		nextPieceId = 0;
+	MyGame.nextPieceId = function() {
+		return nextPieceId++;
+	};
+	MyGame.pieceArr = [];
+	MyGame.numCols = 10;
+	MyGame.numRows = 15;
 	MyGame.play = false;
 	MyGame.keyboard = myKeyboard;
 	MyGame.context = context;
@@ -93,18 +95,47 @@ MyGame.initialize = (function initialize(){
 
 
 MyGame.updateGame = function(elapsedTime){
-	var i;
+	var i,
+		j,
+		stuffMoving = false,
+		prevPiece = -1,
+		piece,
+		pieceMoved;
 	MyGame.keyboard.update(elapsedTime);
 	MyGame.clear();
 	MyGame.drawBackground();
-	if(pieceArr.length === 0){
+	for(i = 0; i < MyGame.numRows; i++)
+	{
+		for(j = 0; j < MyGame.numCols; j++)
+		{
+			piece = MyGame.grid.getId(i, j).piece;
+			if(piece != prevPiece)
+			{
+				pieceMoved = MyGame.pieceArr[piece].update();
+				if(!stuffMoving)
+				{
+					stuffMoving = pieceMoved;
+				}
+			}
+		}
+	}
+	
+	for(piece in MyGame.pieceArr)
+	{
+		MyGame.pieceArr[piece].draw();
+	}
+	
+	if(!stuffMoving)
+	{
+		MyGame.pieceArr.push(new Piece(MyGame.nextPieceId()));
+	}
+	/*if(pieceArr.length === 0){
 		var p = new Piece(); 
 		pieceArr.push(p);
-
 	}
 	else if(pieceArr.length > 0 && pieceArr[pieceArr.length - 1].alive() === false){
 		console.log("New");
-		var p = new Piece();
+		var p = new Piece(MyGame.nextPieceId());
 		pieceArr.push(p);
 	}
 	else{
@@ -112,7 +143,7 @@ MyGame.updateGame = function(elapsedTime){
 			pieceArr[i].update(elapsedTime);
 			pieceArr[i].draw();
 		}
-	}
+	}*/
 
 
 };
