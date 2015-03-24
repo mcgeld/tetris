@@ -104,7 +104,7 @@ MyGame.updateGame = function(elapsedTime){
 	MyGame.keyboard.update(elapsedTime);
 	MyGame.clear();
 	MyGame.drawBackground();
-	for(i = 0; i < MyGame.numRows; i++)
+	for(i = MyGame.numRows - 1; i >= 0; i--)
 	{
 		for(j = 0; j < MyGame.numCols; j++)
 		{
@@ -116,8 +116,14 @@ MyGame.updateGame = function(elapsedTime){
 				{
 					stuffMoving = pieceMoved;
 				}
+                prevPiece = piece;
 			}
 		}
+	}
+
+	if(!stuffMoving)
+	{
+		MyGame.pieceArr.push(new Piece(MyGame.nextPieceId()));
 	}
 	
 	for(piece in MyGame.pieceArr)
@@ -125,10 +131,6 @@ MyGame.updateGame = function(elapsedTime){
 		MyGame.pieceArr[piece].draw();
 	}
 	
-	if(!stuffMoving)
-	{
-		MyGame.pieceArr.push(new Piece(MyGame.nextPieceId()));
-	}
 	/*if(pieceArr.length === 0){
 		var p = new Piece(); 
 		pieceArr.push(p);
