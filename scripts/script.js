@@ -27,6 +27,8 @@ MyGame.initialize = (function initialize(){
 		time = new Date().getTime(),
 		prevTime = time,
 		elapsedTime = 0;
+		
+
 
 	MyGame.play = false;
 	MyGame.keyboard = myKeyboard;
@@ -54,6 +56,7 @@ MyGame.initialize = (function initialize(){
 		time = new Date().getTime();
 		elapsedTime = time - prevTime;
 		prevTime = time;
+
 		//UPDATE GAME - GET KEYBOARD INPUT AND//
 		//MOVE NON-KEYBOARD DEPENDENT OBJECTS.//
 		
@@ -90,17 +93,25 @@ MyGame.initialize = (function initialize(){
 
 
 MyGame.updateGame = function(elapsedTime){
+	var i;
 	MyGame.keyboard.update(elapsedTime);
 	MyGame.clear();
 	MyGame.drawBackground();
 	if(pieceArr.length === 0){
 		var p = new Piece(); 
 		pieceArr.push(p);
-		console.log("Pushed");
+
+	}
+	else if(pieceArr.length > 0 && pieceArr[pieceArr.length - 1].alive() === false){
+		console.log("New");
+		var p = new Piece();
+		pieceArr.push(p);
 	}
 	else{
-		pieceArr[0].update(elapsedTime);
-		pieceArr[0].draw();
+		for(i = 0; i < pieceArr.length; i++){
+			pieceArr[i].update(elapsedTime);
+			pieceArr[i].draw();
+		}
 	}
 
 

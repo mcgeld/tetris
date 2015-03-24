@@ -1,24 +1,9 @@
 MyGame.newGame = function(){
-
-
-	/*
-	//DRAW SOME BRICKS
-	for(var i = 0; i < 7; i++)
-	{
-		var imageName = 'images/' + images[i] + 'Shape.jpg';
-		
-		console.log(imageName);
-		//MyGame.context.drawImage(MyGame.images[imageName], MyGame.bucketWidth + (MyGame.cellWidth * i), MyGame.context.canvas.height - (MyGame.bucketBorder + (MyGame.cellWidth * (i + 1))), MyGame.cellWidth, MyGame.cellWidth);
-	}
-
-*/
-
-
 	requestAnimationFrame(MyGame.gameLoop);
 }
 
 MyGame.drawBackground = function() {
-		var images = ['redBrick', 'yellowBrick', 'greenBrick', 'greyBrick', 'pinkBrick', 'purpleBrick', 'blueBrick'];
+	var images = ['redBrick', 'yellowBrick', 'greenBrick', 'greyBrick', 'pinkBrick', 'purpleBrick', 'blueBrick'];
 	//SET SIZE VARIABLES
 	MyGame.bucketHeight = MyGame.context.canvas.height - 100;
 	MyGame.bucketWidth = MyGame.context.canvas.width * (1 / 3);

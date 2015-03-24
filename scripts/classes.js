@@ -51,13 +51,11 @@
 	function Piece() {
 		var that = {},
 			bricks = [],
-			//type = Math.floor(Math.random() * 7 + 1),
-			type = 7,
+			type = Math.floor(Math.random() * 7 + 1),
+			//type = 7,
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7;
 			i = 1,
-
-			console.log("Type: " + type);
 
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
 
@@ -159,9 +157,15 @@
 
 		};
 
+		that.alive = function() {
+			return canMove();
+		};
+
 		that.update = function(elapsedTime) {
-			for(i = 0; i < bricks.length; i++){
-				bricks[i].update(elapsedTime);
+			if(canMove() === true){
+				for(i = 0; i < bricks.length; i++){
+					bricks[i].update(elapsedTime);
+				}
 			}
 		};
 
@@ -171,6 +175,17 @@
 			}
 		};
 
+		function canMove() {
+			var canMove = true;
+			for(i = 0; i < bricks.length; i++){
+				if(bricks[i].getY() >= 485){
+					canMove = false;
+					break;
+				}
+			}
+
+			return canMove;
+		}
 
 		//*********************************
 		//    Piece Shape Templates
@@ -275,12 +290,9 @@
 			for(i = 1; i < 4; i++){
 				x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 2));
 				y = MyGame.bucketBorder;
-				console.log(x + " " + y);
 				bricks[i].setPosition(x, y);
 			}
 		}
-
-
 
 		return that;
 
@@ -305,12 +317,11 @@
 		};
 
 		that.update = function(elapsedTime) {
-			if(spec.position.y < MyGame.context.canvas.height - (MyGame.cellWidth))
+			//if(spec.position.y < 450)
 				spec.position.y += MyGame.cellWidth;
 		};
 
 		that.draw = function() {
-			console.log("draw");
 			MyGame.context.save();
 			
 			MyGame.context.drawImage(
@@ -324,10 +335,3 @@
 
 		return that;
 	}
-
-/*
-return {
-	Brick: Brick,
-	Piece: Piece
-}*/
-
