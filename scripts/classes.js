@@ -4,7 +4,7 @@
 		var that = {},
 			grid,
 			i,
-			j,
+			j;
 			grid = [];
 
 		//Define 2D array
@@ -19,8 +19,8 @@
 				grid[i][j] = null;
 
 		that.addBrick = function(brickID, pieceID, x, y){
-			var row = (x - MyGame.bucketWidth) / MyGame.cellWidth,
-				col = (y - MyGame.bucketBorder) / MyGame.cellWidth;
+			var col = Math.floor((x - MyGame.bucketWidth) / MyGame.cellWidth),
+				row = Math.floor((y - MyGame.bucketBorder) / MyGame.cellWidth);
 
 			grid[row][col] = {
 				brick: brickID,
@@ -29,8 +29,8 @@
 		};
 
 		that.removeBrick = function(x, y) {
-			var row = (x - MyGame.bucketWidth) / MyGame.cellWidth,
-				col = (y - MyGame.bucketBorder) / MyGame.cellWidth;
+			var col = Math.floor((x - MyGame.bucketWidth) / MyGame.cellWidth),
+				row = Math.floor((y - MyGame.bucketBorder) / MyGame.cellWidth);
 
 			grid[row][col] = null;
 		};
@@ -50,9 +50,9 @@
 		};
 		
 		that.checkBrick = function(x, y) {
-			var row = (x - MyGame.bucketWidth) / MyGame.cellWidth,
-				col = (y - MyGame.bucketBorder) / MyGame.cellWidth;
-			if(row < 0 || col < 0 || col > MyGame.numCols - 1)
+			var col = Math.floor((x - MyGame.bucketWidth) / MyGame.cellWidth),
+				row = Math.floor((y - MyGame.bucketBorder) / MyGame.cellWidth);
+			if(row > MyGame.numRows - 1 || col < 0 || col > MyGame.numCols - 1)
 				return -1;
 			return grid[row][col];
 		};
@@ -198,7 +198,7 @@
 		function canMove() {
 			var canMove = true;
 			for(i = 0; i < bricks.length; i++){
-				if(bricks[i].canMove()){
+				if(!bricks[i].canMove()){
 					canMove = false;
 					break;
 				}
@@ -339,7 +339,7 @@
 					//Looking past bottom
 					return false;
 				}
-				else if(below.below.getId().piece != spec.pieceID)
+				else if(below.piece != spec.pieceID)
 				{
 					//Different piece below
 					return false;
@@ -357,6 +357,7 @@
 		};
 
 		that.setPosition = function(x, y) {
+            MyGame.grid.addBrick(spec.brickID, spec.pieceID, x, y);
 			spec.position.x = x;
 			spec.position.y = y;
 		};
