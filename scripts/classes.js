@@ -1,4 +1,3 @@
-
 	// 
 	//Brick Grid
 	function Grid(cols, rows) {
