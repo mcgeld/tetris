@@ -5,22 +5,23 @@
 			grid,
 			i,
 			j;
-			grid = [];
+
+		grid = [];
 
 		//Define 2D array
-		for(i = 0; i < rows; i++){
+		for(i = 0; i < rows + 2; i++){
 			if(!grid[i])
 				grid[i] = [];
 		}
 
 		//Initialize to null
-		for(i = 0; i < rows; i++)
+		for(i = 0; i < rows + 2; i++)
 			for(j = 0; j < cols; j++)
 				grid[i][j] = null;
 
 		that.addBrick = function(brickID, pieceID, x, y){
-			var col = Math.floor((x - MyGame.bucketWidth) / MyGame.cellWidth),
-				row = Math.floor((y - MyGame.bucketBorder) / MyGame.cellWidth);
+			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
+				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
 
 			grid[row][col] = {
 				brick: brickID,
@@ -29,8 +30,8 @@
 		};
 
 		that.removeBrick = function(x, y) {
-			var col = Math.floor((x - MyGame.bucketWidth) / MyGame.cellWidth),
-				row = Math.floor((y - MyGame.bucketBorder) / MyGame.cellWidth);
+			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
+				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
 
 			grid[row][col] = null;
 		};
@@ -50,10 +51,12 @@
 		};
 		
 		that.checkBrick = function(x, y) {
-			var col = Math.floor((x - MyGame.bucketWidth) / MyGame.cellWidth),
-				row = Math.floor((y - MyGame.bucketBorder) / MyGame.cellWidth);
-			if(row > MyGame.numRows - 1 || col < 0 || col > MyGame.numCols - 1)
+			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
+				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
+
+			if(row > MyGame.numRows + 1 || col < 0 || col > MyGame.numCols - 1)
 				return -1;
+
 			return grid[row][col];
 		};
 
@@ -71,12 +74,15 @@
 		var that = {},
 			bricks = [],
 			type = Math.floor(Math.random() * 7 + 1),
-			//type = 7,
+			//type = 4,
+
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7;
 			i = 1,
-
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
+
+
+		that.alreadyMoved = false;
 
 		//Fill Bricks array
 		for(i = 0; i < 4; i++){
@@ -124,7 +130,7 @@
 				canMove = true;
 
 			for(i = 0; i < 4; i++){
-				if(bricks[i].getX() <= MyGame.bucketWidth){
+				if(bricks[i].getX() <= MyGame.bucketLeft){
 					canMove = false;
 					break;
 				}
@@ -144,7 +150,7 @@
 				canMove = true;
 
 			for(i = 0; i < 4; i++){
-				if(bricks[i].getX() >= MyGame.bucketWidth + (MyGame.cellWidth * 10)){
+				if(bricks[i].getX() >= MyGame.bucketLeft + (MyGame.cellWidth * 10)){
 					canMove = false;
 					break;
 				}
@@ -172,14 +178,22 @@
 
 		};
 
-		that.alive = function() {
+		that.inPlace = function() {
 			return canMove();
+		};
+
+		that.getBricks = function() {
+			return bricks;
 		};
 
 		that.update = function(elapsedTime) {
 			if(canMove() === true){
 				for(i = 0; i < bricks.length; i++){
 					bricks[i].update(elapsedTime);
+				}
+
+				for(i = 0; i < bricks.length; i++){
+					bricks[i].addToGrid();
 				}
 				return true;
 			}
@@ -198,7 +212,7 @@
 		function canMove() {
 			var canMove = true;
 			for(i = 0; i < bricks.length; i++){
-				if(!bricks[i].canMove()){
+				if(bricks[i].canMove() === false){
 					canMove = false;
 					break;
 				}
@@ -214,8 +228,8 @@
 			var x, y;
 			
 			for(i = 0; i < 4; i++) {
-				x = MyGame.bucketWidth + (MyGame.cellWidth * (3 + (i)));
-				y = MyGame.bucketBorder;
+				x = MyGame.bucketLeft + (MyGame.cellWidth * (3 + (i)));
+				y = MyGame.startLocation;
 				bricks[i].setPosition(x, y);
 			}
 		}
@@ -223,13 +237,13 @@
 		function J_Piece() {
 			var x, y;
 
-			x = MyGame.bucketWidth + (MyGame.cellWidth * 5);
-			y = MyGame.bucketBorder + MyGame.cellWidth;
+			x = MyGame.bucketLeft + (MyGame.cellWidth * 5);
+			y = MyGame.startLocation + MyGame.cellWidth;
 			bricks[0].setPosition(x, y);
 			
 			for(i = 1; i < 4; i++) {
-				x = MyGame.bucketWidth + (MyGame.cellWidth * (2 + i));
-				y = MyGame.bucketBorder;
+				x = MyGame.bucketLeft + (MyGame.cellWidth * (2 + i));
+				y = MyGame.startLocation;
 				bricks[i].setPosition(x, y);
 			}
 		}
@@ -237,13 +251,13 @@
 		function L_Piece() {
 			var x, y;
 
-			x = MyGame.bucketWidth + (MyGame.cellWidth * (3));
-			y = MyGame.bucketBorder + MyGame.cellWidth;
+			x = MyGame.bucketLeft + (MyGame.cellWidth * (3));
+			y = MyGame.startLocation + MyGame.cellWidth;
 			bricks[0].setPosition(x, y);
 
 			for(i = 1; i < 4; i++) {
-				x = MyGame.bucketWidth + (MyGame.cellWidth * (2 + i));
-				y = MyGame.bucketBorder;
+				x = MyGame.bucketLeft + (MyGame.cellWidth * (2 + i));
+				y = MyGame.startLocation;
 				bricks[i].setPosition(x, y);
 			}
 		}
@@ -253,12 +267,12 @@
 
 			for(i = 0; i < 4; i++){
 				if(i < 2){
-					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 4));
-					y = MyGame.bucketBorder;
+					x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 4));
+					y = MyGame.startLocation;
 				}
 				else if(i >= 2){
-					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 2));
-					y = MyGame.bucketBorder + MyGame.cellWidth;
+					x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 2));
+					y = MyGame.startLocation + MyGame.cellWidth;
 				}
 
 				bricks[i].setPosition(x, y);
@@ -270,12 +284,12 @@
 
 			for(i = 0; i < 4; i++){
 				if(i < 2){
-					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 4));
-					y = MyGame.bucketBorder;
+					x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 4));
+					y = MyGame.startLocation;
 				}
 				else if(i >= 2){
-					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 1));
-					y = MyGame.bucketBorder + MyGame.cellWidth;
+					x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 1));
+					y = MyGame.startLocation + MyGame.cellWidth;
 				}
 
 				bricks[i].setPosition(x, y);
@@ -287,12 +301,12 @@
 
 			for(i = 0; i < 4; i++){
 				if(i < 2){
-					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 4));
-					y = MyGame.bucketBorder;
+					x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 4));
+					y = MyGame.startLocation;
 				}
 				else if(i >= 2){
-					x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 3));
-					y = MyGame.bucketBorder + MyGame.cellWidth;
+					x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 3));
+					y = MyGame.startLocation + MyGame.cellWidth;
 				}
 
 				bricks[i].setPosition(x, y);
@@ -302,13 +316,13 @@
 		function T_Piece() {
 			var x, y;
 
-			x = MyGame.bucketWidth + (MyGame.cellWidth * 4);
-			y = MyGame.bucketBorder + MyGame.cellWidth;
+			x = MyGame.bucketLeft + (MyGame.cellWidth * 4);
+			y = MyGame.startLocation + MyGame.cellWidth;
 			bricks[0].setPosition(x, y);
 
 			for(i = 1; i < 4; i++){
-				x = MyGame.bucketWidth + (MyGame.cellWidth * (i + 2));
-				y = MyGame.bucketBorder;
+				x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 2));
+				y = MyGame.startLocation;
 				bricks[i].setPosition(x, y);
 			}
 		}
@@ -370,7 +384,13 @@
 		};
 
 		that.update = function(elapsedTime) {
+			MyGame.grid.removeBrick(spec.position.x, spec.position.y);
 			spec.position.y += MyGame.cellWidth;
+
+		};
+
+		that.addToGrid = function() {
+			 MyGame.grid.addBrick(spec.brickID, spec.pieceID, spec.position.x, spec.position.y);
 		};
 
 		that.draw = function() {
