@@ -15,14 +15,19 @@ MyGame.initialize = (function initialize(){
 		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
 	};
 	
-	MyGame.rotateRight = function(elapsedTime){
-		MyGame.context.fillStyle = 'orange';
-		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
+	MyGame.rotate = function(elapsedTime){
+		if(MyGame.activePiece != null)
+			MyGame.activePiece.rotate(elapsedTime);
 	};
 
 	MyGame.moveLeft = function(elapsedTime){
-		if(MyGame.activePiece != null)
+		if(MyGame.activePiece != null && MyGame.activePiece.inPlace() === false)
 			MyGame.activePiece.moveLeft(elapsedTime);
+	};
+
+	MyGame.moveRight = function(elapsedTime){
+		if(MyGame.activePiece != null && MyGame.activePiece.inPlace() === false)
+			MyGame.activePiece.moveRight(elapsedTime);
 	};
 
 
@@ -37,8 +42,10 @@ MyGame.initialize = (function initialize(){
 		return nextPieceId++;
 	};
 
+
 	MyGame.pieceArr = [];
 	MyGame.activePiece = null;
+	MyGame.firstPiece = true;
 	MyGame.numCols = 10;
 	MyGame.numRows = 20;
 	MyGame.play = false;
@@ -49,13 +56,15 @@ MyGame.initialize = (function initialize(){
 
 	MyGame.keyBeingSet = 0;
 	MyGame.keys = {
-					1: {key: KeyEvent.DOM_VK_UP, func: MyGame.hardDrop},
+					1: {key: KeyEvent.DOM_VK_UP, func: MyGame.rotate},
 					2: {key: KeyEvent.DOM_VK_DOWN, func: MyGame.softDrop},
-					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.rotateLeft},
-					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveLeft}
+					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft},
+					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight}
 				   };
 
 	MyGame.settingKey = false;
+
+	MyGame.time = 0;
 
 
 
@@ -67,7 +76,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.gameLoop = function(){
 		//UPDATE TIME//
 		time = new Date().getTime();
-		elapsedTime = time - prevTime;
+		elapsedTime = (time - prevTime) / 1000;
 		prevTime = time;
 
 		//UPDATE GAME - GET KEYBOARD INPUT AND//
@@ -106,11 +115,12 @@ MyGame.updateGame = function(elapsedTime){
 		j,
 		stuffMoving = false,
 		piece,
-		firstTime = true,
 		pieceMoved;
 	MyGame.keyboard.update(elapsedTime);
 	MyGame.clear();
 	MyGame.drawBackground();
+
+	//MyGame.time += elapsedTime;
 
 	for(i = MyGame.numRows - 1; i >= 0; i--)
 	{
@@ -120,9 +130,9 @@ MyGame.updateGame = function(elapsedTime){
 			
 			if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false)
 			{
-				//if(MyGame.pieceArr[piece].inPlace()) === false)
-					pieceMoved = MyGame.pieceArr[piece].update(elapsedTime);
-					MyGame.pieceArr[piece].alreadyMoved = pieceMoved;
+				
+				pieceMoved = MyGame.pieceArr[piece].update(elapsedTime);
+				MyGame.pieceArr[piece].alreadyMoved = pieceMoved;
 				
 				if(stuffMoving === false)
 				{
@@ -135,41 +145,20 @@ MyGame.updateGame = function(elapsedTime){
 
 	if(stuffMoving === false)
 	{
-		MyGame.activePiece = new Piece(MyGame.nextPieceId());
-		MyGame.pieceArr.push(MyGame.activePiece);
+		//console.log("Game: " + MyGame.time);
+		//if(MyGame.time > 1 || MyGame.firstPiece === true){
+			MyGame.activePiece = new Piece(MyGame.nextPieceId());
+			MyGame.pieceArr.push(MyGame.activePiece);
+			MyGame.time = 0;
+			MyGame.firstPiece = false;
+		//}
 	}
 	
 	for(piece in MyGame.pieceArr)
 	{
 		MyGame.pieceArr[piece].draw();
 		MyGame.pieceArr[piece].alreadyMoved = false;
-		/*
-		for(bricks in MyGame.pieceArr[piece].getBricks()){
-			console.log(MyGame.pieceArr[piece].getBricks()[bricks].getId().piece);
-		}
-		*/
 	}
-	
-	
-	/*
-	if(MyGame.pieceArr.length === 0){
-		var p = new Piece(); 
-		MyGame.pieceArr.push(p);
-	}
-	else if(MyGame.pieceArr.length > 0 && MyGame.pieceArr[MyGame.pieceArr.length - 1].alive() === false){
-		console.log("New");
-		var p = new Piece(MyGame.nextPieceId());
-		MyGame.pieceArr.push(p);
-	}
-	else{
-		for(i = 0; i < MyGame.pieceArr.length; i++){
-			MyGame.pieceArr[i].update(elapsedTime);
-			MyGame.pieceArr[i].draw();
-		}
-	}
-	*/
-
-
 };
 
 MyGame.render = function(elapsedTime){
