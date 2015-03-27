@@ -120,7 +120,7 @@ MyGame.updateGame = function(elapsedTime){
 	MyGame.clear();
 	MyGame.drawBackground();
 
-	//MyGame.time += elapsedTime;
+	MyGame.time += elapsedTime;
 
 	for(i = MyGame.numRows - 1; i >= 0; i--)
 	{
@@ -145,13 +145,15 @@ MyGame.updateGame = function(elapsedTime){
 
 	if(stuffMoving === false)
 	{
+		
 		//console.log("Game: " + MyGame.time);
-		//if(MyGame.time > 1 || MyGame.firstPiece === true){
+		if(MyGame.time > 1 || MyGame.firstPiece === true){
 			MyGame.activePiece = new Piece(MyGame.nextPieceId());
 			MyGame.pieceArr.push(MyGame.activePiece);
 			MyGame.time = 0;
 			MyGame.firstPiece = false;
-		//}
+		}
+		
 	}
 	
 	for(piece in MyGame.pieceArr)

@@ -70,7 +70,7 @@
 			bricks = [],
 			time = 0;
 			//type = Math.floor(Math.random() * 7 + 1),
-			type = 2,
+			type = 7,
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7,
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
@@ -123,6 +123,14 @@
 				rotate_I();
 			else if(type === 2)
 				rotate_J();
+			else if(type === 3)
+				rotate_L();
+			else if(type === 5)
+				rotate_S();
+			else if(type === 6)
+				rotate_Z();
+			else if(type === 7)
+				rotate_T();
 		};
 
 		that.moveLeft = function() {
@@ -190,9 +198,9 @@
 		};
 
 		that.update = function(elapsedTime) {
-			//time += elapsedTime;
-			if(canMove() === true){
-			//	time = 0;
+			time += elapsedTime;
+			if(time > 1 && canMove() === true){
+				time = 0;
 				for(i = 0; i < bricks.length; i++){
 					bricks[i].update(elapsedTime);
 				}
@@ -226,7 +234,7 @@
 
 
 */
-	
+
 		function canMove() {
 			var canMove = true;
 			for(i = 0; i < bricks.length; i++){
@@ -240,7 +248,9 @@
 
 		function updateOrientation(){
 			that.orientation++;
-			if(that.orientation > 4)
+			if(type < 5  || type === 7 && that.orientation > 4)
+				that.orientation = 1;
+			else if(type >= 5 && type < 7 && that.orientation > 2)
 				that.orientation = 1;
 		}
 
@@ -278,10 +288,10 @@
 
 			x = MyGame.bucketLeft + (MyGame.cellWidth * (3));
 			y = MyGame.startLocation + MyGame.cellWidth;
-			bricks[0].setPosition(x, y);
+			bricks[3].setPosition(x, y);
 
-			for(i = 1; i < 4; i++) {
-				x = MyGame.bucketLeft + (MyGame.cellWidth * (2 + i));
+			for(i = 0; i < 3; i++) {
+				x = MyGame.bucketLeft + (MyGame.cellWidth * (5 - i));
 				y = MyGame.startLocation;
 				bricks[i].setPosition(x, y);
 			}
@@ -309,11 +319,11 @@
 
 			for(i = 0; i < 4; i++){
 				if(i < 2){
-					x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 4));
+					x = MyGame.bucketLeft + (MyGame.cellWidth * (5 - i));
 					y = MyGame.startLocation;
 				}
 				else if(i >= 2){
-					x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 1));
+					x = MyGame.bucketLeft + (MyGame.cellWidth * (6 - i));
 					y = MyGame.startLocation + MyGame.cellWidth;
 				}
 
@@ -342,12 +352,12 @@
 			var x, y;
 
 			x = MyGame.bucketLeft + (MyGame.cellWidth * 4);
-			y = MyGame.startLocation + MyGame.cellWidth;
+			y = MyGame.startLocation;
 			bricks[0].setPosition(x, y);
 
 			for(i = 1; i < 4; i++){
 				x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 2));
-				y = MyGame.startLocation;
+				y = MyGame.startLocation + MyGame.cellWidth;
 				bricks[i].setPosition(x, y);
 			}
 		}
@@ -559,6 +569,489 @@
 			}
 		}
 
+		function rotate_L(){
+			var x,y,
+				canMove = true,
+				piece;
+				
+				for(i = 0; i < 4; i++){
+					x = bricks[i].getX();
+					y = bricks[i].getY();
+
+					if(i === 0){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
+					}
+					else if(i === 1){
+						x = x;
+						y = y;
+					}
+					else if(i === 2){
+						x = brick3(x, y).x;
+						y = brick3(x, y).y;
+					}
+					else{
+						x = brick4(x, y).x;
+						y = brick4(x, y).y;
+					}
+
+					//Check if valid
+				}
+				
+
+				for(i = 0; i < 4; i++){
+					x = bricks[i].getX();
+					y = bricks[i].getY();
+
+					if(i === 0){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
+					}
+					else if(i === 1){
+						x = x;
+						y = y;
+					}
+					else if(i === 2){
+						x = brick3(x, y).x;
+						y = brick3(x, y).y;
+					}
+					else if(i === 3){
+						x = brick4(x, y).x;
+						y = brick4(x, y).y;
+					}
+
+					bricks[i].removeFromGrid();
+					bricks[i].setPosition(x, y);
+				}
+
+				updateOrientation();
+
+			
+
+
+			function brick1(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x - MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x - MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+				else if(that.orientation === 3){
+					col = x + MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+				else{
+					col = x + MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+
+				return {x: col, y: row};
+			}
+
+			function brick3(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x + MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x + MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+				else if(that.orientation === 3){
+					col = x - MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+				else{
+					col = x - MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+
+				return {x: col, y: row};
+			}
+
+			function brick4(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x;
+					row = y - MyGame.cellWidth * 2;
+				}
+				else if(that.orientation === 2){
+					col = x + MyGame.cellWidth * 2;
+					row = y; 
+				}
+				else if(that.orientation === 3){
+					col = x;
+					row = y + MyGame.cellWidth * 2;
+				}
+				else{
+					col = x - MyGame.cellWidth * 2;
+					row = y;
+				}
+
+				return {x: col, y: row};
+			}
+		}
+
+		function rotate_S(){
+			var x,y,
+				canMove = true,
+				piece;
+				
+				for(i = 0; i < 4; i++){
+					x = bricks[i].getX();
+					y = bricks[i].getY();
+
+					if(i === 0){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
+					}
+					else if(i === 1){
+						x = x;
+						y = y;
+					}
+					else if(i === 2){
+						x = brick3(x, y).x;
+						y = brick3(x, y).y;
+					}
+					else{
+						x = brick4(x, y).x;
+						y = brick4(x, y).y;
+					}
+
+					//Check if valid
+				}
+				
+
+				for(i = 0; i < 4; i++){
+					x = bricks[i].getX();
+					y = bricks[i].getY();
+
+					if(i === 0){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
+					}
+					else if(i === 1){
+						x = brick2(x, y).x;
+						y = brick2(x, y).y;
+					}
+					else if(i === 2){
+						x = brick3(x, y).x;
+						y = brick3(x, y).y;
+					}
+					else if(i === 3){
+						x = brick4(x, y).x;
+						y = brick4(x, y).y;
+					}
+
+					bricks[i].removeFromGrid();
+					bricks[i].setPosition(x, y);
+				}
+
+				updateOrientation();
+
+
+			function brick1(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x - MyGame.cellWidth * 2;
+					row = y - MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x + MyGame.cellWidth * 2;
+					row = y + MyGame.cellWidth;
+				}
+				
+				return {x: col, y: row};
+			}
+
+			function brick2(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x - MyGame.cellWidth;
+					row = y;
+				}
+				else if(that.orientation === 2){
+					col = x + MyGame.cellWidth;
+					row = y;
+				}
+
+				return {x: col, y: row};
+			}
+
+			function brick3(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x;
+					row = y - MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x;
+					row = y + MyGame.cellWidth;
+				}
+
+				return {x: col, y: row};
+			}
+
+			function brick4(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x + MyGame.cellWidth;
+					row = y;
+				}
+				else if(that.orientation === 2){
+					col = x - MyGame.cellWidth;
+					row = y; 
+				}
+
+				return {x: col, y: row};
+			}
+		}
+
+		function rotate_Z(){
+			var x,y,
+				canMove = true,
+				piece;
+				
+				for(i = 0; i < 4; i++){
+					x = bricks[i].getX();
+					y = bricks[i].getY();
+
+					if(i === 0){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
+					}
+					else if(i === 1){
+						x = x;
+						y = y;
+					}
+					else if(i === 2){
+						x = brick3(x, y).x;
+						y = brick3(x, y).y;
+					}
+					else{
+						x = brick4(x, y).x;
+						y = brick4(x, y).y;
+					}
+
+					//Check if valid
+				}
+				
+
+				for(i = 0; i < 4; i++){
+					x = bricks[i].getX();
+					y = bricks[i].getY();
+
+					if(i === 0){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
+					}
+					else if(i === 1){
+						x = brick2(x, y).x;
+						y = brick2(x, y).y;
+					}
+					else if(i === 2){
+						x = brick3(x, y).x;
+						y = brick3(x, y).y;
+					}
+					else if(i === 3){
+						x = brick4(x, y).x;
+						y = brick4(x, y).y;
+					}
+
+					bricks[i].removeFromGrid();
+					bricks[i].setPosition(x, y);
+				}
+
+				updateOrientation();
+
+
+			function brick1(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x + MyGame.cellWidth * 2;
+					row = y + MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x - MyGame.cellWidth * 2;
+					row = y - MyGame.cellWidth;
+				}
+				
+				return {x: col, y: row};
+			}
+
+			function brick2(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x + MyGame.cellWidth;
+					row = y;
+				}
+				else if(that.orientation === 2){
+					col = x - MyGame.cellWidth;
+					row = y;
+				}
+
+				return {x: col, y: row};
+			}
+
+			function brick3(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x;
+					row = y + MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x;
+					row = y - MyGame.cellWidth;
+				}
+
+				return {x: col, y: row};
+			}
+
+			function brick4(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x - MyGame.cellWidth;
+					row = y;
+				}
+				else if(that.orientation === 2){
+					col = x + MyGame.cellWidth;
+					row = y; 
+				}
+
+				return {x: col, y: row};
+			}
+		}
+
+		function rotate_T(){
+			var x,y,
+				canMove = true,
+				piece;
+				
+				for(i = 0; i < 4; i++){
+					x = bricks[i].getX();
+					y = bricks[i].getY();
+
+					if(i === 0){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
+					}
+					else if(i === 1){
+						x = brick2(x, y).x;
+						y = brick2(x, y).y;
+					}
+					else if(i === 2){
+						x = x;
+						y = y;
+					}
+					else{
+						x = brick4(x, y).x;
+						y = brick4(x, y).y;
+					}
+
+					//Check if valid
+				}
+				
+
+				for(i = 0; i < 4; i++){
+					x = bricks[i].getX();
+					y = bricks[i].getY();
+					
+					if(i === 0){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
+					}
+					else if(i === 1){
+						x = brick2(x, y).x;
+						y = brick2(x, y).y;
+					}
+					else if(i === 2){
+						x = x;
+						y = y;
+					}
+					else{
+						x = brick4(x, y).x;
+						y = brick4(x, y).y;
+					}
+
+					bricks[i].removeFromGrid();
+					bricks[i].setPosition(x, y);
+				}
+
+				updateOrientation();
+
+			
+
+
+			function brick1(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x + MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x - MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+				else if(that.orientation === 3){
+					col = x - MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+				else{
+					col = x + MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+
+				return {x: col, y: row};
+			}
+
+			function brick2(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x + MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x + MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+				else if(that.orientation === 3){
+					col = x - MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+				else{
+					col = x - MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+
+				return {x: col, y: row};
+			}
+
+			function brick4(x, y){
+				var col, row;
+				if(that.orientation === 1){
+					col = x - MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+				else if(that.orientation === 2){
+					col = x - MyGame.cellWidth;
+					row = y - MyGame.cellWidth; 
+				}
+				else if(that.orientation === 3){
+					col = x + MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
+				}
+				else{
+					col = x + MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
+				}
+
+				return {x: col, y: row};
+			}
+		}
 
 
 		return that;
