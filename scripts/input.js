@@ -34,11 +34,16 @@ MyGame.input = (function() {
 					default: break; // do not block other keys
 				}
 			}
+
+
+			
 		}
 		
 		function keyRelease(e) {
             that.keysUp[e.keyCode] = e.timeStamp;
 			delete that.keysDown[e.keyCode];
+
+			MyGame.rotatePressed = false;
 		}
 		
 		// ------------------------------------------------------------------
@@ -48,6 +53,17 @@ MyGame.input = (function() {
 		// ------------------------------------------------------------------
 		that.registerCommandKeyUp = function(key, handler) {
 			that.upHandlers.push({ key : key, handler : handler});
+		};
+
+		that.unregisterCommandKeyUp = function(key){
+			for(var i = 0; i < that.upHandlers.length; i++)
+			{
+				if(that.upHandlers[i].key === key)
+				{
+					that.upHandlers.splice(i, 1);
+					i--;
+				}
+			}
 		};
 
         that.registerCommandKeyDown = function(key, handler) {
@@ -78,7 +94,7 @@ MyGame.input = (function() {
 			}
             for(key = 0; key < that.downHandlers.length; key++) {
                 if (that.keysDown.hasOwnProperty(that.downHandlers[key].key)) {
-                    that.downHandlers[key].handler(elapsedTime);
+					that.downHandlers[key].handler(elapsedTime);
                 }
             }
 		};

@@ -16,8 +16,10 @@ MyGame.initialize = (function initialize(){
 	};
 	
 	MyGame.rotate = function(elapsedTime){
-		if(MyGame.activePiece != null)
+		if(MyGame.activePiece != null && MyGame.activePiece === false && MyGame.rotatePressed === false){
 			MyGame.activePiece.rotate(elapsedTime);
+			MyGame.rotatePressed = true;
+		}
 	};
 
 	MyGame.moveLeft = function(elapsedTime){
@@ -36,16 +38,36 @@ MyGame.initialize = (function initialize(){
 		time = new Date().getTime(),
 		prevTime = time,
 		elapsedTime = 0,
-		nextPieceId = 0;
+		nextPieceId = 0,
+		nextPieceType = 1;
+		
+		console.log(nextPieceType);
 
 	MyGame.nextPieceId = function() {
 		return nextPieceId++;
+	};
+
+	MyGame.getNextPieceType = function() {
+		return nextPieceType;
+	};
+
+	MyGame.setNextPieceType = function() {
+		nextPieceType = Math.floor(Math.random() * 7 + 1);
+	};
+
+	MyGame.dummy = function(){
+		return true;
+	};
+
+	MyGame.setRotatePressed = function() {
+		MyGame.rotatePressed = false;
 	};
 
 
 	MyGame.pieceArr = [];
 	MyGame.activePiece = null;
 	MyGame.firstPiece = true;
+	MyGame.rotatePressed = false;
 	MyGame.numCols = 10;
 	MyGame.numRows = 20;
 	MyGame.play = false;
@@ -56,20 +78,30 @@ MyGame.initialize = (function initialize(){
 
 	MyGame.keyBeingSet = 0;
 	MyGame.keys = {
-					1: {key: KeyEvent.DOM_VK_UP, func: MyGame.rotate},
-					2: {key: KeyEvent.DOM_VK_DOWN, func: MyGame.softDrop},
-					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft},
-					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight}
+					1: {key: KeyEvent.DOM_VK_UP, func: MyGame.rotate, funcUp: MyGame.setRotatePressed},
+					2: {key: KeyEvent.DOM_VK_DOWN, func: MyGame.softDrop, funcUp: MyGame.dummy},
+					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft, funcUp: MyGame.dummy},
+					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight, funcUp: MyGame.dummy}
 				   };
 
 	MyGame.settingKey = false;
 
 	MyGame.time = 0;
 
-
-
 	MyGame.registerCommandKeyDown = function(key, func){
 		myKeyboard.registerCommandKeyDown(key, func);
+	};
+
+	MyGame.registerCommandKeyUp = function(key, func){
+		myKeyboard.registerCommandKeyUp(key, func);
+	};
+
+	MyGame.unregisterCommandKeyDown = function(key){
+		myKeyboard.unregisterCommandKeyDown(key);
+	};
+
+	MyGame.unregisterCommandKeyUp = function(key){
+		myKeyboard.unregisterCommandKeyUp(key);
 	};
 
 
@@ -88,9 +120,6 @@ MyGame.initialize = (function initialize(){
 		requestAnimationFrame(MyGame.gameLoop);
 	};
 
-	MyGame.unregisterCommandKeyDown = function(key){
-		myKeyboard.unregisterCommandKeyDown(key);
-	};
 
 	return function(){
 		CanvasRenderingContext2D.prototype.clear = function() {
@@ -105,6 +134,7 @@ MyGame.initialize = (function initialize(){
 		for(var i = 1; i <= 4; i++)
 		{
 			MyGame.registerCommandKeyDown(MyGame.keys[i].key, MyGame.keys[i].func);
+			MyGame.registerCommandKeyUp(MyGame.keys[i].key, MyGame.keys[i].funcUp);
 		}
 	};
 }());
@@ -119,6 +149,7 @@ MyGame.updateGame = function(elapsedTime){
 	MyGame.keyboard.update(elapsedTime);
 	MyGame.clear();
 	MyGame.drawBackground();
+	
 
 	MyGame.time += elapsedTime;
 
@@ -146,9 +177,9 @@ MyGame.updateGame = function(elapsedTime){
 	if(stuffMoving === false)
 	{
 		
-		//console.log("Game: " + MyGame.time);
-		if(MyGame.time > 1 || MyGame.firstPiece === true){
-			MyGame.activePiece = new Piece(MyGame.nextPieceId());
+		if(MyGame.time > 6 || MyGame.firstPiece === true){
+			MyGame.activePiece = new Piece(MyGame.nextPieceId(), MyGame.getNextPieceType());
+			MyGame.setNextPieceType();
 			MyGame.pieceArr.push(MyGame.activePiece);
 			MyGame.time = 0;
 			MyGame.firstPiece = false;
@@ -203,8 +234,10 @@ MyGame.toMainMenu = function(){
 
 MyGame.setKey = function(e){
 	MyGame.unregisterCommandKeyDown(MyGame.keys[MyGame.keyBeingSet].key);
+	MyGame.unregisterCommandKeyUp(MyGame.keys[MyGame.keyBeingSet].key);
 	MyGame.keys[MyGame.keyBeingSet].key = e.keyCode;
 	MyGame.registerCommandKeyDown(MyGame.keys[MyGame.keyBeingSet].key, MyGame.keys[MyGame.keyBeingSet].func);
+	MyGame.registerCommandKeyUp(MyGame.keys[MyGame.keyBeingSet].key, MyGame.keys[MyGame.keyBeingSet].funcUp);
 	MyGame.settingKey = false;
 	MyGame.toControls();
 };

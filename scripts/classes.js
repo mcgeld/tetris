@@ -64,18 +64,20 @@
 
 	//
 	//Piece Template
-	function Piece(id) {
+	function Piece(id, type) {
 		var that = {},
 			i = 1,
 			bricks = [],
 			time = 0;
 			//type = Math.floor(Math.random() * 7 + 1),
-			type = 7,
+			//type = 1,
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7,
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
 
-
+			//if(type === 3 || type === 2)
+			//	type = 7;
+		console.log("Type: " + type);
 		that.alreadyMoved = false;
 		that.orientation = 1;
 
@@ -248,6 +250,7 @@
 
 		function updateOrientation(){
 			that.orientation++;
+			console.log("type: " + type + " " + that.orientation);
 			if(type < 5  || type === 7 && that.orientation > 4)
 				that.orientation = 1;
 			else if(type >= 5 && type < 7 && that.orientation > 2)
