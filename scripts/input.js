@@ -42,8 +42,6 @@ MyGame.input = (function() {
 		function keyRelease(e) {
             that.keysUp[e.keyCode] = e.timeStamp;
 			delete that.keysDown[e.keyCode];
-
-			MyGame.rotatePressed = false;
 		}
 		
 		// ------------------------------------------------------------------

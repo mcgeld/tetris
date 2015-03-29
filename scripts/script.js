@@ -16,20 +16,24 @@ MyGame.initialize = (function initialize(){
 	};
 	
 	MyGame.rotate = function(elapsedTime){
-		if(MyGame.activePiece != null && MyGame.activePiece === false && MyGame.rotatePressed === false){
+		if(MyGame.activePiece != null && MyGame.rotatePressed === false){//} && MyGame.activePiece === false){
 			MyGame.activePiece.rotate(elapsedTime);
 			MyGame.rotatePressed = true;
 		}
 	};
 
 	MyGame.moveLeft = function(elapsedTime){
-		if(MyGame.activePiece != null && MyGame.activePiece.inPlace() === false)
+		if(MyGame.activePiece != null && MyGame.moveLeftPressed === false && MyGame.activePiece.inPlace() === false){
 			MyGame.activePiece.moveLeft(elapsedTime);
+			MyGame.moveLeftPressed = true;
+		}
 	};
 
 	MyGame.moveRight = function(elapsedTime){
-		if(MyGame.activePiece != null && MyGame.activePiece.inPlace() === false)
+		if(MyGame.activePiece != null && MyGame.moveRightPressed === false && MyGame.activePiece.inPlace() === false){
 			MyGame.activePiece.moveRight(elapsedTime);
+			MyGame.moveRightPressed = true;
+		}
 	};
 
 
@@ -39,9 +43,8 @@ MyGame.initialize = (function initialize(){
 		prevTime = time,
 		elapsedTime = 0,
 		nextPieceId = 0,
-		nextPieceType = 1;
+		nextPieceType = Math.floor(Math.random() * 7 + 1);
 		
-		console.log(nextPieceType);
 
 	MyGame.nextPieceId = function() {
 		return nextPieceId++;
@@ -63,11 +66,21 @@ MyGame.initialize = (function initialize(){
 		MyGame.rotatePressed = false;
 	};
 
+	MyGame.setMoveLeftPressed = function(){
+		MyGame.moveLeftPressed = false;
+	};
+
+	MyGame.setMoveRightPressed = function() {
+		MyGame.moveRightPressed = false;;
+	};
+
 
 	MyGame.pieceArr = [];
 	MyGame.activePiece = null;
 	MyGame.firstPiece = true;
 	MyGame.rotatePressed = false;
+	MyGame.moveLeftPressed = false;
+	MyGame.moveRightPressed = false;
 	MyGame.numCols = 10;
 	MyGame.numRows = 20;
 	MyGame.play = false;
@@ -80,8 +93,8 @@ MyGame.initialize = (function initialize(){
 	MyGame.keys = {
 					1: {key: KeyEvent.DOM_VK_UP, func: MyGame.rotate, funcUp: MyGame.setRotatePressed},
 					2: {key: KeyEvent.DOM_VK_DOWN, func: MyGame.softDrop, funcUp: MyGame.dummy},
-					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft, funcUp: MyGame.dummy},
-					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight, funcUp: MyGame.dummy}
+					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft, funcUp: MyGame.setMoveLeftPressed},
+					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight, funcUp: MyGame.setMoveRightPressed}
 				   };
 
 	MyGame.settingKey = false;
@@ -113,8 +126,8 @@ MyGame.initialize = (function initialize(){
 
 		//UPDATE GAME - GET KEYBOARD INPUT AND//
 		//MOVE NON-KEYBOARD DEPENDENT OBJECTS.//
-	
 		MyGame.updateGame(elapsedTime);
+
 		//RENDER GAME//
 		MyGame.render();
 		requestAnimationFrame(MyGame.gameLoop);
