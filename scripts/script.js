@@ -6,8 +6,10 @@ MyGame.initialize = (function initialize(){
 	};
 	
 	MyGame.softDrop = function(elapsedTime){
-		MyGame.context.fillStyle = 'green';
-		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
+		if(MyGame.activePiece != null && MyGame.softDropPressed === false){
+			MyGame.activePiece.softDrop(elapsedTime);
+			MyGame.rotatePressed = true;
+		}
 	};
 	
 	MyGame.rotateLeft = function(elapsedTime){
@@ -16,7 +18,7 @@ MyGame.initialize = (function initialize(){
 	};
 	
 	MyGame.rotate = function(elapsedTime){
-		if(MyGame.activePiece != null && MyGame.rotatePressed === false){//} && MyGame.activePiece === false){
+		if(MyGame.activePiece != null && MyGame.rotatePressed === false){
 			MyGame.activePiece.rotate(elapsedTime);
 			MyGame.rotatePressed = true;
 		}
@@ -62,6 +64,10 @@ MyGame.initialize = (function initialize(){
 		return true;
 	};
 
+	MyGame.setSoftDropPressed = function() {
+		MyGame.softDropPressed = false;
+	};
+
 	MyGame.setRotatePressed = function() {
 		MyGame.rotatePressed = false;
 	};
@@ -81,6 +87,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.rotatePressed = false;
 	MyGame.moveLeftPressed = false;
 	MyGame.moveRightPressed = false;
+	MyGame.softDropPressed = false;
 	MyGame.numCols = 10;
 	MyGame.numRows = 20;
 	MyGame.play = false;
@@ -92,7 +99,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.keyBeingSet = 0;
 	MyGame.keys = {
 					1: {key: KeyEvent.DOM_VK_UP, func: MyGame.rotate, funcUp: MyGame.setRotatePressed},
-					2: {key: KeyEvent.DOM_VK_DOWN, func: MyGame.softDrop, funcUp: MyGame.dummy},
+					2: {key: KeyEvent.DOM_VK_DOWN, func: MyGame.softDrop, funcUp: MyGame.setSoftDropPressed},
 					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft, funcUp: MyGame.setMoveLeftPressed},
 					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight, funcUp: MyGame.setMoveRightPressed}
 				   };

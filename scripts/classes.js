@@ -69,6 +69,7 @@
 			i = 1,
 			bricks = [],
 			time = 0;
+			type = 1;
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7,
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
@@ -176,8 +177,20 @@
 
 		};
 
-		that.softDrop = function() {
+		that.softDrop = function(elapsedTime) {
+			if(canMove() === true){
+				for(i = 0; i < bricks.length; i++){
+					bricks[i].update(elapsedTime);
+				}
 
+				for(i = 0; i < bricks.length; i++){
+					bricks[i].addToGrid();
+				}
+				return true;
+			}
+			else {
+				return false;
+			}
 		};
 
 
@@ -374,8 +387,6 @@
 				row = bricks[1].getY();
 
 
-			// TODO: Figure out timing for rotate button.
-
 			if(that.orientation === 1){
 				for(i = 0; i < 4; i++){
 					x = col;
@@ -386,10 +397,13 @@
 					else
 						y = row + MyGame.cellWidth * (i - 1);
 
-					piece = MyGame.grid.checkBrick(x, y);
-					//if(piece !== -1 && (piece !== null && piece.piece !==))
-				
-					
+					newBrick = MyGame.grid.checkBrick(x, y);
+					console.log("brick: " + i + " check: " + newBrick);
+					//console.log(newBrick !== -1 + " " + newBrick !== null + " " + newBrick !== -1 ? newBrick.getId.piece : 0);
+					if(newBrick !== -1 && newBrick !== null){
+						canMove = false;
+						break;
+					}
 				}
 				
 				if(canMove === true){
