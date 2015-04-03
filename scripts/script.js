@@ -190,6 +190,7 @@ MyGame.updateGame = function(elapsedTime){
 				if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false)
 				{
 					pieceMoved = MyGame.pieceArr[piece].update(elapsedTime);
+					MyGame.playSound('audio/tick');
 					MyGame.pieceArr[piece].alreadyMoved = pieceMoved;
 					
 					if(MyGame.stuffMoving === false)
@@ -239,8 +240,14 @@ MyGame.checkMoving = function(elapsedTime){
 		}
 		else{
 			MyGame.grid.clearRow(fullRows);
+			//MyGame.player('audio/clear_line')
 		}
 	}
+};
+
+MyGame.playSound = function(sound){
+	console.log("in play");
+	MyGame.sounds[sound + "." + MyGame.audioExt].play();
 };
 
 MyGame.toNewGame = function(){

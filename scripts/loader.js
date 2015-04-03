@@ -1,5 +1,6 @@
 var MyGame = {
 	images : {},
+	sounds : {},
 	
 	status : {
 		preloadRequest : 0,
@@ -15,6 +16,20 @@ var MyGame = {
 //
 //------------------------------------------------------------------
 window.addEventListener('load', function() {
+
+	MyGame.audioExt = '';
+	//
+	// Find out which kind of audio support we have
+	if (Modernizr.audio.mp3 === 'probably') {
+		console.log('Go for MP3s!');
+		MyGame.audioExt = 'mp3';
+	}
+	else if (Modernizr.audio.wav === 'probably') {
+		console.log('WAVs are go!');
+		MyGame.audioExt = 'wav';
+	}
+
+
 	console.log('Loading resources...');
 	Modernizr.load([
 		{
@@ -30,7 +45,10 @@ window.addEventListener('load', function() {
 				'preload!images/greyBrickPlain.jpg',
 				'preload!images/pinkBrickPlain.jpg',
 				'preload!images/purpleBrickPlain.jpg',
-				'preload!images/blueBrickPlain.jpg'
+				'preload!images/blueBrickPlain.jpg',
+				'preload!audio/tick.' + MyGame.audioExt,
+				'preload!audio/clear_line.' + MyGame.audioExt,
+				'preload!audio/soft-drop.' + MyGame.audioExt
 			],
 			complete : function() {
 				console.log('All files requested for loading...');
@@ -45,13 +63,27 @@ yepnope.addPrefix('preload', function(resource) {
 	
 	MyGame.status.preloadRequest += 1;
 	var isImage = /.+\.(jpg|png|gif)$/i.test(resource.url);
-	resource.noexec = isImage;
+	//resource.noexec = isImage;
+
+	var isSound = /.+\.(mp3|wav)$/i.test(resource.url);
+
+	if(isSound)
+		resource.noexec = isSound;
+	else if(isImage)
+		resource.noexec = isImage;
+
 	resource.autoCallback = function(e) {
 		if (isImage) {
 			var image = new Image();
 			image.src = resource.url;
 			MyGame.images[resource.url] = image;
 		}
+		else if(isSound) {
+			var sound = new Audio(resource.url);
+			console.log(resource.url);
+			MyGame.sounds[resource.url] = sound;
+		}
+		
 		MyGame.status.preloadComplete += 1;
 		//
 		// When everything has finished preloading, go ahead and start the game

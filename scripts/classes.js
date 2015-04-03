@@ -232,6 +232,7 @@
 				for(i = 0; i < bricks.length; i++){
 					bricks[i].addToGrid();
 				}
+				MyGame.playSound('audio/soft-drop');
 				return true;
 			}
 			else {
