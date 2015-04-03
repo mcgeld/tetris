@@ -88,9 +88,13 @@ MyGame.initialize = (function initialize(){
 	MyGame.moveLeftPressed = false;
 	MyGame.moveRightPressed = false;
 	MyGame.softDropPressed = false;
+	MyGame.frameUpdated = false;
+	MyGame.stuffMoving = false;
+	MyGame.linesCleared = false;
 	MyGame.numCols = 10;
 	MyGame.numRows = 20;
 	MyGame.play = false;
+	MyGame.timeQuantum = 1;
 	MyGame.keyboard = myKeyboard;
 	MyGame.context = context;
 	MyGame.canvas = document.getElementById('canvas-main');
@@ -133,7 +137,9 @@ MyGame.initialize = (function initialize(){
 
 		//UPDATE GAME - GET KEYBOARD INPUT AND//
 		//MOVE NON-KEYBOARD DEPENDENT OBJECTS.//
+		
 		MyGame.updateGame(elapsedTime);
+	
 
 		//RENDER GAME//
 		MyGame.render();
@@ -163,58 +169,78 @@ MyGame.initialize = (function initialize(){
 MyGame.updateGame = function(elapsedTime){
 	var i,
 		j,
-		stuffMoving = false,
 		piece,
 		pieceMoved;
 	MyGame.keyboard.update(elapsedTime);
 	MyGame.clear();
 	MyGame.drawBackground();
+	MyGame.stuffMoving = false;
 	
 
 	MyGame.time += elapsedTime;
 
-	for(i = MyGame.numRows - 1; i >= 0; i--)
-	{
-		for(j = 0; j < MyGame.numCols; j++)
+	if(MyGame.time > MyGame.timeQuantum){
+		MyGame.time = 0;
+		for(i = MyGame.numRows - 1; i >= 0; i--)
 		{
-			piece = MyGame.grid.getId(i, j).piece;
-			
-			if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false)
+			for(j = 0; j < MyGame.numCols; j++)
 			{
+				piece = MyGame.grid.getId(i, j).piece;
 				
-				pieceMoved = MyGame.pieceArr[piece].update(elapsedTime);
-				MyGame.pieceArr[piece].alreadyMoved = pieceMoved;
-				
-				if(stuffMoving === false)
+				if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false)
 				{
-					stuffMoving = pieceMoved;
+					pieceMoved = MyGame.pieceArr[piece].update(elapsedTime);
+					MyGame.pieceArr[piece].alreadyMoved = pieceMoved;
+					
+					if(MyGame.stuffMoving === false)
+					{
+						MyGame.stuffMoving = pieceMoved;
+					}
+	                prevPiece = piece;
 				}
-                prevPiece = piece;
 			}
+		}
+
+			
+		MyGame.checkMoving(elapsedTime);
+		
+		for(piece in MyGame.pieceArr)
+		{
+			MyGame.pieceArr[piece].alreadyMoved = false;
 		}
 	}
 
-	if(stuffMoving === false)
-	{
-		
-		if(MyGame.time > 6 || MyGame.firstPiece === true){
-			MyGame.activePiece = new Piece(MyGame.nextPieceId(), MyGame.getNextPieceType());
-			MyGame.setNextPieceType();
-			MyGame.pieceArr.push(MyGame.activePiece);
-			MyGame.time = 0;
-			MyGame.firstPiece = false;
-		}
-		
-	}
-	
-	for(piece in MyGame.pieceArr)
-	{
-		MyGame.pieceArr[piece].draw();
-		MyGame.pieceArr[piece].alreadyMoved = false;
-	}
 };
 
 MyGame.render = function(elapsedTime){
+	for(piece in MyGame.pieceArr)
+	{
+		MyGame.pieceArr[piece].draw();	
+	}
+};
+
+MyGame.checkMoving = function(elapsedTime){
+	var fullRows;
+	if(MyGame.stuffMoving === false || MyGame.firstPiece === true)
+	{
+		fullRows = MyGame.grid.checkFullRows();
+
+		if(fullRows.length > 0)
+			MyGame.linesCleared = true;
+		else
+			MyGame.linesCleared = false;
+		
+		console.log(MyGame.linesCleared + " " + fullRows.length);
+		if(MyGame.linesCleared === false){
+			MyGame.activePiece = new Piece(MyGame.nextPieceId(), MyGame.getNextPieceType());
+			MyGame.setNextPieceType();
+			MyGame.pieceArr.push(MyGame.activePiece);
+			MyGame.firstPiece = false;
+		}
+		else{
+			MyGame.grid.clearRow(fullRows);
+		}
+	}
 };
 
 MyGame.toNewGame = function(){
