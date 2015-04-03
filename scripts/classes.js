@@ -117,7 +117,7 @@
 			i;
 		for(i = 0; i < bricks.length; i++)
 		{
-			bricks[i].setId(id, i);
+			bricks[i].setId(id, i + 1);
 		}
 		that.active = true;
 		that.alreadyMoved = false;
@@ -145,7 +145,7 @@
 			}
 		}
 		
-		canMove = function(){
+		function canMove(){
 			var canMove = true;
 			for(i = 0; i < bricks.length; i++){
 				if(bricks[i].active === true)
@@ -171,8 +171,8 @@
 		that.clearBricks = function(bricksToClear) {
 			for(var brick in bricksToClear)
 			{
-				bricks[bricksToClear[brick]].active = false;
-				bricks[bricksToClear[brick]].removeFromGrid();
+				bricks[bricksToClear[brick] - 1].active = false;
+				bricks[bricksToClear[brick] - 1].removeFromGrid();
 			}
 		};
 		
@@ -185,7 +185,7 @@
 			i = 1,
 			bricks = [],
 			time = 0;
-			//type = 5;
+			type = 5;
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7,
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
@@ -193,6 +193,9 @@
 		that.alreadyMoved = false;
 		that.orientation = 1;
 		that.active = true;
+
+		if(type === 7)
+			type = 1;
 
 
 		//Fill Bricks array
@@ -559,7 +562,7 @@
 			var x, y;
 
 			for(i = 0; i < 2; i++){
-				x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 2));
+				x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 3));
 				y = MyGame.startLocation + MyGame.cellWidth;
 				bricks[i].setPosition(x, y);
 			}
@@ -1164,11 +1167,11 @@
 						x = brick1(x, y).x;
 						y = brick1(x, y).y;
 					}
-					else if(i === 1){
+					else if(i === 2){
 						x = brick2(x, y).x;
 						y = brick2(x, y).y;
 					}
-					else if(i === 2){
+					else if(i === 1){
 						x = x;
 						y = y;
 					}
@@ -1189,11 +1192,11 @@
 						x = brick1(x, y).x;
 						y = brick1(x, y).y;
 					}
-					else if(i === 1){
+					else if(i === 2){
 						x = brick2(x, y).x;
 						y = brick2(x, y).y;
 					}
-					else if(i === 2){
+					else if(i === 1){
 						x = x;
 						y = y;
 					}
