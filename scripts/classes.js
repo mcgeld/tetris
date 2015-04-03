@@ -87,6 +87,7 @@
 				hashArray = {};
 			for(i = 0; i < list.length; i++){
 				//rowY = MyGame.startLocation + (list[i] * MyGame.cellWidth);
+				MyGame.score++;
 				for(j = 0; j < MyGame.numCols; j++){
 					brickId = that.getId(list[i], j).brick;
 					pieceId = that.getId(list[i], j).piece;
@@ -362,7 +363,11 @@
 						}
 					}
 				}
-				//MyGame.pieceArr[id].active = false;
+				if(tempArray.length > 0)
+				{
+					MyGame.pieceArr.push(new PieceOfPiece(MyGame.nextPieceId(), tempArray));
+				}
+				MyGame.pieceArr[id].active = false;
 			}
 			else
 			{
@@ -375,10 +380,10 @@
 						goneCount++;
 					}
 				}
-				/*if(goneCount === 4)
+				if(goneCount === 4)
 				{
 					MyGame.pieceArr[id].active = false;
-				}*/
+				}
 			}
 		};
 
@@ -394,8 +399,8 @@
 		that.update = function(elapsedTime) {
 			//time += elapsedTime;
 			//if(time > 1 && canMove() === true){
-			//if(that.active === true && canMove() === true){
-			if(canMove() === true){
+			if(that.active === true && canMove() === true){
+			//if(canMove() === true){
 			//	MyGame.frameUpdated = true;
 			//	time = 0;
 				for(i = 0; i < bricks.length; i++){

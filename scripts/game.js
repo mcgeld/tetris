@@ -9,6 +9,7 @@ MyGame.drawBackground = function() {
 		nextType = MyGame.getNextPieceType(),
 		imageType = nextType % 7,
 		imageName = 'images/' + images[imageType] + 'Plain.jpg',
+		score = MyGame.score,
 		x, y;
 
 
@@ -163,6 +164,25 @@ MyGame.drawBackground = function() {
 			MyGame.cellWidth, MyGame.cellWidth);
 
 		MyGame.context.restore();
+		
+		//Draw Score Window
+		MyGame.context.beginPath();
+		MyGame.context.moveTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 150);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer + MyGame.pieceWindowWidth, MyGame.bucketBorder + 150);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer + MyGame.pieceWindowWidth, MyGame.bucketBorder + MyGame.pieceWindowHeight + 150);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + MyGame.pieceWindowHeight + 150);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 145);
+		MyGame.context.lineWidth = 10;
+		MyGame.context.strokeStyle = '#ffffff';
+		MyGame.context.stroke();
+		
+		MyGame.context.fillStyle = 'rgba(255, 255, 255, 0.1)';
+		MyGame.context.fillRect(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 150, MyGame.pieceWindowWidth, MyGame.pieceWindowHeight);
+		
+		//Draw Score
+		MyGame.context.font = '50px Georgia';
+		MyGame.context.fillStyle = 'rgba(0, 0, 0, 1)';
+		MyGame.context.fillText(score, MyGame.bucketRight + MyGame.windowBuffer + 60, MyGame.pieceWindowHeight + 165);
 	}
 
 }

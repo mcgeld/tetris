@@ -80,7 +80,7 @@ MyGame.initialize = (function initialize(){
 		MyGame.moveRightPressed = false;;
 	};
 
-
+	MyGame.score = 0;
 	MyGame.pieceArr = [];
 	MyGame.activePiece = null;
 	MyGame.firstPiece = true;
