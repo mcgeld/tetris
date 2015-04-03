@@ -97,10 +97,12 @@
 						hashArray[pieceId] = [];
 						hashArray[pieceId].push(brickId);
 					}
-					
 				}
 			}
-
+			for(var piece in hashArray)
+			{
+				MyGame.pieceArr[piece].clearBricks(hashArray[piece]);
+			}
 			console.log("hey");
 		};
 		
@@ -108,6 +110,73 @@
 
 	}
 
+	//Piece of Piece Template
+	function PieceOfPiece(id, bricks){
+		var that = {},
+			i;
+		for(i = 0; i < bricks.length; i++)
+		{
+			bricks[i].setId(id, i);
+		}
+		that.active = true;
+		that.alreadyMoved = false;
+		that.update = function(elapsedTime){
+			if(canMove() === true){
+				for(i = 0; i < bricks.length; i++){
+					if(bricks[i].active)
+					{
+						bricks[i].update(elapsedTime);
+					}
+				}
+
+				for(i = 0; i < bricks.length; i++){
+					if(bricks[i].active)
+					{
+						console.log('PieceOfPiece AddToGrid');
+						bricks[i].addToGrid();
+					}
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		canMove = function(){
+			var canMove = true;
+			for(i = 0; i < bricks.length; i++){
+				if(bricks[i].active === true)
+				{
+					if(bricks[i].canMove() === false){
+						canMove = false;
+						break;
+					}
+				}
+			}
+			return canMove;
+		}
+		
+		that.draw = function() {
+			for(i = 0; i < bricks.length; i++){
+				if(bricks[i].active === true)
+				{
+					bricks[i].draw();
+				}
+			}
+		};
+		
+		that.clearBricks = function(bricksToClear) {
+			for(var brick in bricksToClear)
+			{
+				bricks[bricksToClear[brick]].active = false;
+				bricks[bricksToClear[brick]].removeFromGrid();
+			}
+		};
+		
+		return that;
+	}
 	//
 	//Piece Template
 	function Piece(id, type) {
@@ -115,13 +184,14 @@
 			i = 1,
 			bricks = [],
 			time = 0;
-			type = 4;
+			//type = 5;
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7,
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
 
 		that.alreadyMoved = false;
 		that.orientation = 1;
+		that.active = true;
 
 
 		//Fill Bricks array
@@ -230,6 +300,7 @@
 				}
 
 				for(i = 0; i < bricks.length; i++){
+					console.log('softDrop AddToGrid');
 					bricks[i].addToGrid();
 				}
 				MyGame.playSound('audio/soft-drop');
@@ -241,8 +312,74 @@
 		};
 
 
-		that.clearBricks = function() {
-
+		that.clearBricks = function(bricksToClear) {
+			for(var brick in bricksToClear)
+			{
+				bricks[bricksToClear[brick] - 1].active = false;
+			}
+			var state = 0;
+			for(var i = 0; i < 4; i++)
+			{
+				if(state === 0)
+				{
+					if(bricks[i].active === true)
+					{
+						state++;
+					}
+				}
+				else if(state === 1)
+				{
+					if(bricks[i].active === false)
+					{
+						state++;
+					}
+				}
+				else if(state === 2)
+				{
+					if(bricks[i].active === true)
+					{
+						state++;
+					}
+				}
+			}
+			if(state === 3)
+			{
+				console.log("SPLIT THE PIECE!");
+				var tempArray = [];
+				for(i = 0; i < 4; i++)
+				{
+					if(bricks[i].active === true)
+					{
+						tempArray.push(bricks[i]);
+					}
+					else if(bricks[i].active === false)
+					{
+						bricks[i].removeFromGrid();
+						if(tempArray.length > 0)
+						{
+							MyGame.pieceArr.push(new PieceOfPiece(MyGame.nextPieceId(), tempArray));
+							tempArray = [];
+						}
+					}
+				}
+				//MyGame.pieceArr[id].active = false;
+			}
+			else
+			{
+				var goneCount = 0;
+				for(i = 0; i < 4; i++)
+				{
+					if(bricks[i].active === false)
+					{
+						bricks[i].removeFromGrid();
+						goneCount++;
+					}
+				}
+				/*if(goneCount === 4)
+				{
+					MyGame.pieceArr[id].active = false;
+				}*/
+			}
 		};
 
 		that.inPlace = function() {
@@ -257,15 +394,23 @@
 		that.update = function(elapsedTime) {
 			//time += elapsedTime;
 			//if(time > 1 && canMove() === true){
+			//if(that.active === true && canMove() === true){
 			if(canMove() === true){
 			//	MyGame.frameUpdated = true;
 			//	time = 0;
 				for(i = 0; i < bricks.length; i++){
-					bricks[i].update(elapsedTime);
+					if(bricks[i].active)
+					{
+						bricks[i].update(elapsedTime);
+					}
 				}
 
 				for(i = 0; i < bricks.length; i++){
-					bricks[i].addToGrid();
+					if(bricks[i].active)
+					{
+						console.log('Piece AddToGrid');
+						bricks[i].addToGrid();
+					}
 				}
 				return true;
 			}
@@ -279,7 +424,10 @@
 
 		that.draw = function() {
 			for(i = 0; i < bricks.length; i++){
-				bricks[i].draw();
+				if(bricks[i].active === true)
+				{
+					bricks[i].draw();
+				}
 			}
 		};
 
@@ -287,9 +435,12 @@
 		function canMove() {
 			var canMove = true;
 			for(i = 0; i < bricks.length; i++){
-				if(bricks[i].canMove() === false){
-					canMove = false;
-					break;
+				if(bricks[i].active === true)
+				{
+					if(bricks[i].canMove() === false){
+						canMove = false;
+						break;
+					}
 				}
 			}
 			return canMove;
@@ -402,15 +553,18 @@
 		function T_Piece() {
 			var x, y;
 
-			x = MyGame.bucketLeft + (MyGame.cellWidth * 4);
-			y = MyGame.startLocation;
-			bricks[0].setPosition(x, y);
-
-			for(i = 1; i < 4; i++){
+			for(i = 0; i < 2; i++){
 				x = MyGame.bucketLeft + (MyGame.cellWidth * (i + 2));
 				y = MyGame.startLocation + MyGame.cellWidth;
 				bricks[i].setPosition(x, y);
 			}
+			x = MyGame.bucketLeft + (MyGame.cellWidth * 4);
+			y = MyGame.startLocation;
+			bricks[2].setPosition(x, y);
+			
+			x = MyGame.bucketLeft + (MyGame.cellWidth * (5));
+			y = MyGame.startLocation + MyGame.cellWidth;
+			bricks[3].setPosition(x, y);
 		}
 
 
@@ -1218,6 +1372,7 @@
 		that.setPosition = function(x, y) {
 			spec.position.x = x;
 			spec.position.y = y;
+			console.log('Brick SetPosition');
             MyGame.grid.addBrick(spec.brickID, spec.pieceID, x, y);
 		};
 		
@@ -1227,6 +1382,13 @@
 				brick: spec.brickID
 			};
 		};
+		
+		that.setId = function(newPieceId, newId){
+			spec.pieceID = newPieceId;
+			spec.brickID = newId;
+			console.log('Brick SetPieceId');
+            MyGame.grid.addBrick(spec.brickID, spec.pieceID, spec.position.x, spec.position.y);
+		};
 
 		that.getCoordinates = function() {
 			return {x: spec.position.x, y: spec.position.y};
@@ -1235,16 +1397,18 @@
 		that.update = function(elapsedTime) {
 			MyGame.grid.removeBrick(spec.position.x, spec.position.y);
 			spec.position.y += MyGame.cellWidth;
-
 		};
 
 		that.addToGrid = function() {
+			console.log('Brick AddToGrid');
 			 MyGame.grid.addBrick(spec.brickID, spec.pieceID, spec.position.x, spec.position.y);
 		};
 
 		that.removeFromGrid = function() {
 			MyGame.grid.removeBrick(spec.position.x, spec.position.y);
 		};
+		
+		that.active = true;
 
 		that.draw = function() {
 			MyGame.context.save();

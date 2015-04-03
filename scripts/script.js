@@ -181,13 +181,16 @@ MyGame.updateGame = function(elapsedTime){
 
 	if(MyGame.time > MyGame.timeQuantum){
 		MyGame.time = 0;
-		for(i = MyGame.numRows - 1; i >= 0; i--)
+		for(i = MyGame.numRows + 1; i >= 0; i--)
 		{
 			for(j = 0; j < MyGame.numCols; j++)
 			{
 				piece = MyGame.grid.getId(i, j).piece;
-				
-				if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false)
+				if(piece > 5)
+				{
+					console.log(piece);
+				}
+				if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false && MyGame.pieceArr[piece].active === true)
 				{
 					pieceMoved = MyGame.pieceArr[piece].update(elapsedTime);
 					MyGame.playSound('audio/tick');
@@ -197,7 +200,7 @@ MyGame.updateGame = function(elapsedTime){
 					{
 						MyGame.stuffMoving = pieceMoved;
 					}
-	                prevPiece = piece;
+	                //prevPiece = piece;
 				}
 			}
 		}
