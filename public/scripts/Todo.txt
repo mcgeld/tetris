@@ -1,0 +1,19 @@
+Bug List
+
+
+- Rotate at top
+- Rotate into piece
+- Rotate out of border
+
+
+- Sliding Right (Maybe)
+	- null cells not clearing after slide
+
+To Do
+
+- Particles
+
+- Node / High Scores
+
+- AI
+
