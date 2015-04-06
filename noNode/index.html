@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html lang = "en-US">
+<head>
+	<meta charset = "UTF-8">
+	<title>Tetris</title>
+	<!--<link rel="stylesheet" type = "text/css" href="bg.css">-->
+	<script src = "scripts/modernizr.js"></script>
+	<script src = "scripts/loader.js"></script>
+    <!--Milestones
+        1. Menus, Mouse & keyboard remapping
+        2. Grid, drawing pieces, moving, rotation, placement
+        3. Row detection, collapsing, scoring
+    -->
+
+	
+</head>
+<body>
+    <div id="mainMenuScreen">
+		<h1>Main Menu</h1>
+		<button type="button" onclick="MyGame.toNewGame()">New Game</button>
+		<button type="button" onclick="MyGame.toHighScores()">High Scores</button>
+		<button type="button" onclick="MyGame.toControls()">Controls</button>
+		<button type="button" onclick="MyGame.toCredits()">Credits</button>
+	</div>
+	<div id="newGameScreen" hidden="true">
+		<h1>New Game</h1>
+		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+		<canvas id = "canvas-main" width = "1000" height = "600" height: "100%" width: "100%"></canvas>
+	</div>
+	<div id="highScoreScreen" hidden="true">
+		<h1>High Scores</h1>
+		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+	</div>
+	<div id="controlScreen" hidden="true">
+		<h1>Controls</h1>
+		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+		<table>
+			<tr>
+				<th>Action</th>
+				<th>Key</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td>Hard Drop</td>
+				<td id="hardDropKey"></td>
+				<td><button type="button" onclick="MyGame.readySetKey(1,'Hard Drop')">Change Key</button></td>
+			</tr>
+			<tr>
+				<td>Soft Drop</td>
+				<td id="softDropKey"></td>
+				<td><button type="button" onclick="MyGame.readySetKey(2, 'Soft Drop')">Change Key</button></td>
+			</tr>
+			<tr>
+				<td>Rotate Left</td>
+				<td id="rotateLeftKey"></td>
+				<td><button type="button" onclick="MyGame.readySetKey(3, 'Rotate Left')">Change Key</button></td>
+			</tr>
+			<tr>
+				<td>Rotate Right</td>
+				<td id="rotateRightKey"></td>
+				<td><button type="button" onclick="MyGame.readySetKey(4, 'Rotate Right')">Change Key</button></td>
+			</tr>
+		</table>
+	</div>
+    <div id="waitingScreen" hidden="true">
+        <h2 id="waitingScreenMessage"></h2>
+    </div>
+	<div id="creditScreen" hidden="true">
+		<h1>Credits</h1>
+		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+	</div>
+</body>
+</html>
