@@ -19,7 +19,7 @@ var scores = [ {
 	nextId = 2;
 
 var fs = require('fs');
-var stream = fs.createWriteStream("my_file.txt");
+var stream = fs.createWriteStream("scores.txt");
 stream.once('open', function(fd) {
   stream.write("My first row\n");
   stream.write("My second row\n");

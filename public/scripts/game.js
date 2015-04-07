@@ -164,8 +164,14 @@ MyGame.drawBackground = function() {
 			MyGame.cellWidth, MyGame.cellWidth);
 
 		MyGame.context.restore();
-		
+	}
+
+		//
 		//Draw Score Window
+		MyGame.context.font = '30px Georgia';
+		MyGame.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+		MyGame.context.fillText("Score", MyGame.bucketRight + MyGame.windowBuffer + 35, MyGame.pieceWindowHeight + 90);
+
 		MyGame.context.beginPath();
 		MyGame.context.moveTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 150);
 		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer + MyGame.pieceWindowWidth, MyGame.bucketBorder + 150);
@@ -183,6 +189,58 @@ MyGame.drawBackground = function() {
 		MyGame.context.font = '50px Georgia';
 		MyGame.context.fillStyle = 'rgba(0, 0, 0, 1)';
 		MyGame.context.fillText(score, MyGame.bucketRight + MyGame.windowBuffer + 60, MyGame.pieceWindowHeight + 165);
-	}
+
+		//
+		//Draw Level Window
+		MyGame.context.font = '30px Georgia';
+		MyGame.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+		MyGame.context.fillText("Level", MyGame.bucketRight + MyGame.windowBuffer + 35, MyGame.pieceWindowHeight + 240);
+
+		MyGame.context.beginPath();
+		MyGame.context.moveTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 300);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer + MyGame.pieceWindowWidth, MyGame.bucketBorder + 300);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer + MyGame.pieceWindowWidth, MyGame.bucketBorder + MyGame.pieceWindowHeight + 300);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + MyGame.pieceWindowHeight + 300);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 295);
+		MyGame.context.lineWidth = 10;
+		MyGame.context.strokeStyle = '#ffffff';
+		MyGame.context.stroke();
+		
+		MyGame.context.fillStyle = 'rgba(255, 255, 255, 0.1)';
+		MyGame.context.fillRect(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 300, MyGame.pieceWindowWidth, MyGame.pieceWindowHeight);
+		
+		//Draw Level
+		MyGame.context.font = '50px Georgia';
+		MyGame.context.fillStyle = 'rgba(0, 0, 0, 1)';
+		MyGame.context.fillText(MyGame.currentLevel, MyGame.bucketRight + MyGame.windowBuffer + 60, MyGame.pieceWindowHeight + 310);
+
+
+		//
+		//Draw Rows Cleared Window
+		MyGame.rowsWindowHeight = MyGame.cellWidth * 2;
+
+		MyGame.context.font = '25px Georgia';
+		MyGame.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+		MyGame.context.fillText("Rows Cleared", MyGame.bucketRight + MyGame.windowBuffer, MyGame.rowsWindowHeight + 435);
+
+		MyGame.context.beginPath();
+		MyGame.context.moveTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 450);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer + MyGame.pieceWindowWidth, MyGame.bucketBorder + 450);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer + MyGame.pieceWindowWidth, MyGame.bucketBorder + MyGame.rowsWindowHeight + 450);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + MyGame.rowsWindowHeight + 450);
+		MyGame.context.lineTo(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 445);
+		MyGame.context.lineWidth = 10;
+		MyGame.context.strokeStyle = '#ffffff';
+		MyGame.context.stroke();
+		
+		MyGame.context.fillStyle = 'rgba(255, 255, 255, 0.1)';
+		MyGame.context.fillRect(MyGame.bucketRight + MyGame.windowBuffer, MyGame.bucketBorder + 450, MyGame.pieceWindowWidth, MyGame.rowsWindowHeight);
+		
+		//Draw # Rows Cleared
+		MyGame.context.font = '40px Georgia';
+		MyGame.context.fillStyle = 'rgba(255, 255, 255, 1)';
+		MyGame.context.fillText(MyGame.rowsCleared, MyGame.bucketRight + MyGame.windowBuffer + 60, MyGame.rowsWindowHeight + 490);
+	
+
 
 }

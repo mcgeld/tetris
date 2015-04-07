@@ -81,6 +81,8 @@ MyGame.initialize = (function initialize(){
 	};
 
 	MyGame.score = 0;
+	MyGame.rowsCleared = 0;
+	MyGame.currentLevel = 0;
 	MyGame.pieceArr = [];
 	MyGame.activePiece = null;
 	MyGame.firstPiece = true;
@@ -91,10 +93,11 @@ MyGame.initialize = (function initialize(){
 	MyGame.frameUpdated = false;
 	MyGame.stuffMoving = false;
 	MyGame.linesCleared = false;
+	MyGame.gameOver = false;
 	MyGame.numCols = 10;
 	MyGame.numRows = 20;
 	MyGame.play = false;
-	MyGame.timeQuantum = 1;
+	MyGame.timeQuantum = 0.75;
 	MyGame.keyboard = myKeyboard;
 	MyGame.context = context;
 	MyGame.canvas = document.getElementById('canvas-main');
@@ -180,6 +183,7 @@ MyGame.updateGame = function(elapsedTime){
 	MyGame.time += elapsedTime;
 
 	if(MyGame.time > MyGame.timeQuantum){
+		MyGame.updateLevel();
 		MyGame.time = 0;
 		for(i = MyGame.numRows + 1; i >= 0; i--)
 		{
@@ -223,18 +227,24 @@ MyGame.render = function(elapsedTime){
 	}
 };
 
+MyGame.gameOverCheck = function(elapsedTime){
+
+};
+
 MyGame.checkMoving = function(elapsedTime){
 	var fullRows;
 	if(MyGame.stuffMoving === false || MyGame.firstPiece === true)
 	{
 		fullRows = MyGame.grid.checkFullRows();
 
-		if(fullRows.length > 0)
+		if(fullRows.length > 0){
 			MyGame.linesCleared = true;
+			MyGame.rowsCleared += fullRows.length;
+		}
 		else
 			MyGame.linesCleared = false;
 		
-		console.log(MyGame.linesCleared + " " + fullRows.length);
+		//console.log(MyGame.linesCleared + " " + fullRows.length);
 		if(MyGame.linesCleared === false){
 			MyGame.activePiece = new Piece(MyGame.nextPieceId(), MyGame.getNextPieceType());
 			MyGame.setNextPieceType();
@@ -243,13 +253,39 @@ MyGame.checkMoving = function(elapsedTime){
 		}
 		else{
 			MyGame.grid.clearRow(fullRows);
+			MyGame.updateScore(fullRows.length);
 			//MyGame.player('audio/clear_line')
 		}
+
+		//if(MyGame.activePiece.active === false && MyGame.activePiece.getRow)
+	}
+
+};
+
+MyGame.updateLevel = function(){
+	if(MyGame.rowsCleared === 10){
+		MyGame.currentLevel++;
+		MyGame.rowsCleared = 0;
+	}
+};
+
+MyGame.updateScore = function(rowsCleared){
+	console.log("in score: " + rowsCleared);
+	if(rowsCleared === 1){
+		MyGame.score += 40 * (MyGame.currentLevel + 1);
+	}
+	else if(rowsCleared === 2){
+		MyGame.score += 100 * (MyGame.currentLevel + 1);
+	}
+	else if(rowsCleared === 3){
+		MyGame.score += 300 * (MyGame.currentLevel + 1);
+	}
+	else if(rowsCleared === 4){
+		MyGame.score += 1200 * (MyGame.currentLevel + 1);
 	}
 };
 
 MyGame.playSound = function(sound){
-	console.log("in play");
 	MyGame.sounds[sound + "." + MyGame.audioExt].play();
 };
 

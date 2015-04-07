@@ -87,7 +87,7 @@
 				hashArray = {};
 			for(i = 0; i < list.length; i++){
 				//rowY = MyGame.startLocation + (list[i] * MyGame.cellWidth);
-				MyGame.score++;
+				//MyGame.score++;
 				for(j = 0; j < MyGame.numCols; j++){
 					brickId = that.getId(list[i], j).brick;
 					pieceId = that.getId(list[i], j).piece;
@@ -104,8 +104,12 @@
 			{
 				MyGame.pieceArr[piece].clearBricks(hashArray[piece]);
 			}
-			console.log("hey");
+		//console.log("hey");
+			
 		};
+
+		
+
 		
 		return that;
 
@@ -133,7 +137,7 @@
 				for(i = 0; i < bricks.length; i++){
 					if(bricks[i].active)
 					{
-						console.log('PieceOfPiece AddToGrid');
+						//console.log('PieceOfPiece AddToGrid');
 						bricks[i].addToGrid();
 					}
 				}
@@ -185,7 +189,7 @@
 			i = 1,
 			bricks = [],
 			time = 0;
-			//type = 5;
+			//type = 7;
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7,
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
@@ -194,8 +198,7 @@
 		that.orientation = 1;
 		that.active = true;
 
-		if(type === 7)
-			type = 1;
+		
 
 
 		//Fill Bricks array
@@ -237,19 +240,22 @@
 
 		that.rotate = function(elapsedTime) {
 
-			if(type === 1)
-				rotate_I();
-			else if(type === 2)
-				rotate_J();
-			else if(type === 3)
-				rotate_L();
-			else if(type === 5)
-				rotate_S();
-			else if(type === 6)
-				rotate_Z();
-			else if(type === 7)
-				rotate_T();
+			if(notAtTop() === true){
+				if(type === 1)
+					rotate_I();
+				else if(type === 2)
+					rotate_J();
+				else if(type === 3)
+					rotate_L();
+				else if(type === 5)
+					rotate_S();
+				else if(type === 6)
+					rotate_Z();
+				else if(type === 7)
+					rotate_T();
+			}
 		};
+
 
 		that.moveLeft = function() {
 			var x, y,
@@ -304,7 +310,7 @@
 				}
 
 				for(i = 0; i < bricks.length; i++){
-					console.log('softDrop AddToGrid');
+					//console.log('softDrop AddToGrid');
 					bricks[i].addToGrid();
 				}
 				MyGame.playSound('audio/soft-drop');
@@ -416,7 +422,7 @@
 				for(i = 0; i < bricks.length; i++){
 					if(bricks[i].active)
 					{
-						console.log('Piece AddToGrid');
+						//console.log('Piece AddToGrid');
 						bricks[i].addToGrid();
 					}
 				}
@@ -438,6 +444,17 @@
 				}
 			}
 		};
+
+		function notAtTop() {
+			var canRotate = true;
+			for(i = 0; i < bricks.length; i++){
+				if(bricks[i].getY() < MyGame.startLocation + MyGame.cellWidth * 2){
+					canRotate = false;
+					break;
+				}
+			}
+			return canRotate;
+		}
 
 
 		function canMove() {
@@ -1189,12 +1206,12 @@
 					y = bricks[i].getY();
 					
 					if(i === 0){
-						x = brick1(x, y).x;
-						y = brick1(x, y).y;
-					}
-					else if(i === 2){
 						x = brick2(x, y).x;
 						y = brick2(x, y).y;
+					}
+					else if(i === 2){
+						x = brick1(x, y).x;
+						y = brick1(x, y).y;
 					}
 					else if(i === 1){
 						x = x;
@@ -1380,7 +1397,7 @@
 		that.setPosition = function(x, y) {
 			spec.position.x = x;
 			spec.position.y = y;
-			console.log('Brick SetPosition');
+			//console.log('Brick SetPosition');
             MyGame.grid.addBrick(spec.brickID, spec.pieceID, x, y);
 		};
 		
@@ -1394,7 +1411,7 @@
 		that.setId = function(newPieceId, newId){
 			spec.pieceID = newPieceId;
 			spec.brickID = newId;
-			console.log('Brick SetPieceId');
+			//console.log('Brick SetPieceId');
             MyGame.grid.addBrick(spec.brickID, spec.pieceID, spec.position.x, spec.position.y);
 		};
 
@@ -1408,7 +1425,7 @@
 		};
 
 		that.addToGrid = function() {
-			console.log('Brick AddToGrid');
+			//console.log('Brick AddToGrid');
 			 MyGame.grid.addBrick(spec.brickID, spec.pieceID, spec.position.x, spec.position.y);
 		};
 

@@ -32,6 +32,7 @@ app.get('/', function(request, response) {
 	response.render('index.html');
 });
 
+
 app.get('/v1/high-scores', scores.all);
 app.post('/v1/high-scores', scores.add);
 
@@ -44,6 +45,7 @@ app.all('/v1/*', function(request, response) {
 	response.writeHead(501);
 	response.end();
 });
+
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
