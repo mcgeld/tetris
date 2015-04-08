@@ -117,6 +117,8 @@ MyGame.initialize = (function initialize(){
 	MyGame.numRows = 20;
 	MyGame.play = false;
 	MyGame.timeQuantum = 0.75;
+	MyGame.emitters = [];
+	MyGame.timeMod = 25 / 1000;
 
 	MyGame.attractModeTimer = 0;
 
@@ -226,6 +228,64 @@ MyGame.initialize = (function initialize(){
 	};
 }());
 
+MyGame.sparkEmitter = function(spec){
+	return new Emitter({
+						count: 20,
+						creationRate: 5 / 1000,
+						particle: {
+									myContext: spec.myContext,
+									image: spec.image,
+									size: {
+											mean: 10,
+											stdev: 2,
+											max: 20,
+											min: 1
+									},
+									lifetime: {
+												mean: 500 / 1000,
+												stdev: 250 / 1000,
+												max: 1000 / 1000,
+												min: 100 / 1000
+									},
+									rotation: {
+												mean: 15,
+												stdev: 8,
+												max: 30,
+												min: -15
+									},
+									speed: {
+											mean: 3,
+											stdev: .5,
+											max: 5,
+											min: 1
+									}
+						},
+						angle: {
+								min: 0,
+								max: 360,
+						},
+						location: {
+									x: spec.center.x,
+									y: spec.center.y
+						}
+		});
+}
+
+MyGame.random = function(mean, stdev, max, min){
+    var rand = Math.round(((Math.random() * 2 - 1) + (Math.random() * 2 - 1) + (Math.random() * 2 - 1)) * stdev + mean);
+    if(rand > max)
+    {
+        return max;
+    }
+    else if(rand < min)
+    {
+        return min;
+    }
+    else
+    {
+        return rand;
+    }
+}
 
 MyGame.updateGame = function(elapsedTime){
 	var i,
@@ -267,12 +327,23 @@ MyGame.updateGame = function(elapsedTime){
 			}
 		}
 
-			
 		MyGame.checkMoving(elapsedTime);
 		
 		for(piece in MyGame.pieceArr)
 		{
 			MyGame.pieceArr[piece].alreadyMoved = false;
+		}
+	}
+	if(MyGame.emitters.length > 0)
+	{
+		console.log("NOT EMPTY");
+	}
+	for(var i = 0; i < MyGame.emitters.length; i++)
+	{
+		if(MyGame.emitters[i].update(elapsedTime) === false)
+		{
+			MyGame.emitters.splice(i, 1);
+			i--;
 		}
 	}
 
@@ -283,6 +354,10 @@ MyGame.render = function(elapsedTime){
 	{
 		MyGame.pieceArr[piece].draw();	
 	}
+	for(var i = 0; i < MyGame.emitters.length; i++)
+    {
+        MyGame.emitters[i].draw();
+    }
 };
 
 MyGame.gameOverCheck = function(elapsedTime){

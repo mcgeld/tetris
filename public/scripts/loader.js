@@ -35,6 +35,7 @@ window.addEventListener('load', function() {
 		{
 			load : [
 				'preload!styles/style.css',
+				'preload!scripts/particles.js',
 				'preload!scripts/index.js',
 				'preload!scripts/input.js',
 				'preload!scripts/script.js',

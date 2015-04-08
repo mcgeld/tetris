@@ -187,6 +187,14 @@
 		that.clearBricks = function(bricksToClear) {
 			for(var brick in bricksToClear)
 			{
+				MyGame.emitters.push(new MyGame.sparkEmitter({
+																image: bricks[bricksToClear[brick] - 1].getImage(),
+																myContext: MyGame.context,
+																center: {
+																			x: bricks[bricksToClear[brick] - 1].getCoordinates().x + MyGame.cellWidth / 2,
+																			y: bricks[bricksToClear[brick] - 1].getCoordinates().y + MyGame.cellWidth / 2
+																}
+														}));
 				bricks[bricksToClear[brick] - 1].active = false;
 				bricks[bricksToClear[brick] - 1].removeFromGrid();
 			}
@@ -201,7 +209,7 @@
 			i = 1,
 			bricks = [],
 			time = 0;
-			//type = 7;
+			//type = 4;
 			images = ['yellowBrick', 'blueBrick', 'purpleBrick', 'pinkBrick', 'greyBrick', 'greenBrick', 'redBrick'],
 			imageType = type % 7,
 			imageName = 'images/' + images[imageType] + 'Plain.jpg';
@@ -339,6 +347,14 @@
 		that.clearBricks = function(bricksToClear) {
 			for(var brick in bricksToClear)
 			{
+				MyGame.emitters.push(new MyGame.sparkEmitter({
+																image: bricks[bricksToClear[brick] - 1].getImage(),
+																myContext: MyGame.context,
+																center: {
+																			x: bricks[bricksToClear[brick] - 1].getCoordinates().x + MyGame.cellWidth / 2,
+																			y: bricks[bricksToClear[brick] - 1].getCoordinates().y + MyGame.cellWidth / 2
+																}
+														}));
 				bricks[bricksToClear[brick] - 1].active = false;
 			}
 			var state = 0;
@@ -1589,6 +1605,11 @@
 				return true;
 			}
 		};
+
+		that.getImage = function()
+		{
+			return spec.image;
+		}
 
 		that.canMoveRight = function() {
 			var right = MyGame.grid.checkBrick(spec.position.x + MyGame.cellWidth, spec.position.y);

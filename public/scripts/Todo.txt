@@ -13,7 +13,7 @@ WADE:
 	- High Scores
 
 MALCOLM:
-	- Particles
-	- AI/Attract Mode
-	- Exit Attract Mode
-	- CSS
+	- Particles 1
+	- AI/Attract Mode 2
+	- Exit Attract Mode 3
+	- CSS 4
