@@ -1,7 +1,7 @@
 MyGame.newGame = function(){
 	MyGame.grid = new Grid(MyGame.numCols, MyGame.numRows);
 	MyGame.pieceArr = [];
-	MyGame.playSound('audio/gameLoop');
+	//MyGame.playSound('audio/gameLoop');
 
 	requestAnimationFrame(MyGame.gameLoop);
 }

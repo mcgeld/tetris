@@ -61,14 +61,6 @@ exports.add = function(request, response) {
 	console.log('add new score called');
 	console.log('Name: ' + request.query.name);
 	console.log('Score: ' + request.query.score);
-
-	fs.readFile('scores.txt', 'utf8', function (err,data) {
-		console.log("herein scores");
-	  if (err) {
-	    return console.log(err);
-	  }
-	  console.log(data);
-	});
 	
 	var now = new Date();
 
@@ -81,13 +73,22 @@ exports.add = function(request, response) {
 	});
 	nextId++;
 
-	var stream = fs.createWriteStream("scores.txt");
-	stream.once('open', function(fd) {
-	  stream.write('Name: ' + request.query.name);
-	  stream.write("Score: " + request.query.score);
-	  stream.end();
-	});
 
+	var path = 'public/scores.txt',
+	buffer = new Buffer("snew score added\n");
+
+	fs.open(path, 'w', function(err, fd) {
+	    if (err) {
+	        throw 'error opening file: ' + err;
+	    } else {
+	        fs.write(fd, buffer, 0, buffer.length, null, function(err) {
+	            if (err) throw 'error writing file: ' + err;
+	            fs.close(fd, function() {
+	                console.log('file written');
+	            })
+	        });
+	    }
+	});
 	
 	response.writeHead(200);
 	response.end();
