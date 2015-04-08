@@ -103,15 +103,19 @@ MyGame.initialize = (function initialize(){
 	MyGame.score = 0;
 	MyGame.rowsCleared = 0;
 	MyGame.currentLevel = 0;
+	MyGame.highScoresList = [];
+
 	MyGame.pieceArr = [];
 	MyGame.activePiece = null;
 	MyGame.firstPiece = true;
+
 	MyGame.rotateRightPressed = false;
 	MyGame.rotateLeftPressed = false;
 	MyGame.moveLeftPressed = false;
 	MyGame.moveRightPressed = false;
 	MyGame.softDropPressed = false;
 	MyGame.hardDropPressed = false;
+
 	MyGame.frameUpdated = false;
 	MyGame.stuffMoving = false;
 	MyGame.linesCleared = false;
@@ -123,6 +127,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.timeQuantum = 0.75;
 	MyGame.emitters = [];
 	MyGame.timeMod = 25 / 1000;
+
 
 	MyGame.attractModeTimer = 0;
 
@@ -554,6 +559,7 @@ MyGame.updateLevel = function(){
 
 MyGame.updateScore = function(rowsCleared){
 	showScores();
+	console.log("score: " + MyGame.highScoresList.length);
 	
 	if(rowsCleared === 1){
 		MyGame.score += 40 * (MyGame.currentLevel + 1);

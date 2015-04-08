@@ -78,7 +78,7 @@ exports.add = function(request, response) {
 
 
 	var path = 'public/scores.txt',
-	buffer = new Buffer("snew score added\n");
+	buffer = new Buffer("new score added\n");
 
 	fs.open(path, 'w', function(err, fd) {
 	    if (err) {

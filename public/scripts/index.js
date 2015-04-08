@@ -17,14 +17,6 @@ function addScore(newScore) {
 		}
 	});
 
-/*
-	var stream = fs.createWriteStream("scores.txt");
-	stream.once('open', function(fd) {
-	  stream.write('Name: ' + name);
-	  stream.write("Score: " + score);
-	  stream.end();
-	});
-*/
 }
 
 //------------------------------------------------------------------
@@ -40,6 +32,10 @@ function showScores() {
 		type: 'GET',
 		error: function() { alert('GET failed'); },
 		success: function(data) {
+
+			for(value = 0; value < data.length; value++){
+				MyGame.highScoresList.push({name: data[value].name, score: data[value].score})
+			}
 			var list = $('#id-high-scores'),
 			value,
 			text;
