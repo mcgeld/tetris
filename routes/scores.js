@@ -49,6 +49,9 @@ console.log("scores");
 exports.all = function(request, response) {
 	console.log('find all scores called');
 	response.writeHead(200, {'content-type': 'application/json'});
+
+	
+
 	response.end(JSON.stringify(scores));
 };
 

@@ -158,6 +158,8 @@
 		}
 		
 
+
+
 		that.checkGameOver = function() {	
 			var gameOver = false;
 			for(i = 0; i < 2; i++){
@@ -286,28 +288,34 @@
 			});
 		}
 
-		//Set Piece Shape
-		if(type === 1) {
-			I_Piece();
+		that.setStartLocation = function(){
+			//Set Piece Shape
+			if(type === 1) {
+				I_Piece();
+			}
+			else if(type === 2) {
+				J_Piece();
+			}
+			else if(type === 3) {
+				L_Piece();
+			}
+			else if(type === 4) {
+				O_Piece();
+			}
+			else if(type === 5) {
+				S_Piece();
+			}
+			else if(type === 6) {
+				Z_Piece();
+			}
+			else if(type === 7) {
+				T_Piece();
+			}
 		}
-		else if(type === 2) {
-			J_Piece();
-		}
-		else if(type === 3) {
-			L_Piece();
-		}
-		else if(type === 4) {
-			O_Piece();
-		}
-		else if(type === 5) {
-			S_Piece();
-		}
-		else if(type === 6) {
-			Z_Piece();
-		}
-		else if(type === 7) {
-			T_Piece();
-		}
+
+
+		//Initial call to setStartLocation
+		that.setStartLocation();
 
 		that.rotate = function(elapsedTime, direction) {
 
@@ -370,6 +378,13 @@
 			}	
 		};
 
+		that.reset = function(){
+			for(i = 0; i < 4; i++){
+					bricks[i].removeFromGrid()
+				}
+			that.setStartLocation();
+		};
+
 		that.hardDrop = function(elapsedTime) {
 			while(canMove() === true){
 				that.update(elapsedTime);
@@ -402,21 +417,18 @@
 						bricks: copy,
 						orientation: that.orientation
 			};
-		}
+		};
 
 		that.restorePieceLocation = function(info){
-			/*for(var i = 0; i < bricks.length; i++)
-			{
-				bricks[i].setPosition(info.bricks[i].getX(), info.bricks[i].getY());
-			}*/
+			
 			console.log(info.bricks[0].getY());
 			bricks = info.bricks.slice();
 			console.log(info.bricks[0].getY());
-		}
+		};
 
 		that.restorePieceRotation = function(info){
-			that.orientation = info.orientation
-		}
+			that.orientation = info.orientation;
+		};
 
 		that.clearBricks = function(bricksToClear) {
 			for(var brick in bricksToClear)
