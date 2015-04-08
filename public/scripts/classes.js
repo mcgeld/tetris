@@ -55,11 +55,27 @@
 		};
 
 		that.getGrid = function(){
-			return grid;
+			var copy = [],
+				i;
+			for(i = 0; i < grid.length; i++)
+			{
+				copy[i] = grid[i].slice();
+			}
+			return copy;
 		}
 
 		that.restoreGrid = function(storedGrid){
-			grid = storedGrid;
+			console.log("------------------------------STORED GRID------------------------");
+			MyGame.printGrid(storedGrid);
+			console.log("------------------------------GRID------------------------");
+			MyGame.printGrid(grid);
+			var i;
+			grid = new Array();
+			for(i = 0; i < storedGrid.length; i++)
+			{
+				grid[i] = storedGrid[i].slice();
+			}
+			//grid = storedGrid;
 		}
 
 		that.scoreGrid = function(){
@@ -379,18 +395,23 @@
 		};
 
 		that.getPiece = function(){
+			var copy = [],
+				i;
+			copy = JSON.parse(JSON.stringify(bricks));
 			return {
-						bricks: bricks,
+						bricks: copy,
 						orientation: that.orientation
 			};
 		}
 
 		that.restorePieceLocation = function(info){
-			for(var i = 0; i < bricks.length; i++)
+			/*for(var i = 0; i < bricks.length; i++)
 			{
 				bricks[i].setPosition(info.bricks[i].getX(), info.bricks[i].getY());
-			}
-			//bricks = info.bricks;
+			}*/
+			console.log(info.bricks[0].getY());
+			bricks = info.bricks.slice();
+			console.log(info.bricks[0].getY());
 		}
 
 		that.restorePieceRotation = function(info){

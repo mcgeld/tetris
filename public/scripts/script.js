@@ -194,7 +194,7 @@ MyGame.initialize = (function initialize(){
 
 		MyGame.attractModeTimer += elapsedTime;
 		//console.log(MyGame.attractModeTimer + " " );
-		if(MyGame.attractModeTimer >= 5 && MyGame.inPlay === false){//10){
+		if(MyGame.attractModeTimer >= 1 && MyGame.inPlay === false){//10){
 			MyGame.toNewGame(1);
 		}
 		else if(MyGame.receivedInput === false)
@@ -439,6 +439,10 @@ MyGame.runAI = function(){
 	//STORE OFF CURRENT STATE
 	preGrid = MyGame.grid.getGrid();
 	prePiece = MyGame.activePiece.getPiece();
+	console.log("prevPiece: " + prePiece.bricks[0].getY());
+	console.log("--------------------------------------------------------------------------------------");
+
+	MyGame.printGrid(preGrid);
 
 	//Do stuff
 	//FOR EACH ROTATION:
@@ -450,8 +454,7 @@ MyGame.runAI = function(){
 		{
 			MyGame.rotateLeft();
 			MyGame.setRotateLeftPressed();
-			currentMove.push(MyGame.rotateLeft);
-			currentMove.push(MyGame.setRotateLeftPressed);
+			currentMove.push(1);
 		}
 		for(j = 0; j < 10; j++)
 		{
@@ -459,15 +462,13 @@ MyGame.runAI = function(){
 			{
 				MyGame.moveRight();
 				MyGame.setMoveRightPressed();
-				currentMove.push(MyGame.moveRight);
-				currentMove.push(MyGame.setMoveRightPressed);
+				currentMove.push(2);
 			}
 			for(k = 0; k <= j; k++)
 			{
 				MyGame.moveLeft();
 				MyGame.setMoveLeftPressed();
-				currentMove.push(MyGame.moveLeft);
-				currentMove.push(MyGame.setMoveLeftPressed);
+				currentMove.push(3);
 			}
 			MyGame.hardDrop();
 			MyGame.setHardDropPressed();
@@ -477,7 +478,7 @@ MyGame.runAI = function(){
 			if(score > maxScore)
 			{
 				maxScore = score;
-				bestMove = currentMove;
+				bestMove = currentMove.slice();
 			}
 
 			for(k = 0; k <= 5 + j + 1; k++)
@@ -487,19 +488,59 @@ MyGame.runAI = function(){
 			}
 
 			MyGame.activePiece.draw();
-
+			/*console.log("---------------------------PRE-RESTORE------------------------");
+			MyGame.printGrid(MyGame.grid.getGrid());
 			MyGame.grid.restoreGrid(preGrid);
-			MyGame.activePiece.restorePieceLocation(prePiece);
+			/*console.log("---------------------------POST-RESTORE------------------------");
+			MyGame.printGrid(MyGame.grid.getGrid());*/
+			//MyGame.activePiece.restorePieceLocation(prePiece);
 		}
-		MyGame.activePiece.restorePieceRotation(prePiece);
+		//MyGame.activePiece.restorePieceRotation(prePiece);
 	}
 
 	for(i = 0; i < bestMove.length; i++)
 	{
-		bestMove[i]();
+		switch(bestMove[i]){
+			case 1:
+				MyGame.rotateLeft();
+				MyGame.setRotateLeftPressed();
+				break;
+			case 2:
+				MyGame.moveRight();
+				MyGame.setMoveRightPressed();
+				break;
+			case 3:
+				MyGame.moveLeft();
+				MyGame.setMoveLeftPressed();
+				break;
+		}
 	}
 	MyGame.hardDrop();
 	MyGame.setHardDropPressed();
+}
+
+MyGame.printGrid = function(grid)
+{
+	var i,
+		j,
+		output;
+	output = '';
+	for(i = 0; i < grid.length; i++)
+	{
+		for(j = 0; j < grid[i].length; j++)
+		{
+			if(grid[i][j] === null)
+			{
+				output += ' ';
+			}
+			else
+			{
+				output += 'X';
+			}
+		}
+		output += '\n';
+	}
+	console.log(output);
 }
 
 MyGame.updateLevel = function(){
