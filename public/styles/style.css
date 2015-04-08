@@ -1,0 +1,191 @@
+td{
+	text-align: center;
+}
+
+td.score{
+	text-align: center;
+	background-color: black;
+	color: white;
+	font-family: Arial;
+	font-size: 60px;
+	padding: 10px;
+}
+
+td.emptyScore{
+	text-align: center;
+	background-color: darkGray;
+	color: lightGray;
+	font-family: Arial;
+	font-size: 60px;
+	padding: 10px;
+}
+
+th{
+	text-align: center;
+	background-color: white;
+	color: black;
+	font-family: Arial;
+	font-size: 60px;
+	padding: 10px;
+	border: 2px black solid;
+}
+
+p{
+	background-color: black;
+	color: white;
+	font-family: Arial;
+	font-size: 65px;
+	padding: 0px;
+	margin: 0px;
+	text-align: center;
+}
+
+p.smaller{
+	background-color: black;
+	color: white;
+	font-family: Arial;
+	font-size: 38px;
+	padding: 0px;
+	margin: 0px;
+	text-align: center;
+}
+
+p.evenSmaller{
+	background-color: black;
+	color: white;
+	font-family: Arial;
+	font-size: 24px;
+	padding: 0px;
+	margin: 0px;
+	text-align: center;
+}
+
+input{
+	background-color: black;
+	color: white;
+	font-family: Arial;
+	font-size: 24px;
+	padding: 0px;
+	margin: 0px;
+	margin-left: 10px;
+	border: none;
+	vertical-align: middle;
+	line-height: 24px;
+	width: 150px;
+}
+
+input:focus{
+	outline: 0;
+}
+
+button{
+	background-color: black;
+	border: solid 2px black;
+	color: white;
+	font-size: 36px;
+}
+
+button:disabled{
+	background-color: darkGray;
+	border: solid 2px darkGray;
+	color: lightGray;
+	font-size: 36px;
+}
+
+button:hover:enabled{
+	background-color: white;
+	border: solid 2px black;
+	color: black;
+	font-size: 36px;
+}
+
+button:focus{
+    outline: 0;
+}
+
+.absoluteCenter {
+ /* Must manually set width/height */
+ width:375px;
+ height:610px;
+
+ /* The magic centering code */
+ margin:auto;
+ position:absolute;
+ top:0;bottom:0; /* Aligns Vertically - Remove for Horizontal Only */
+ left:0;right:0; /* Aligns Horizontally - Remove for Vertical Only  */
+
+ /* Prevent div from overflowing main window */
+ max-width:100%;
+ max-height:100%;
+ overflow:auto;
+ 
+ z-index: 0;
+}
+
+.absoluteCenterHelp {
+ /* Must manually set width/height */
+ width:460px;
+ height:400px;
+
+ /* The magic centering code */
+ margin:auto;
+ position:absolute;
+ top:0;bottom:0; /* Aligns Vertically - Remove for Horizontal Only */
+ left:0;right:0; /* Aligns Horizontally - Remove for Vertical Only  */
+
+ /* Prevent div from overflowing main window */
+ max-width:100%;
+ max-height:100%;
+ overflow:auto;
+}
+
+.absoluteCenterCredits {
+ /* Must manually set width/height */
+ width:460px;
+ height:400px;
+
+ /* The magic centering code */
+ margin:auto;
+ position:absolute;
+ top:0;bottom:0; /* Aligns Vertically - Remove for Horizontal Only */
+ left:0;right:0; /* Aligns Horizontally - Remove for Vertical Only  */
+
+ /* Prevent div from overflowing main window */
+ max-width:100%;
+ max-height:100%;
+ overflow:auto;
+}
+
+.absoluteCenterHighScores {
+ /* Must manually set width/height */
+ width:600px;
+ height:550px;
+
+ /* The magic centering code */
+ margin:auto;
+ position:absolute;
+ top:0;bottom:0; /* Aligns Vertically - Remove for Horizontal Only */
+ left:0;right:0; /* Aligns Horizontally - Remove for Vertical Only  */
+
+ /* Prevent div from overflowing main window */
+ max-width:100%;
+ max-height:100%;
+ overflow:auto;
+}
+
+.absoluteCenterMessage {
+ /* Must manually set width/height */
+ width:400px;
+ height:400px;
+
+ /* The magic centering code */
+ margin:auto;
+ position:absolute;
+ top:0;bottom:0; /* Aligns Vertically - Remove for Horizontal Only */
+ left:0;right:0; /* Aligns Horizontally - Remove for Vertical Only  */
+
+ /* Prevent div from overflowing main window */
+ max-width:100%;
+ max-height:100%;
+ overflow:auto;
+}

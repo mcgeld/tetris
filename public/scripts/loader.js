@@ -34,6 +34,7 @@ window.addEventListener('load', function() {
 	Modernizr.load([
 		{
 			load : [
+				'preload!styles/style.css',
 				'preload!scripts/index.js',
 				'preload!scripts/input.js',
 				'preload!scripts/script.js',
