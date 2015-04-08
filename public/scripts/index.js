@@ -3,18 +3,28 @@
 // Make a request to the server to add a new score.
 //
 //------------------------------------------------------------------
-function addScore() {
-	var name = $('#id-playerName').val(),
-		score = $('#id-playerScore').val();
-	
+function addScore(newScore) {
+	var name = newScore.name;
+		score = newScore.score;
+	console.log("Adding score in index.js...");
 	$.ajax({
 		url: 'http://localhost:3000/v1/high-scores?name=' + name + '&score=' + score,
 		type: 'POST',
+		dataType: 'text',
 		error: function() { alert('POST failed'); },
 		success: function() {
 			showScores();
 		}
 	});
+
+/*
+	var stream = fs.createWriteStream("scores.txt");
+	stream.once('open', function(fd) {
+	  stream.write('Name: ' + name);
+	  stream.write("Score: " + score);
+	  stream.end();
+	});
+*/
 }
 
 //------------------------------------------------------------------

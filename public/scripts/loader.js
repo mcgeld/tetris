@@ -50,7 +50,9 @@ window.addEventListener('load', function() {
 				'preload!images/blueBrickPlain.jpg',
 				'preload!audio/tick.' + MyGame.audioExt,
 				'preload!audio/clear-line.' + MyGame.audioExt,
-				'preload!audio/soft-drop.' + MyGame.audioExt
+				'preload!audio/soft-drop.' + MyGame.audioExt,
+				'preload!audio/gameLoop.' + MyGame.audioExt,
+				'preload!audio/bloop_x.' + MyGame.audioExt
 			],
 			complete : function() {
 				console.log('All files requested for loading...');

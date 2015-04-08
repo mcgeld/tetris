@@ -3,6 +3,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.hardDrop = function(elapsedTime){
 		if(MyGame.activePiece != null && MyGame.hardDropPressed === false){
 			MyGame.activePiece.hardDrop(elapsedTime);
+			MyGame.playSound('audio/bloop_x');
 			MyGame.hardDropPressed = true;
 		}
 	};
@@ -10,19 +11,21 @@ MyGame.initialize = (function initialize(){
 	MyGame.softDrop = function(elapsedTime){
 		if(MyGame.activePiece != null && MyGame.softDropPressed === false){
 			MyGame.activePiece.softDrop(elapsedTime);
-			MyGame.rotatePressed = true;
 		}
 	};
 	
-	MyGame.rotateLeft = function(elapsedTime){
-		MyGame.context.fillStyle = 'yellow';
-		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
-	};
 	
-	MyGame.rotate = function(elapsedTime){
-		if(MyGame.activePiece != null && MyGame.rotatePressed === false){
-			MyGame.activePiece.rotate(elapsedTime);
-			MyGame.rotatePressed = true;
+	MyGame.rotateRight = function(elapsedTime){
+		if(MyGame.activePiece != null && MyGame.rotateRightPressed === false){
+			MyGame.activePiece.rotate(elapsedTime, 'R');
+			MyGame.rotateRightPressed = true;
+		}
+	};
+
+	MyGame.rotateLeft = function(elapsedTime){
+		if(MyGame.activePiece != null && MyGame.rotateLeftPressed === false){
+			MyGame.activePiece.rotate(elapsedTime, 'L');
+			MyGame.rotateLeftPressed = true;
 		}
 	};
 
@@ -77,8 +80,12 @@ MyGame.initialize = (function initialize(){
 		MyGame.hardDropPressed = false;
 	};
 
-	MyGame.setRotatePressed = function() {
-		MyGame.rotatePressed = false;
+	MyGame.setRotateRightPressed = function() {
+		MyGame.rotateRightPressed = false;
+	};
+
+	MyGame.setRotateLeftPressed = function() {
+		MyGame.rotateLeftPressed = false;
 	};
 
 	MyGame.setMoveLeftPressed = function(){
@@ -95,7 +102,8 @@ MyGame.initialize = (function initialize(){
 	MyGame.pieceArr = [];
 	MyGame.activePiece = null;
 	MyGame.firstPiece = true;
-	MyGame.rotatePressed = false;
+	MyGame.rotateRightPressed = false;
+	MyGame.rotateLeftPressed = false;
 	MyGame.moveLeftPressed = false;
 	MyGame.moveRightPressed = false;
 	MyGame.softDropPressed = false;
@@ -103,6 +111,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.frameUpdated = false;
 	MyGame.stuffMoving = false;
 	MyGame.linesCleared = false;
+	MyGame.receivedInput = false;
 	MyGame.gameOver = false;
 	MyGame.numCols = 10;
 	MyGame.numRows = 20;
@@ -121,11 +130,13 @@ MyGame.initialize = (function initialize(){
 
 	MyGame.keyBeingSet = 0;
 	MyGame.keys = {
-					1: {key: KeyEvent.DOM_VK_UP, func: MyGame.rotate, funcUp: MyGame.setRotatePressed},
+
+					1: {key: KeyEvent.DOM_VK_SPACE, func: MyGame.hardDrop, funcUp: MyGame.setHardDropPressed},
 					2: {key: KeyEvent.DOM_VK_DOWN, func: MyGame.softDrop, funcUp: MyGame.setSoftDropPressed},
-					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft, funcUp: MyGame.setMoveLeftPressed},
-					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight, funcUp: MyGame.setMoveRightPressed},
-					5: {key: KeyEvent.DOM_VK_SPACE, func: MyGame.hardDrop, funcUp: MyGame.setHardDropPressed}
+					3: {key: KeyEvent.DOM_VK_Q, func: MyGame.rotateLeft, funcUp: MyGame.setRotateLeftPressed},
+					4: {key: KeyEvent.DOM_VK_UP, func: MyGame.rotateRight, funcUp: MyGame.setRotateRightPressed},
+					5: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft, funcUp: MyGame.setMoveLeftPressed},
+					6: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight, funcUp: MyGame.setMoveRightPressed}
 				   };
 
 	MyGame.settingKey = false;
@@ -176,11 +187,11 @@ MyGame.initialize = (function initialize(){
 		aiPrevTime = aiTime;
 
 		MyGame.attractModeTimer += elapsedTime;
-		console.log(MyGame.attractModeTimer + " " );
+		//console.log(MyGame.attractModeTimer + " " );
 		if(MyGame.attractModeTimer >= 10){
 			console.log("start AI");
 		}
-		else
+		else if(MyGame.receivedInput === false)
 			requestAnimationFrame(MyGame.updateAttractTime);
 	};
 
@@ -207,7 +218,7 @@ MyGame.initialize = (function initialize(){
 		MyGame.clear = function(){
 			MyGame.context.clear();
 		};
-		for(var i = 1; i <= 5; i++)
+		for(var i = 1; i <= 6; i++)
 		{
 			MyGame.registerCommandKeyDown(MyGame.keys[i].key, MyGame.keys[i].func);
 			MyGame.registerCommandKeyUp(MyGame.keys[i].key, MyGame.keys[i].funcUp);
@@ -279,7 +290,10 @@ MyGame.gameOverCheck = function(elapsedTime){
 };
 
 MyGame.checkMoving = function(elapsedTime){
-	var fullRows;
+	var fullRows,
+		name,
+		scoreObj;
+
 	if(MyGame.stuffMoving === false || MyGame.firstPiece === true)
 	{
 		fullRows = MyGame.grid.checkFullRows();
@@ -293,9 +307,19 @@ MyGame.checkMoving = function(elapsedTime){
 		
 		
 		if(MyGame.linesCleared === false){
+			//
 			//Check for game over
 			if(MyGame.grid.checkGameOver() === true){
+				name = prompt("Please enter your name", "Name");
+				if(name === null)
+					name = "Playa";
+				else{
+					scoreObj = {name: name, score: MyGame.score};
+					addScore(scoreObj);
+				}
+
 				console.log("Game Over");
+				MyGame.pauseSound('audio/gameLoop');
 				MyGame.gameOver = true;
 			}
 			else{
@@ -308,7 +332,7 @@ MyGame.checkMoving = function(elapsedTime){
 		else{
 			MyGame.grid.clearRow(fullRows);
 			MyGame.updateScore(fullRows.length);
-			//MyGame.player('audio/clear_line')
+			MyGame.playSound('audio/clear-line')
 		}
 
 	}
@@ -324,7 +348,7 @@ MyGame.updateLevel = function(){
 
 MyGame.updateScore = function(rowsCleared){
 	showScores();
-	console.log("in score: " + rowsCleared);
+	
 	if(rowsCleared === 1){
 		MyGame.score += 40 * (MyGame.currentLevel + 1);
 	}
@@ -353,6 +377,10 @@ MyGame.showHighScores = function(){
 MyGame.playSound = function(sound){
 	MyGame.sounds[sound + "." + MyGame.audioExt].play();
 };
+
+MyGame.pauseSound = function(sound){
+	MyGame.sounds[sound + "." + MyGame.audioExt].pause();
+}
 
 MyGame.toNewGame = function(){
 	document.getElementById('mainMenuScreen').hidden = true;

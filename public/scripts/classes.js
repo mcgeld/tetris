@@ -250,21 +250,21 @@
 			T_Piece();
 		}
 
-		that.rotate = function(elapsedTime) {
+		that.rotate = function(elapsedTime, direction) {
 
 			if(notAtTop() === true){
 				if(type === 1)
 					rotate_I();
 				else if(type === 2)
-					rotate_J();
+					rotate_J(direction);
 				else if(type === 3)
-					rotate_L();
+					rotate_L(direction);
 				else if(type === 5)
-					rotate_S();
+					rotate_S(direction);
 				else if(type === 6)
-					rotate_Z();
+					rotate_Z(direction);
 				else if(type === 7)
-					rotate_T();
+					rotate_T(direction);
 			}
 		};
 
@@ -485,13 +485,27 @@
 			return canMove;
 		}
 
-		function updateOrientation(){
-			that.orientation++;
+		function updateOrientation(direction){
+			if(direction === 'R'){
+				that.orientation++;
+
+				if((type < 5  || type === 7) && that.orientation > 4)
+					that.orientation = 1;
+				else if(type >= 5 && type < 7 && that.orientation > 2)
+					that.orientation = 1;
+			}
+
+			else if(direction === 'L'){
+				that.orientation--;
+				if((type < 5  || type === 7) && that.orientation < 1)
+					that.orientation = 4;
+				else if(type >= 5 && type < 7 && that.orientation < 1)
+					that.orientation = 2;
+			}
 			
-			if((type < 5  || type === 7) && that.orientation > 4)
-				that.orientation = 1;
-			else if(type >= 5 && type < 7 && that.orientation > 2)
-				that.orientation = 1;
+			
+
+			console.log("orientation: " + that.orientation);
 		}
 
 
@@ -701,7 +715,7 @@
 
 		}
 
-		function rotate_J(){
+		function rotate_J(direction){
 			var x,y,
 				canMove = true,
 				piece;
@@ -755,28 +769,49 @@
 					bricks[i].setPosition(x, y);
 				}
 
-				updateOrientation();
+				updateOrientation(direction);
 
 			
 
 
 			function brick1(x, y){
 				var col, row;
-				if(that.orientation === 1){
-					col = x + MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 2){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else{
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x + MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
-				}
-				else if(that.orientation === 3){
-					col = x - MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
-				}
-				else{
-					col = x - MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 4){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else{ //2 -
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
 				}
 
 				return {x: col, y: row};
@@ -785,21 +820,42 @@
 			function brick3(x, y){
 				var col, row;
 
-				if(that.orientation === 1){
-					col = x - MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 2){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else{
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x - MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
-				}
-				else if(that.orientation === 3){
-					col = x + MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
-				}
-				else{
-					col = x + MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 4){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else{
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
 				}
 
 				return {x: col, y: row};
@@ -807,28 +863,49 @@
 
 			function brick4(x, y){
 				var col, row;
-				if(that.orientation === 1){
-					col = x - MyGame.cellWidth * 2;
-					row = y
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x - MyGame.cellWidth * 2;
+						row = y
+					}
+					else if(that.orientation === 2){
+						col = x;
+						row = y - MyGame.cellWidth * 2;
+					}
+					else if(that.orientation === 3){
+						col = x + MyGame.cellWidth * 2;
+						row = y;
+					}
+					else{
+						col = x;
+						row = y + MyGame.cellWidth * 2;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x;
-					row = y - MyGame.cellWidth * 2;
-				}
-				else if(that.orientation === 3){
-					col = x + MyGame.cellWidth * 2;
-					row = y;
-				}
-				else{
-					col = x;
-					row = y + MyGame.cellWidth * 2;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x;
+						row = y - MyGame.cellWidth * 2;
+					}
+					else if(that.orientation === 4){
+						col = x - MyGame.cellWidth * 2;
+						row = y;
+					}
+					else if(that.orientation === 3){
+						col = x;
+						row = y + MyGame.cellWidth * 2;
+					}
+					else{
+						col = x + MyGame.cellWidth * 2;
+						row = y;
+					}
 				}
 
 				return {x: col, y: row};
 			}
 		}
 
-		function rotate_L(){
+		function rotate_L(direction){
 			var x,y,
 				canMove = true,
 				piece;
@@ -883,28 +960,49 @@
 					bricks[i].setPosition(x, y);
 				}
 
-				updateOrientation();
+				updateOrientation(direction);
 
 			
 
 
 			function brick1(x, y){
 				var col, row;
-				if(that.orientation === 1){
-					col = x - MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 2){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else{
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x - MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
-				}
-				else if(that.orientation === 3){
-					col = x + MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
-				}
-				else{
-					col = x + MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 4){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else{
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
 				}
 
 				return {x: col, y: row};
@@ -912,21 +1010,43 @@
 
 			function brick3(x, y){
 				var col, row;
-				if(that.orientation === 1){
-					col = x + MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
+
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 2){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else{
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x + MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
-				}
-				else if(that.orientation === 3){
-					col = x - MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
-				}
-				else{
-					col = x - MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 4){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else{
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
 				}
 
 				return {x: col, y: row};
@@ -934,28 +1054,50 @@
 
 			function brick4(x, y){
 				var col, row;
-				if(that.orientation === 1){
-					col = x;
-					row = y - MyGame.cellWidth * 2;
+
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x;
+						row = y - MyGame.cellWidth * 2;
+					}
+					else if(that.orientation === 2){
+						col = x + MyGame.cellWidth * 2;
+						row = y; 
+					}
+					else if(that.orientation === 3){
+						col = x;
+						row = y + MyGame.cellWidth * 2;
+					}
+					else{
+						col = x - MyGame.cellWidth * 2;
+						row = y;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x + MyGame.cellWidth * 2;
-					row = y; 
-				}
-				else if(that.orientation === 3){
-					col = x;
-					row = y + MyGame.cellWidth * 2;
-				}
-				else{
-					col = x - MyGame.cellWidth * 2;
-					row = y;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x + MyGame.cellWidth * 2;
+						row = y;
+					}
+					else if(that.orientation === 4){
+						col = x;
+						row = y - MyGame.cellWidth * 2; 
+					}
+					else if(that.orientation === 3){
+						col = x - MyGame.cellWidth * 2;
+						row = y;
+					}
+					else{
+						col = x;
+						row = y + MyGame.cellWidth * 2;
+					}
 				}
 
 				return {x: col, y: row};
 			}
 		}
 
-		function rotate_S(){
+		function rotate_S(direction){
 			var x,y,
 				canMove = true,
 				piece;
@@ -1010,7 +1152,7 @@
 					bricks[i].setPosition(x, y);
 				}
 
-				updateOrientation();
+				updateOrientation(direction);
 
 
 			function brick1(x, y){
@@ -1070,7 +1212,7 @@
 			}
 		}
 
-		function rotate_Z(){
+		function rotate_Z(direction){
 			var x,y,
 				canMove = true,
 				piece;
@@ -1125,7 +1267,7 @@
 					bricks[i].setPosition(x, y);
 				}
 
-				updateOrientation();
+				updateOrientation(direction);
 
 
 			function brick1(x, y){
@@ -1185,7 +1327,7 @@
 			}
 		}
 
-		function rotate_T(){
+		function rotate_T(direction){
 			var x,y,
 				canMove = true,
 				piece;
@@ -1240,28 +1382,50 @@
 					bricks[i].setPosition(x, y);
 				}
 
-				updateOrientation();
+				updateOrientation(direction);
 
 			
 
 
 			function brick1(x, y){
 				var col, row;
-				if(that.orientation === 1){
-					col = x + MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
+
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 2){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else{
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x - MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
-				}
-				else if(that.orientation === 3){
-					col = x - MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
-				}
-				else{
-					col = x + MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 4){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else{
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
 				}
 
 				return {x: col, y: row};
@@ -1269,21 +1433,43 @@
 
 			function brick2(x, y){
 				var col, row;
-				if(that.orientation === 1){
-					col = x + MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
+
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 2){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else{
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x + MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
-				}
-				else if(that.orientation === 3){
-					col = x - MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
-				}
-				else{
-					col = x - MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 4){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 3){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else{
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
 				}
 
 				return {x: col, y: row};
@@ -1291,21 +1477,43 @@
 
 			function brick4(x, y){
 				var col, row;
-				if(that.orientation === 1){
-					col = x - MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
+
+				if(direction === 'R'){
+					if(that.orientation === 1){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else if(that.orientation === 2){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth; 
+					}
+					else if(that.orientation === 3){
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else{
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
 				}
-				else if(that.orientation === 2){
-					col = x - MyGame.cellWidth;
-					row = y - MyGame.cellWidth; 
-				}
-				else if(that.orientation === 3){
-					col = x + MyGame.cellWidth;
-					row = y - MyGame.cellWidth;
-				}
-				else{
-					col = x + MyGame.cellWidth;
-					row = y + MyGame.cellWidth;
+
+				else if(direction === 'L'){
+					if(that.orientation === 1){
+						col = x - MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
+					else if(that.orientation === 4){
+						col = x - MyGame.cellWidth;
+						row = y + MyGame.cellWidth; 
+					}
+					else if(that.orientation === 3){
+						col = x + MyGame.cellWidth;
+						row = y + MyGame.cellWidth;
+					}
+					else{
+						col = x + MyGame.cellWidth;
+						row = y - MyGame.cellWidth;
+					}
 				}
 
 				return {x: col, y: row};

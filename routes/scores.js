@@ -18,8 +18,9 @@ var scores = [ {
 	}],
 	nextId = 2;
 
-/*
+
 var fs = require('fs');
+/*
 var stream = fs.createWriteStream("scores.txt");
 stream.once('open', function(fd) {
   stream.write("My first row\n");
@@ -60,8 +61,17 @@ exports.add = function(request, response) {
 	console.log('add new score called');
 	console.log('Name: ' + request.query.name);
 	console.log('Score: ' + request.query.score);
+
+	fs.readFile('scores.txt', 'utf8', function (err,data) {
+		console.log("herein scores");
+	  if (err) {
+	    return console.log(err);
+	  }
+	  console.log(data);
+	});
 	
 	var now = new Date();
+
 	scores.push( {
 		id : nextId,
 		name : request.query.name,
@@ -70,6 +80,14 @@ exports.add = function(request, response) {
 		time : now.toLocaleTimeString()
 	});
 	nextId++;
+
+	var stream = fs.createWriteStream("scores.txt");
+	stream.once('open', function(fd) {
+	  stream.write('Name: ' + request.query.name);
+	  stream.write("Score: " + request.query.score);
+	  stream.end();
+	});
+
 	
 	response.writeHead(200);
 	response.end();
