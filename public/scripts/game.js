@@ -1,8 +1,8 @@
-MyGame.newGame = function(){
+MyGame.newGame = function(gameType){
 	MyGame.grid = new Grid(MyGame.numCols, MyGame.numRows);
 	MyGame.pieceArr = [];
-	//MyGame.playSound('audio/gameLoop');
-
+	MyGame.playSound('audio/gameLoop');
+	MyGame.gameType = gameType;
 	requestAnimationFrame(MyGame.gameLoop);
 }
 

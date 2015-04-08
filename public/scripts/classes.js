@@ -22,7 +22,10 @@
 		that.addBrick = function(brickID, pieceID, x, y){
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
 				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
-
+			if(row > 21)
+			{
+				row = 21;
+			}
 			grid[row][col] = {
 				brick: brickID,
 				piece: pieceID
@@ -32,7 +35,10 @@
 		that.removeBrick = function(x, y) {
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
 				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
-
+			if(row > 21)
+			{
+				row = 21;
+			}
 			grid[row][col] = null;
 		};
 		
@@ -47,6 +53,51 @@
 				return grid[x][y];
 			}
 		};
+
+		that.getGrid = function(){
+			var copy = [],
+				i;
+			for(i = 0; i < grid.length; i++)
+			{
+				copy[i] = grid[i].slice();
+			}
+			return copy;
+		}
+
+		that.restoreGrid = function(storedGrid){
+			console.log("------------------------------STORED GRID------------------------");
+			MyGame.printGrid(storedGrid);
+			console.log("------------------------------GRID------------------------");
+			MyGame.printGrid(grid);
+			var i;
+			grid = new Array();
+			for(i = 0; i < storedGrid.length; i++)
+			{
+				grid[i] = storedGrid[i].slice();
+			}
+			//grid = storedGrid;
+		}
+
+		that.scoreGrid = function(){
+			var aggregateHeight,
+				i,
+				j;
+
+			aggregateHeight = 0;
+			for(i = 0; i < cols; i++)
+			{
+				for(j = 0; j < rows + 1; j++)
+				{
+					if(grid[j][i] != null)
+					{
+						aggregateHeight += (rows + 2) - j;
+						break;
+					}
+				}
+			}
+			console.log(aggregateHeight);
+			return aggregateHeight;
+		}
 		
 		that.checkBrick = function(x, y) {
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
@@ -106,6 +157,8 @@
 			}
 		}
 		
+
+
 
 		that.checkGameOver = function() {	
 			var gameOver = false;
@@ -235,28 +288,34 @@
 			});
 		}
 
-		//Set Piece Shape
-		if(type === 1) {
-			I_Piece();
+		that.setStartLocation = function(){
+			//Set Piece Shape
+			if(type === 1) {
+				I_Piece();
+			}
+			else if(type === 2) {
+				J_Piece();
+			}
+			else if(type === 3) {
+				L_Piece();
+			}
+			else if(type === 4) {
+				O_Piece();
+			}
+			else if(type === 5) {
+				S_Piece();
+			}
+			else if(type === 6) {
+				Z_Piece();
+			}
+			else if(type === 7) {
+				T_Piece();
+			}
 		}
-		else if(type === 2) {
-			J_Piece();
-		}
-		else if(type === 3) {
-			L_Piece();
-		}
-		else if(type === 4) {
-			O_Piece();
-		}
-		else if(type === 5) {
-			S_Piece();
-		}
-		else if(type === 6) {
-			Z_Piece();
-		}
-		else if(type === 7) {
-			T_Piece();
-		}
+
+
+		//Initial call to setStartLocation
+		that.setStartLocation();
 
 		that.rotate = function(elapsedTime, direction) {
 
@@ -319,6 +378,13 @@
 			}	
 		};
 
+		that.reset = function(){
+			for(i = 0; i < 4; i++){
+					bricks[i].removeFromGrid()
+				}
+			that.setStartLocation();
+		};
+
 		that.hardDrop = function(elapsedTime) {
 			while(canMove() === true){
 				that.update(elapsedTime);
@@ -343,6 +409,26 @@
 			}
 		};
 
+		that.getPiece = function(){
+			var copy = [],
+				i;
+			copy = JSON.parse(JSON.stringify(bricks));
+			return {
+						bricks: copy,
+						orientation: that.orientation
+			};
+		};
+
+		that.restorePieceLocation = function(info){
+			
+			console.log(info.bricks[0].getY());
+			bricks = info.bricks.slice();
+			console.log(info.bricks[0].getY());
+		};
+
+		that.restorePieceRotation = function(info){
+			that.orientation = info.orientation;
+		};
 
 		that.clearBricks = function(bricksToClear) {
 			for(var brick in bricksToClear)

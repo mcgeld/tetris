@@ -8,12 +8,12 @@ Bug List
 To Do
 
 WADE:
-	- Left Rotation
-	- Sound Effects/Background Music
+	x Left Rotation
+	x Sound Effects/Background Music
 	- High Scores
 
 MALCOLM:
-	- Particles 1
+	x Particles 1
 	- AI/Attract Mode 2
 	- Exit Attract Mode 3
 	- CSS 4
