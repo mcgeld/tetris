@@ -1,19 +1,19 @@
 Bug List
-
-
-- Rotate at top
 - Rotate into piece
 - Rotate out of border
-
 
 - Sliding Right (Maybe)
 	- null cells not clearing after slide
 
 To Do
 
-- Particles
+WADE:
+	- Left Rotation
+	- Sound Effects/Background Music
+	- High Scores
 
-- Node / High Scores
-
-- AI
-
+MALCOLM:
+	- Particles
+	- AI/Attract Mode
+	- Exit Attract Mode
+	- CSS
