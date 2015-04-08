@@ -432,17 +432,17 @@ MyGame.runAI = function(){
 		j,
 		k,
 		score,
-		maxScore = -1000,
+		maxScore = 1000,
 		currentMove = [];
 		bestMove = [];
 
 	//STORE OFF CURRENT STATE
-	preGrid = MyGame.grid.getGrid();
+	/*preGrid = MyGame.grid.getGrid();
 	prePiece = MyGame.activePiece.getPiece();
 	console.log("prevPiece: " + prePiece.bricks[0].getY());
 	console.log("--------------------------------------------------------------------------------------");
 
-	MyGame.printGrid(preGrid);
+	MyGame.printGrid(preGrid);*/
 
 	//Do stuff
 	//FOR EACH ROTATION:
@@ -450,14 +450,15 @@ MyGame.runAI = function(){
 	{
 		currentMove = [];
 
-		for(j = 0; j <= i; j++)
-		{
-			MyGame.rotateLeft();
-			MyGame.setRotateLeftPressed();
-			currentMove.push(1);
-		}
+		
 		for(j = 0; j < 10; j++)
 		{
+			for(k = 0; k <= i; k++)
+			{
+				MyGame.rotateLeft();
+				MyGame.setRotateLeftPressed();
+				currentMove.push(1);
+			}
 			for(k = 0; k <= 5; k++)
 			{
 				MyGame.moveRight();
@@ -475,25 +476,26 @@ MyGame.runAI = function(){
 
 			score = MyGame.grid.scoreGrid();
 
-			if(score > maxScore)
+			if(score < maxScore)
 			{
 				maxScore = score;
 				bestMove = currentMove.slice();
 			}
 
-			for(k = 0; k <= 5 + j + 1; k++)
+			/*for(k = 0; k <= 5 + j + 1; k++)
 			{
 				currentMove.pop();
 				currentMove.pop();
-			}
+			}*/
 
-			MyGame.activePiece.draw();
+			//MyGame.activePiece.draw();
 			/*console.log("---------------------------PRE-RESTORE------------------------");
 			MyGame.printGrid(MyGame.grid.getGrid());
 			MyGame.grid.restoreGrid(preGrid);
 			/*console.log("---------------------------POST-RESTORE------------------------");
 			MyGame.printGrid(MyGame.grid.getGrid());*/
 			//MyGame.activePiece.restorePieceLocation(prePiece);
+			MyGame.activePiece.reset();
 		}
 		//MyGame.activePiece.restorePieceRotation(prePiece);
 	}
