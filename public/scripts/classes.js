@@ -81,22 +81,52 @@
 		that.scoreGrid = function(){
 			var aggregateHeight,
 				i,
-				j;
-
+				j,
+				highest,
+				potHole,
+				prevHeight,
+				fullRowsArr,
+				score;
+			score = 0;
 			aggregateHeight = 0;
+			completeLines = 0;
+			holes = 0;
+			bumpiness = 0;
 			for(i = 0; i < cols; i++)
 			{
-				for(j = 0; j < rows + 1; j++)
+				highest = 0;
+				for(j = rows + 1; j >= 0; j--)
 				{
 					if(grid[j][i] != null)
 					{
-						aggregateHeight += (rows + 2) - j;
-						break;
+						highest = (rows + 2) - j;
+						if(potHole === true)
+						{
+							holes++;
+							potHole = false;
+						}
+					}
+					else
+					{
+						potHole = true;
 					}
 				}
+				aggregateHeight += highest;
+				if(i != 0)
+				{
+					bumpiness += Math.abs(prevHeight - highest);
+				}
+				prevHeight = highest;
 			}
-			console.log(aggregateHeight);
-			return aggregateHeight;
+			fullRowsArr = that.checkFullRows();
+			completeLines = fullRowsArr.length;
+
+			score += -0.66569 * aggregateHeight;
+			score += 0.99275 * completeLines;
+			score += -0.46544 * holes;
+			score += -0.24077 * bumpiness;
+
+			return score;
 		}
 		
 		that.checkBrick = function(x, y) {

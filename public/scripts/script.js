@@ -432,7 +432,7 @@ MyGame.runAI = function(){
 		j,
 		k,
 		score,
-		maxScore = 1000,
+		maxScore = -1000,
 		currentMove = [];
 		bestMove = [];
 
@@ -450,10 +450,9 @@ MyGame.runAI = function(){
 	{
 		currentMove = [];
 
-		
 		for(j = 0; j < 10; j++)
 		{
-			for(k = 0; k <= i; k++)
+			for(k = 0; k < i; k++)
 			{
 				MyGame.rotateLeft();
 				MyGame.setRotateLeftPressed();
@@ -465,7 +464,7 @@ MyGame.runAI = function(){
 				MyGame.setMoveRightPressed();
 				currentMove.push(2);
 			}
-			for(k = 0; k <= j; k++)
+			for(k = 0; k < j; k++)
 			{
 				MyGame.moveLeft();
 				MyGame.setMoveLeftPressed();
@@ -476,7 +475,7 @@ MyGame.runAI = function(){
 
 			score = MyGame.grid.scoreGrid();
 
-			if(score < maxScore)
+			if(score > maxScore)
 			{
 				maxScore = score;
 				bestMove = currentMove.slice();
@@ -499,6 +498,7 @@ MyGame.runAI = function(){
 		}
 		//MyGame.activePiece.restorePieceRotation(prePiece);
 	}
+	console.log("Score: " + maxScore);
 
 	for(i = 0; i < bestMove.length; i++)
 	{
