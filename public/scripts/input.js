@@ -30,7 +30,8 @@ MyGame.input = (function() {
 					case MyGame.keys[1].key: 
 					case MyGame.keys[2].key: 
 					case MyGame.keys[3].key:  
-					case MyGame.keys[4].key: e.preventDefault(); break;
+					case MyGame.keys[4].key:
+					case MyGame.keys[5].key: e.preventDefault(); break;
 					default: break; // do not block other keys
 				}
 			}

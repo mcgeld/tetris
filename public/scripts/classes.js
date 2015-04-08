@@ -104,14 +104,26 @@
 			{
 				MyGame.pieceArr[piece].clearBricks(hashArray[piece]);
 			}
-		//console.log("hey");
-			
+		}
+		
+
+		that.checkGameOver = function() {	
+			var gameOver = false;
+			for(i = 0; i < 2; i++){
+				for(j = 0; j < cols; j++){
+					if(grid[i][j] !== null){
+						gameOver = true;
+						break;
+					}
+				}
+			}
+			return gameOver;
+
 		};
 
-		
-
-		
+	
 		return that;
+		
 
 	}
 
@@ -299,8 +311,10 @@
 			}	
 		};
 
-		that.hardDrop = function() {
-
+		that.hardDrop = function(elapsedTime) {
+			while(canMove() === true){
+				that.update(elapsedTime);
+			}
 		};
 
 		that.softDrop = function(elapsedTime) {

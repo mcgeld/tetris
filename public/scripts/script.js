@@ -1,8 +1,10 @@
 MyGame.initialize = (function initialize(){
 
 	MyGame.hardDrop = function(elapsedTime){
-		MyGame.context.fillStyle = 'red';
-		MyGame.context.fillRect(0, 0, MyGame.context.canvas.width, MyGame.context.canvas.height);
+		if(MyGame.activePiece != null && MyGame.hardDropPressed === false){
+			MyGame.activePiece.hardDrop(elapsedTime);
+			MyGame.hardDropPressed = true;
+		}
 	};
 	
 	MyGame.softDrop = function(elapsedTime){
@@ -41,8 +43,11 @@ MyGame.initialize = (function initialize(){
 
 	var myKeyboard = MyGame.input.Keyboard(),
 		context = document.getElementById('canvas-main').getContext('2d'),
+		scoreCtx = document.getElementById('canvas-scores').getContext('2d'),
 		time = new Date().getTime(),
 		prevTime = time,
+		aiTime = new Date().getTime(),
+		aiPrevTime = time,
 		elapsedTime = 0,
 		nextPieceId = 0,
 		nextPieceType = Math.floor(Math.random() * 7 + 1);
@@ -68,6 +73,10 @@ MyGame.initialize = (function initialize(){
 		MyGame.softDropPressed = false;
 	};
 
+	MyGame.setHardDropPressed = function() {
+		MyGame.hardDropPressed = false;
+	};
+
 	MyGame.setRotatePressed = function() {
 		MyGame.rotatePressed = false;
 	};
@@ -90,6 +99,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.moveLeftPressed = false;
 	MyGame.moveRightPressed = false;
 	MyGame.softDropPressed = false;
+	MyGame.hardDropPressed = false;
 	MyGame.frameUpdated = false;
 	MyGame.stuffMoving = false;
 	MyGame.linesCleared = false;
@@ -98,7 +108,13 @@ MyGame.initialize = (function initialize(){
 	MyGame.numRows = 20;
 	MyGame.play = false;
 	MyGame.timeQuantum = 0.75;
+
+	MyGame.attractModeTimer = 0;
+
+	MyGame.highScores = ["1000", "2000"];
+	
 	MyGame.keyboard = myKeyboard;
+	MyGame.sctx = scoreCtx;
 	MyGame.context = context;
 	MyGame.canvas = document.getElementById('canvas-main');
 	MyGame.keyboardMap = ["","","","CANCEL","","","HELP","","BACK_SPACE","TAB","","","CLEAR","ENTER","RETURN","","SHIFT","CONTROL","ALT","PAUSE","CAPS_LOCK","KANA","EISU","JUNJA","FINAL","HANJA","","ESCAPE","CONVERT","NONCONVERT","ACCEPT","MODECHANGE","SPACE","PAGE_UP","PAGE_DOWN","END","HOME","LEFT","UP","RIGHT","DOWN","SELECT","PRINT","EXECUTE","PRINTSCREEN","INSERT","DELETE","","0","1","2","3","4","5","6","7","8","9","COLON","SEMICOLON","LESS_THAN","EQUALS","GREATER_THAN","QUESTION_MARK","AT","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","WIN","","CONTEXT_MENU","","SLEEP","NUMPAD0","NUMPAD1","NUMPAD2","NUMPAD3","NUMPAD4","NUMPAD5","NUMPAD6","NUMPAD7","NUMPAD8","NUMPAD9","MULTIPLY","ADD","SEPARATOR","SUBTRACT","DECIMAL","DIVIDE","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","F16","F17","F18","F19","F20","F21","F22","F23","F24","","","","","","","","","NUM_LOCK","SCROLL_LOCK","WIN_OEM_FJ_JISHO","WIN_OEM_FJ_MASSHOU","WIN_OEM_FJ_TOUROKU","WIN_OEM_FJ_LOYA","WIN_OEM_FJ_ROYA","","","","","","","","","","CIRCUMFLEX","EXCLAMATION","DOUBLE_QUOTE","HASH","DOLLAR","PERCENT","AMPERSAND","UNDERSCORE","OPEN_PAREN","CLOSE_PAREN","ASTERISK","PLUS","PIPE","HYPHEN_MINUS","OPEN_CURLY_BRACKET","CLOSE_CURLY_BRACKET","TILDE","","","","","VOLUME_MUTE","VOLUME_DOWN","VOLUME_UP","","","SEMICOLON","EQUALS","COMMA","MINUS","PERIOD","SLASH","BACK_QUOTE","","","","","","","","","","","","","","","","","","","","","","","","","","","OPEN_BRACKET","BACK_SLASH","CLOSE_BRACKET","QUOTE","","META","ALTGR","","WIN_ICO_HELP","WIN_ICO_00","","WIN_ICO_CLEAR","","","WIN_OEM_RESET","WIN_OEM_JUMP","WIN_OEM_PA1","WIN_OEM_PA2","WIN_OEM_PA3","WIN_OEM_WSCTRL","WIN_OEM_CUSEL","WIN_OEM_ATTN","WIN_OEM_FINISH","WIN_OEM_COPY","WIN_OEM_AUTO","WIN_OEM_ENLW","WIN_OEM_BACKTAB","ATTN","CRSEL","EXSEL","EREOF","PLAY","ZOOM","","PA1","WIN_OEM_CLEAR",""];
@@ -108,7 +124,8 @@ MyGame.initialize = (function initialize(){
 					1: {key: KeyEvent.DOM_VK_UP, func: MyGame.rotate, funcUp: MyGame.setRotatePressed},
 					2: {key: KeyEvent.DOM_VK_DOWN, func: MyGame.softDrop, funcUp: MyGame.setSoftDropPressed},
 					3: {key: KeyEvent.DOM_VK_LEFT, func: MyGame.moveLeft, funcUp: MyGame.setMoveLeftPressed},
-					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight, funcUp: MyGame.setMoveRightPressed}
+					4: {key: KeyEvent.DOM_VK_RIGHT, func: MyGame.moveRight, funcUp: MyGame.setMoveRightPressed},
+					5: {key: KeyEvent.DOM_VK_SPACE, func: MyGame.hardDrop, funcUp: MyGame.setHardDropPressed}
 				   };
 
 	MyGame.settingKey = false;
@@ -132,6 +149,7 @@ MyGame.initialize = (function initialize(){
 	};
 
 
+
 	MyGame.gameLoop = function(){
 		//UPDATE TIME//
 		time = new Date().getTime();
@@ -146,9 +164,38 @@ MyGame.initialize = (function initialize(){
 
 		//RENDER GAME//
 		MyGame.render();
-		requestAnimationFrame(MyGame.gameLoop);
+
+		if(MyGame.gameOver === false)
+			requestAnimationFrame(MyGame.gameLoop);
 	};
 
+	MyGame.updateAttractTime = function(){
+
+		aiTime = new Date().getTime();
+		elapsedTime = (aiTime - aiPrevTime) / 1000;
+		aiPrevTime = aiTime;
+
+		MyGame.attractModeTimer += elapsedTime;
+		console.log(MyGame.attractModeTimer + " " );
+		if(MyGame.attractModeTimer >= 10){
+			console.log("start AI");
+		}
+		else
+			requestAnimationFrame(MyGame.updateAttractTime);
+	};
+
+	MyGame.toMainMenu = function(){
+		MyGame.attractModeTimer = 0;
+		var time = new Date().getTime();
+		requestAnimationFrame(MyGame.updateAttractTime);
+		document.getElementById('newGameScreen').hidden = true;
+		document.getElementById('highScoreScreen').hidden = true;
+		document.getElementById('controlScreen').hidden = true;
+		document.getElementById('creditScreen').hidden = true;
+		document.getElementById('mainMenuScreen').hidden = false;
+	};
+
+	MyGame.toMainMenu();
 
 	return function(){
 		CanvasRenderingContext2D.prototype.clear = function() {
@@ -160,7 +207,7 @@ MyGame.initialize = (function initialize(){
 		MyGame.clear = function(){
 			MyGame.context.clear();
 		};
-		for(var i = 1; i <= 4; i++)
+		for(var i = 1; i <= 5; i++)
 		{
 			MyGame.registerCommandKeyDown(MyGame.keys[i].key, MyGame.keys[i].func);
 			MyGame.registerCommandKeyUp(MyGame.keys[i].key, MyGame.keys[i].funcUp);
@@ -192,7 +239,7 @@ MyGame.updateGame = function(elapsedTime){
 				piece = MyGame.grid.getId(i, j).piece;
 				if(piece > 5)
 				{
-					console.log(piece);
+					//console.log(piece);
 				}
 				if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false && MyGame.pieceArr[piece].active === true)
 				{
@@ -244,12 +291,19 @@ MyGame.checkMoving = function(elapsedTime){
 		else
 			MyGame.linesCleared = false;
 		
-		//console.log(MyGame.linesCleared + " " + fullRows.length);
+		
 		if(MyGame.linesCleared === false){
-			MyGame.activePiece = new Piece(MyGame.nextPieceId(), MyGame.getNextPieceType());
-			MyGame.setNextPieceType();
-			MyGame.pieceArr.push(MyGame.activePiece);
-			MyGame.firstPiece = false;
+			//Check for game over
+			if(MyGame.grid.checkGameOver() === true){
+				console.log("Game Over");
+				MyGame.gameOver = true;
+			}
+			else{
+				MyGame.activePiece = new Piece(MyGame.nextPieceId(), MyGame.getNextPieceType());
+				MyGame.setNextPieceType();
+				MyGame.pieceArr.push(MyGame.activePiece);
+				MyGame.firstPiece = false;
+			}
 		}
 		else{
 			MyGame.grid.clearRow(fullRows);
@@ -257,7 +311,6 @@ MyGame.checkMoving = function(elapsedTime){
 			//MyGame.player('audio/clear_line')
 		}
 
-		//if(MyGame.activePiece.active === false && MyGame.activePiece.getRow)
 	}
 
 };
@@ -270,6 +323,7 @@ MyGame.updateLevel = function(){
 };
 
 MyGame.updateScore = function(rowsCleared){
+	showScores();
 	console.log("in score: " + rowsCleared);
 	if(rowsCleared === 1){
 		MyGame.score += 40 * (MyGame.currentLevel + 1);
@@ -285,6 +339,17 @@ MyGame.updateScore = function(rowsCleared){
 	}
 };
 
+MyGame.addHighScore = function(){
+
+};
+
+MyGame.showHighScores = function(){
+	MyGame.drawHighScores();
+	
+};
+
+
+
 MyGame.playSound = function(sound){
 	MyGame.sounds[sound + "." + MyGame.audioExt].play();
 };
@@ -299,6 +364,8 @@ MyGame.toNewGame = function(){
 MyGame.toHighScores = function(){
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('highScoreScreen').hidden = false;
+
+	MyGame.drawScores();
 };
 
 MyGame.toControls = function(){
@@ -316,13 +383,6 @@ MyGame.toCredits = function(){
 	document.getElementById('creditScreen').hidden = false;
 };
 
-MyGame.toMainMenu = function(){
-	document.getElementById('newGameScreen').hidden = true;
-	document.getElementById('highScoreScreen').hidden = true;
-	document.getElementById('controlScreen').hidden = true;
-	document.getElementById('creditScreen').hidden = true;
-	document.getElementById('mainMenuScreen').hidden = false;
-};
 
 MyGame.setKey = function(e){
 	MyGame.unregisterCommandKeyDown(MyGame.keys[MyGame.keyBeingSet].key);

@@ -36,6 +36,7 @@ function showScores() {
 			
 			list.empty();
 			for (value = 0; value < data.length; value++) {
+				console.log(data[value].name);
 				text = (data[value].name + ' : ' + data[value].score);
 				list.append($('<li>', { text: text }));
 			}

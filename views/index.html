@@ -3,15 +3,13 @@
 <head>
 	<meta charset = "UTF-8">
 	<title>Tetris</title>
+
 	<link rel="stylesheet" type = "text/css" href="style.css">
+
+	<script type="text/javascript" src = "http://code.jquery.com/jquery-latest.min.js"></script>
+
 	<script src = "scripts/modernizr.js"></script>
 	<script src = "scripts/loader.js"></script>
-    <!--Milestones
-        1. Menus, Mouse & keyboard remapping
-        2. Grid, drawing pieces, moving, rotation, placement
-        3. Row detection, collapsing, scoring
-    -->
-
 	
 </head>
 <body>
@@ -30,6 +28,7 @@
 	<div id="highScoreScreen" hidden="true">
 		<h1>High Scores</h1>
 		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+		<canvas id = "canvas-scores" width = "1000" height = "600" height: "100%" width: "100%"></canvas>
 	</div>
 	<div id="controlScreen" hidden="true">
 		<h1>Controls</h1>
@@ -67,6 +66,12 @@
     </div>
 	<div id="creditScreen" hidden="true">
 		<h1>Credits</h1>
+		<h2>Tetris Tribute</h2>
+		<p>Created by Malcolm Geldmacher & Wade Wilkey</br>
+			    - CS 5410 - 
+		</p>
+
+
 		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
 	</div>
 </body>

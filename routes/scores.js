@@ -18,6 +18,7 @@ var scores = [ {
 	}],
 	nextId = 2;
 
+/*
 var fs = require('fs');
 var stream = fs.createWriteStream("scores.txt");
 stream.once('open', function(fd) {
@@ -25,6 +26,19 @@ stream.once('open', function(fd) {
   stream.write("My second row\n");
   stream.end();
 });
+*/
+
+/*
+console.log("scores");
+
+	fs.readFile('scores.txt', 'utf8', function (err,data) {
+		console.log("herein scores");
+	  if (err) {
+	    return console.log(err);
+	  }
+	  console.log(data);
+	});
+*/
 
 //------------------------------------------------------------------
 //

@@ -1,5 +1,6 @@
 MyGame.newGame = function(){
 	MyGame.grid = new Grid(MyGame.numCols, MyGame.numRows);
+	MyGame.pieceArr = [];
 
 	requestAnimationFrame(MyGame.gameLoop);
 }
@@ -242,5 +243,53 @@ MyGame.drawBackground = function() {
 		MyGame.context.fillText(MyGame.rowsCleared, MyGame.bucketRight + MyGame.windowBuffer + 60, MyGame.rowsWindowHeight + 490);
 	
 
+		
 
 }
+
+MyGame.drawScores = function(){
+	var text;
+
+
+	//SET SIZE VARIABLES
+	MyGame.bucketHeight = MyGame.sctx.canvas.height - 100;
+	MyGame.bucketWidth = MyGame.sctx.canvas.width * (1 / 4);
+	MyGame.pieceWindowWidth = MyGame.cellWidth * 6;
+	MyGame.pieceWindowHeight = MyGame.cellWidth * 4;
+	MyGame.windowBuffer = 30;
+	MyGame.cellWidth = MyGame.bucketWidth / MyGame.numCols;
+	MyGame.bucketLeft = (MyGame.sctx.canvas.width - MyGame.bucketWidth) / 2;
+	MyGame.bucketRight = MyGame.bucketLeft + MyGame.bucketWidth;
+	MyGame.bucketBorder = (MyGame.sctx.canvas.height - (MyGame.cellWidth * MyGame.numRows)) / 2;
+	MyGame.startLocation = MyGame.bucketBorder - (MyGame.cellWidth * 2);
+
+	console.log("drawing");
+	MyGame.sctx.drawImage(MyGame.images['images/backgroundMoon.jpg'], 0, 0, MyGame.sctx.canvas.width, MyGame.sctx.canvas.height);
+	
+	MyGame.sctx.font = '45px Georgia';
+	MyGame.sctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+	MyGame.sctx.fillText("High Scores", MyGame.bucketLeft + 5, 100);
+
+	MyGame.sctx.beginPath();
+	MyGame.sctx.moveTo(MyGame.bucketLeft - 5, MyGame.bucketBorder - 0.5);
+	MyGame.sctx.lineTo(MyGame.bucketLeft - 5, MyGame.sctx.canvas.height - MyGame.bucketBorder + 5);
+	MyGame.sctx.lineTo(MyGame.bucketRight + 5, MyGame.sctx.canvas.height - MyGame.bucketBorder + 5);
+	MyGame.sctx.lineTo(MyGame.bucketRight + 5, MyGame.bucketBorder - 0.5);
+	MyGame.sctx.lineTo(MyGame.bucketLeft - 10, MyGame.bucketBorder - 0.5);
+	MyGame.sctx.lineWidth = 10;
+	MyGame.sctx.strokeStyle = '#ffffff';
+	MyGame.sctx.stroke();
+	
+	MyGame.sctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+	MyGame.sctx.fillRect(MyGame.bucketLeft, MyGame.bucketBorder, MyGame.bucketWidth, MyGame.sctx.canvas.height - (2 * MyGame.bucketBorder));
+
+	//Draw Score
+	for(i = 1; i <= MyGame.highScores.length; i++){
+		MyGame.sctx.font = '30px Georgia';
+		MyGame.sctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+		text = i + ": " + MyGame.highScores[i - 1];
+		MyGame.sctx.fillText(text, MyGame.bucketLeft + 40, 110 + (i * 35));
+	}
+	
+};
+
