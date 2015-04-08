@@ -22,7 +22,10 @@
 		that.addBrick = function(brickID, pieceID, x, y){
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
 				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
-
+			if(row > 21)
+			{
+				row = 21;
+			}
 			grid[row][col] = {
 				brick: brickID,
 				piece: pieceID
@@ -32,7 +35,10 @@
 		that.removeBrick = function(x, y) {
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
 				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
-
+			if(row > 21)
+			{
+				row = 21;
+			}
 			grid[row][col] = null;
 		};
 		
@@ -47,6 +53,35 @@
 				return grid[x][y];
 			}
 		};
+
+		that.getGrid = function(){
+			return grid;
+		}
+
+		that.restoreGrid = function(storedGrid){
+			grid = storedGrid;
+		}
+
+		that.scoreGrid = function(){
+			var aggregateHeight,
+				i,
+				j;
+
+			aggregateHeight = 0;
+			for(i = 0; i < cols; i++)
+			{
+				for(j = 0; j < rows + 1; j++)
+				{
+					if(grid[j][i] != null)
+					{
+						aggregateHeight += (rows + 2) - j;
+						break;
+					}
+				}
+			}
+			console.log(aggregateHeight);
+			return aggregateHeight;
+		}
 		
 		that.checkBrick = function(x, y) {
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
@@ -343,6 +378,24 @@
 			}
 		};
 
+		that.getPiece = function(){
+			return {
+						bricks: bricks,
+						orientation: that.orientation
+			};
+		}
+
+		that.restorePieceLocation = function(info){
+			for(var i = 0; i < bricks.length; i++)
+			{
+				bricks[i].setPosition(info.bricks[i].getX(), info.bricks[i].getY());
+			}
+			//bricks = info.bricks;
+		}
+
+		that.restorePieceRotation = function(info){
+			that.orientation = info.orientation
+		}
 
 		that.clearBricks = function(bricksToClear) {
 			for(var brick in bricksToClear)

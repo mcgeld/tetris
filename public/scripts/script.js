@@ -96,6 +96,10 @@ MyGame.initialize = (function initialize(){
 		MyGame.moveRightPressed = false;;
 	};
 
+	MyGame.inPlay = false;
+	MyGame.AIReady = false;
+	MyGame.AIReadyWait = false;
+	MyGame.gameType = 0;
 	MyGame.score = 0;
 	MyGame.rowsCleared = 0;
 	MyGame.currentLevel = 0;
@@ -190,8 +194,8 @@ MyGame.initialize = (function initialize(){
 
 		MyGame.attractModeTimer += elapsedTime;
 		//console.log(MyGame.attractModeTimer + " " );
-		if(MyGame.attractModeTimer >= 10){
-			console.log("start AI");
+		if(MyGame.attractModeTimer >= 5 && MyGame.inPlay === false){//10){
+			MyGame.toNewGame(1);
 		}
 		else if(MyGame.receivedInput === false)
 			requestAnimationFrame(MyGame.updateAttractTime);
@@ -333,10 +337,16 @@ MyGame.updateGame = function(elapsedTime){
 		{
 			MyGame.pieceArr[piece].alreadyMoved = false;
 		}
-	}
-	if(MyGame.emitters.length > 0)
-	{
-		console.log("NOT EMPTY");
+		if(MyGame.gameType === 1 && MyGame.AIReadyWait === true)
+		{
+			MyGame.runAI();
+			MyGame.AIReady = false;
+			MyGame.AIReadyWait = false;
+		}
+		if(MyGame.AIReady)
+		{
+			MyGame.AIReadyWait = true;
+		}
 	}
 	for(var i = 0; i < MyGame.emitters.length; i++)
 	{
@@ -402,6 +412,7 @@ MyGame.checkMoving = function(elapsedTime){
 				MyGame.setNextPieceType();
 				MyGame.pieceArr.push(MyGame.activePiece);
 				MyGame.firstPiece = false;
+				MyGame.AIReady = true;
 			}
 		}
 		else{
@@ -413,6 +424,83 @@ MyGame.checkMoving = function(elapsedTime){
 	}
 
 };
+
+MyGame.runAI = function(){
+	var preGrid,
+		prePiece,
+		i,
+		j,
+		k,
+		score,
+		maxScore = -1000,
+		currentMove = [];
+		bestMove = [];
+
+	//STORE OFF CURRENT STATE
+	preGrid = MyGame.grid.getGrid();
+	prePiece = MyGame.activePiece.getPiece();
+
+	//Do stuff
+	//FOR EACH ROTATION:
+	for(i = 0; i < 4; i++)
+	{
+		currentMove = [];
+
+		for(j = 0; j <= i; j++)
+		{
+			MyGame.rotateLeft();
+			MyGame.setRotateLeftPressed();
+			currentMove.push(MyGame.rotateLeft);
+			currentMove.push(MyGame.setRotateLeftPressed);
+		}
+		for(j = 0; j < 10; j++)
+		{
+			for(k = 0; k <= 5; k++)
+			{
+				MyGame.moveRight();
+				MyGame.setMoveRightPressed();
+				currentMove.push(MyGame.moveRight);
+				currentMove.push(MyGame.setMoveRightPressed);
+			}
+			for(k = 0; k <= j; k++)
+			{
+				MyGame.moveLeft();
+				MyGame.setMoveLeftPressed();
+				currentMove.push(MyGame.moveLeft);
+				currentMove.push(MyGame.setMoveLeftPressed);
+			}
+			MyGame.hardDrop();
+			MyGame.setHardDropPressed();
+
+			score = MyGame.grid.scoreGrid();
+
+			if(score > maxScore)
+			{
+				maxScore = score;
+				bestMove = currentMove;
+			}
+
+			for(k = 0; k <= 5 + j + 1; k++)
+			{
+				currentMove.pop();
+				currentMove.pop();
+			}
+
+			MyGame.activePiece.draw();
+
+			MyGame.grid.restoreGrid(preGrid);
+			MyGame.activePiece.restorePieceLocation(prePiece);
+		}
+		MyGame.activePiece.restorePieceRotation(prePiece);
+	}
+
+	for(i = 0; i < bestMove.length; i++)
+	{
+		bestMove[i]();
+	}
+	MyGame.hardDrop();
+	MyGame.setHardDropPressed();
+}
 
 MyGame.updateLevel = function(){
 	if(MyGame.rowsCleared === 10){
@@ -457,10 +545,11 @@ MyGame.pauseSound = function(sound){
 	MyGame.sounds[sound + "." + MyGame.audioExt].pause();
 }
 
-MyGame.toNewGame = function(){
+MyGame.toNewGame = function(gameType){
+	MyGame.inPlay = true;
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('newGameScreen').hidden = false;
-	MyGame.newGame();
+	MyGame.newGame(gameType);
 	MyGame.play = true;
 };
 
