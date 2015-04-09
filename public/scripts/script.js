@@ -471,6 +471,7 @@ MyGame.runAI = function(){
 
 		for(j = 0; j < 10; j++)
 		{
+
 			for(k = 0; k <= i; k++)
 			{
 				MyGame.rotateLeft();
@@ -514,6 +515,8 @@ MyGame.runAI = function(){
 			MyGame.printGrid(MyGame.grid.getGrid());*/
 			//MyGame.activePiece.restorePieceLocation(prePiece);
 			MyGame.activePiece.reset();
+			for(k = 0; k < 3; k++)
+				MyGame.activePiece.update(100);
 		}
 		//MyGame.activePiece.restorePieceRotation(prePiece);
 	}
