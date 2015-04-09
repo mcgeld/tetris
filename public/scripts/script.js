@@ -436,7 +436,7 @@ MyGame.checkMoving = function(elapsedTime){
 		}
 		else{
 			MyGame.grid.clearRow(fullRows);
-			MyGame.updateScore(fullRows.length);
+			//MyGame.updateScore(fullRows.length);
 			MyGame.playSound('audio/clear-line')
 		}
 
@@ -495,9 +495,9 @@ MyGame.runAI = function(){
 
 			score = MyGame.grid.scoreGrid();
 
-			if(score > maxScore)
+			if(Math.floor(score) > maxScore)
 			{
-				maxScore = score;
+				maxScore = Math.floor(score);
 				bestMove = currentMove.slice();
 			}
 

@@ -84,9 +84,11 @@
 				j,
 				highest,
 				potHole,
+				potHoleCount,
 				prevHeight,
 				fullRowsArr,
 				score;
+			MyGame.printGrid(grid);
 			score = 0;
 			aggregateHeight = 0;
 			completeLines = 0;
@@ -95,6 +97,8 @@
 			for(i = 0; i < cols; i++)
 			{
 				highest = 0;
+				potHoleCount = 0;
+				potHole = false;
 				for(j = rows + 1; j >= 0; j--)
 				{
 					if(grid[j][i] != null)
@@ -102,13 +106,14 @@
 						highest = (rows + 2) - j;
 						if(potHole === true)
 						{
-							holes++;
+							holes += potHoleCount;
 							potHole = false;
 						}
 					}
 					else
 					{
 						potHole = true;
+						potHoleCount++;
 					}
 				}
 				aggregateHeight += highest;
@@ -121,9 +126,9 @@
 			fullRowsArr = that.checkFullRows();
 			completeLines = fullRowsArr.length;
 
-			score += -0.66569 * aggregateHeight;
-			score += 0.99275 * completeLines;
-			score += -0.46544 * holes;
+			score += -0.96569 * aggregateHeight;
+			score += 1.99275 * completeLines;
+			score += -0.86544 * holes;
 			score += -0.24077 * bumpiness;
 
 			return score;
@@ -413,6 +418,7 @@
 					bricks[i].removeFromGrid()
 				}
 			that.setStartLocation();
+			that.orientation = 1;
 		};
 
 		that.hardDrop = function(elapsedTime) {
