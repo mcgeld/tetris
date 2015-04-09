@@ -635,7 +635,7 @@
 			return canRotate;
 		}
 
-
+ 
 		function canMove(partGroup) {
 			var canMove = true,
 				groupExists = false;
