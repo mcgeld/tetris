@@ -7,10 +7,17 @@ Bug List
 
 To Do
 
+- HTML Formatting
+- Attract Mode timing
+- Attract Mode done on input
+- Clean up high scores
+- AI Working Betta’
+
+
 WADE:
 	x Left Rotation
 	x Sound Effects/Background Music
-	- High Scores
+	- High Scores (Needs to be cleaned up)
 
 MALCOLM:
 	x Particles 1
