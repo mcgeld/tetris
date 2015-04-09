@@ -46,7 +46,7 @@ MyGame.initialize = (function initialize(){
 
 	var myKeyboard = MyGame.input.Keyboard(),
 		context = document.getElementById('canvas-main').getContext('2d'),
-		scoreCtx = document.getElementById('canvas-scores').getContext('2d'),
+		//scoreCtx = document.getElementById('canvas-scores').getContext('2d'),
 		time = new Date().getTime(),
 		prevTime = time,
 		aiTime = new Date().getTime(),
@@ -99,6 +99,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.inPlay = false;
 	MyGame.AIReady = false;
 	MyGame.AIReadyWait = false;
+	MyGame.AICount = 0;
 	MyGame.gameType = 0;
 	MyGame.score = 0;
 	MyGame.rowsCleared = 0;
@@ -134,7 +135,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.highScores = ["1000", "2000"];
 	
 	MyGame.keyboard = myKeyboard;
-	MyGame.sctx = scoreCtx;
+	//MyGame.sctx = scoreCtx;
 	MyGame.context = context;
 	MyGame.canvas = document.getElementById('canvas-main');
 	MyGame.keyboardMap = ["","","","CANCEL","","","HELP","","BACK_SPACE","TAB","","","CLEAR","ENTER","RETURN","","SHIFT","CONTROL","ALT","PAUSE","CAPS_LOCK","KANA","EISU","JUNJA","FINAL","HANJA","","ESCAPE","CONVERT","NONCONVERT","ACCEPT","MODECHANGE","SPACE","PAGE_UP","PAGE_DOWN","END","HOME","LEFT","UP","RIGHT","DOWN","SELECT","PRINT","EXECUTE","PRINTSCREEN","INSERT","DELETE","","0","1","2","3","4","5","6","7","8","9","COLON","SEMICOLON","LESS_THAN","EQUALS","GREATER_THAN","QUESTION_MARK","AT","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","WIN","","CONTEXT_MENU","","SLEEP","NUMPAD0","NUMPAD1","NUMPAD2","NUMPAD3","NUMPAD4","NUMPAD5","NUMPAD6","NUMPAD7","NUMPAD8","NUMPAD9","MULTIPLY","ADD","SEPARATOR","SUBTRACT","DECIMAL","DIVIDE","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","F16","F17","F18","F19","F20","F21","F22","F23","F24","","","","","","","","","NUM_LOCK","SCROLL_LOCK","WIN_OEM_FJ_JISHO","WIN_OEM_FJ_MASSHOU","WIN_OEM_FJ_TOUROKU","WIN_OEM_FJ_LOYA","WIN_OEM_FJ_ROYA","","","","","","","","","","CIRCUMFLEX","EXCLAMATION","DOUBLE_QUOTE","HASH","DOLLAR","PERCENT","AMPERSAND","UNDERSCORE","OPEN_PAREN","CLOSE_PAREN","ASTERISK","PLUS","PIPE","HYPHEN_MINUS","OPEN_CURLY_BRACKET","CLOSE_CURLY_BRACKET","TILDE","","","","","VOLUME_MUTE","VOLUME_DOWN","VOLUME_UP","","","SEMICOLON","EQUALS","COMMA","MINUS","PERIOD","SLASH","BACK_QUOTE","","","","","","","","","","","","","","","","","","","","","","","","","","","OPEN_BRACKET","BACK_SLASH","CLOSE_BRACKET","QUOTE","","META","ALTGR","","WIN_ICO_HELP","WIN_ICO_00","","WIN_ICO_CLEAR","","","WIN_OEM_RESET","WIN_OEM_JUMP","WIN_OEM_PA1","WIN_OEM_PA2","WIN_OEM_PA3","WIN_OEM_WSCTRL","WIN_OEM_CUSEL","WIN_OEM_ATTN","WIN_OEM_FINISH","WIN_OEM_COPY","WIN_OEM_AUTO","WIN_OEM_ENLW","WIN_OEM_BACKTAB","ATTN","CRSEL","EXSEL","EREOF","PLAY","ZOOM","","PA1","WIN_OEM_CLEAR",""];
@@ -199,7 +200,7 @@ MyGame.initialize = (function initialize(){
 
 		MyGame.attractModeTimer += elapsedTime;
 		//console.log(MyGame.attractModeTimer + " " );
-		if(MyGame.attractModeTimer >= 1 && MyGame.inPlay === false){//10){
+		if(MyGame.attractModeTimer >= 5 && MyGame.inPlay === false){//10){
 			MyGame.toNewGame(1);
 		}
 		else if(MyGame.receivedInput === false)
@@ -278,7 +279,7 @@ MyGame.sparkEmitter = function(spec){
 									y: spec.center.y
 						}
 		});
-}
+};
 
 MyGame.random = function(mean, stdev, max, min){
     var rand = Math.round(((Math.random() * 2 - 1) + (Math.random() * 2 - 1) + (Math.random() * 2 - 1)) * stdev + mean);
@@ -294,7 +295,7 @@ MyGame.random = function(mean, stdev, max, min){
     {
         return rand;
     }
-}
+};
 
 MyGame.updateGame = function(elapsedTime){
 	var i,
@@ -331,17 +332,26 @@ MyGame.updateGame = function(elapsedTime){
 					{
 						MyGame.stuffMoving = pieceMoved;
 					}
-	                //prevPiece = piece;
+
+
+	              
 				}
 			}
+
 		}
 
 		MyGame.checkMoving(elapsedTime);
 		
+		
+
 		for(piece in MyGame.pieceArr)
 		{
 			MyGame.pieceArr[piece].alreadyMoved = false;
 		}
+
+		if(MyGame.gameType === 1 && MyGame.AIReady === true)
+			MyGame.AICount += 1;
+
 		if(MyGame.gameType === 1 && MyGame.AIReadyWait === true)
 		{
 			MyGame.runAI();
@@ -350,8 +360,12 @@ MyGame.updateGame = function(elapsedTime){
 		}
 		if(MyGame.AIReady)
 		{
-			MyGame.AIReadyWait = true;
+			if(MyGame.AICount > 3){
+				MyGame.AIReadyWait = true;
+				MyGame.AICount = 0;
+			}
 		}
+
 	}
 	for(var i = 0; i < MyGame.emitters.length; i++)
 	{
@@ -438,7 +452,7 @@ MyGame.runAI = function(){
 		k,
 		score,
 		maxScore = -1000,
-		currentMove = [];
+		currentMove = [],
 		bestMove = [];
 
 	//STORE OFF CURRENT STATE
@@ -457,7 +471,7 @@ MyGame.runAI = function(){
 
 		for(j = 0; j < 10; j++)
 		{
-			for(k = 0; k < i; k++)
+			for(k = 0; k <= i; k++)
 			{
 				MyGame.rotateLeft();
 				MyGame.setRotateLeftPressed();
@@ -584,7 +598,9 @@ MyGame.showHighScores = function(){
 	
 };
 
-
+MyGame.activePieceCanRotate = function(){
+	return MyGame.activePiece.notAtTop();
+};
 
 MyGame.playSound = function(sound){
 	MyGame.sounds[sound + "." + MyGame.audioExt].play();
@@ -606,7 +622,7 @@ MyGame.toHighScores = function(){
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('highScoreScreen').hidden = false;
 
-	MyGame.drawScores();
+	//MyGame.drawScores();
 };
 
 MyGame.toControls = function(){

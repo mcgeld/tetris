@@ -35,6 +35,7 @@ function showScores() {
 
 			for(value = 0; value < data.length; value++){
 				MyGame.highScoresList.push({name: data[value].name, score: data[value].score})
+				console.log(data[value]);
 			}
 			var list = $('#id-high-scores'),
 			value,

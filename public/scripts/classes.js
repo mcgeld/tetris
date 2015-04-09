@@ -349,7 +349,7 @@
 
 		that.rotate = function(elapsedTime, direction) {
 
-			if(notAtTop() === true){
+			if(MyGame.activePieceCanRotate() === true){
 				if(type === 1)
 					rotate_I();
 				else if(type === 2)
@@ -432,6 +432,7 @@
 					bricks[i].addToGrid();
 				}
 				MyGame.playSound('audio/soft-drop');
+				MyGame.score++;
 				return true;
 			}
 			else {
@@ -552,12 +553,7 @@
 		};
 
 		that.update = function(elapsedTime) {
-			//time += elapsedTime;
-			//if(time > 1 && canMove() === true){
 			if(that.active === true && canMove() === true){
-			//if(canMove() === true){
-			//	MyGame.frameUpdated = true;
-			//	time = 0;
 				for(i = 0; i < bricks.length; i++){
 					if(bricks[i].active)
 					{
@@ -591,7 +587,7 @@
 			}
 		};
 
-		function notAtTop() {
+		that.notAtTop = function() {
 			var canRotate = true;
 			for(i = 0; i < bricks.length; i++){
 				if(bricks[i].getY() < MyGame.startLocation + MyGame.cellWidth * 2){

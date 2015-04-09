@@ -248,6 +248,7 @@ MyGame.drawBackground = function() {
 
 }
 
+
 MyGame.drawScores = function(){
 	var text;
 
@@ -283,14 +284,15 @@ MyGame.drawScores = function(){
 	
 	MyGame.sctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
 	MyGame.sctx.fillRect(MyGame.bucketLeft, MyGame.bucketBorder, MyGame.bucketWidth, MyGame.sctx.canvas.height - (2 * MyGame.bucketBorder));
-
+	showScores();
 	//Draw Score
-	for(i = 1; i <= MyGame.highScores.length; i++){
+	for(i = 1; i <= MyGame.highScoresList.length; i++){
 		MyGame.sctx.font = '30px Georgia';
 		MyGame.sctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-		text = i + ": " + MyGame.highScores[i - 1];
+		text = i + ": " + MyGame.highScoresList[i - 1];
 		MyGame.sctx.fillText(text, MyGame.bucketLeft + 40, 110 + (i * 35));
 	}
+	
 	
 };
 
