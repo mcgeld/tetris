@@ -103,6 +103,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.gameType = 0;
 	MyGame.score = 0;
 	MyGame.rowsCleared = 0;
+	MyGame.rowsClearedCount = 0;
 	MyGame.currentLevel = 0;
 	MyGame.highScoresList = [];
 
@@ -405,6 +406,7 @@ MyGame.checkMoving = function(elapsedTime){
 		if(fullRows.length > 0){
 			MyGame.linesCleared = true;
 			MyGame.rowsCleared += fullRows.length;
+			MyGame.rowsClearedCount += fullRows.length;
 		}
 		else
 			MyGame.linesCleared = false;
@@ -567,9 +569,11 @@ MyGame.printGrid = function(grid)
 }
 
 MyGame.updateLevel = function(){
-	if(MyGame.rowsCleared === 10){
+	if(MyGame.rowsClearedCount === 10){
 		MyGame.currentLevel++;
-		MyGame.rowsCleared = 0;
+		if(MyGame.timeQuantum >= 0.05)
+			MyGame.timeQuantum -= 0.02;
+		MyGame.rowsClearedCount = 0;
 	}
 };
 
@@ -589,10 +593,8 @@ MyGame.updateScore = function(rowsCleared){
 	else if(rowsCleared === 4){
 		MyGame.score += 1200 * (MyGame.currentLevel + 1);
 	}
-};
 
-MyGame.addHighScore = function(){
-
+	MyGame.rowsCleared = 0;
 };
 
 MyGame.showHighScores = function(){
@@ -605,7 +607,7 @@ MyGame.activePieceCanRotate = function(){
 };
 
 MyGame.playSound = function(sound){
-	//MyGame.sounds[sound + "." + MyGame.audioExt].play();
+	MyGame.sounds[sound + "." + MyGame.audioExt].play();
 };
 
 MyGame.pauseSound = function(sound){
