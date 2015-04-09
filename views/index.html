@@ -14,26 +14,34 @@
 </head>
 <body>
     <div id="mainMenuScreen" class="absoluteCenter">
-		<h1>Main Menu</h1>
+		<h1>TETRIS Tribute</h1>
 		<button type="button" onclick="MyGame.toNewGame(0)">New Game</button>
 		<button type="button" onclick="MyGame.toHighScores()">High Scores</button>
 		<button type="button" onclick="MyGame.toControls()">Controls</button>
 		<button type="button" onclick="MyGame.toCredits()">Credits</button>
 	</div>
 	<div id="newGameScreen" hidden="true">
-		<h1>New Game</h1>
-		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
-		<canvas id = "canvas-main" width = "1000" height = "600" height: "100%" width: "100%"></canvas>
+		<div class="buttons">
+			<button type="button" class="buttons" onclick="MyGame.toMainMenu()">Main Menu</button>
+		</div>
+		<div class="frame">
+			<canvas id = "canvas-main" width = "1000" height = "600" height: "100%" width: "100%"></canvas>
+		</div>
 	</div>
 	<div id="highScoreScreen" hidden="true">
-		<h1>High Scores</h1>
-		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
-		<canvas id = "canvas-scores" width = "1000" height = "600" height: "100%" width: "100%"></canvas>
-		<ol id="id-high-scores"></ol>
+		<div class="buttons">
+			<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+		</div>
+		<div class="frame">
+			<canvas id = "canvas-scores" width = "1000" height = "600" height: "100%" width: "100%"></canvas>
+		</div>
 	</div>
 	<div id="controlScreen" hidden="true">
 		<h1>Controls</h1>
-		<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+		<div class="buttons">
+			<button type="button" onclick="MyGame.toMainMenu()">Main Menu</button>
+		</div>
+		<div class="frame">
 		<table>
 			<tr>
 				<th>Action</th>
@@ -41,36 +49,37 @@
 				<th></th>
 			</tr>
 			<tr>
-				<td>Hard Drop</td>
-				<td id="hardDropKey"></td>
-				<td><button type="button" onclick="MyGame.readySetKey(1,'Hard Drop')">Change Key</button></td>
+				<td class="emptyScore">Hard Drop</td>
+				<td id="hardDropKey" class="emptyScore"></td>
+				<td class="score"><button type="button" onclick="MyGame.readySetKey(1,'Hard Drop')">Change Key</button></td>
 			</tr>
 			<tr>
-				<td>Soft Drop</td>
-				<td id="softDropKey"></td>
-				<td><button type="button" onclick="MyGame.readySetKey(2, 'Soft Drop')">Change Key</button></td>
+				<td class="emptyScore">Soft Drop</td>
+				<td id="softDropKey" class="emptyScore"></td>
+				<td class="score"><button type="button" onclick="MyGame.readySetKey(2, 'Soft Drop')">Change Key</button></td>
 			</tr>
 			<tr>
-				<td>Rotate Left</td>
-				<td id="rotateLeftKey"></td>
-				<td><button type="button" onclick="MyGame.readySetKey(3, 'Rotate Left')">Change Key</button></td>
+				<td class="emptyScore">Rotate Left</td>
+				<td id="rotateLeftKey" class="emptyScore"></td>
+				<td class="score"><button type="button" onclick="MyGame.readySetKey(3, 'Rotate Left')">Change Key</button></td>
 			</tr>
 			<tr>
-				<td>Rotate Right</td>
-				<td id="rotateRightKey"></td>
-				<td><button type="button" onclick="MyGame.readySetKey(4, 'Rotate Right')">Change Key</button></td>
+				<td class="emptyScore">Rotate Right</td>
+				<td id="rotateRightKey" class="emptyScore"></td>
+				<td class="score"><button type="button" onclick="MyGame.readySetKey(4, 'Rotate Right')">Change Key</button></td>
 			</tr>
 			<tr>
-				<td>Move Left</td>
-				<td id="moveLeftKey"></td>
-				<td><button type="button" onclick="MyGame.readySetKey(5, 'Move Left')">Change Key</button></td>
+				<td class="emptyScore">Move Left</td>
+				<td id="moveLeftKey" class="emptyScore"></td>
+				<td class="score"><button type="button" onclick="MyGame.readySetKey(5, 'Move Left')">Change Key</button></td>
 			</tr>
 			<tr>
-				<td>Move Right</td>
-				<td id="rotateRightKey"></td>
-				<td><button type="button" onclick="MyGame.readySetKey(6, 'Move Right')">Change Key</button></td>
+				<td class="emptyScore">Move Right</td>
+				<td id="moveRightKey" class="emptyScore"></td>
+				<td class="score"><button type="button" onclick="MyGame.readySetKey(6, 'Move Right')">Change Key</button></td>
 			</tr>
 		</table>
+		</div>
 	</div>
     <div id="waitingScreen" hidden="true">
         <h2 id="waitingScreenMessage"></h2>
@@ -78,8 +87,10 @@
 	<div id="creditScreen" hidden="true">
 		<h1>Credits</h1>
 		<h2>Tetris Tribute</h2>
-		<p>Created by Malcolm Geldmacher & Wade Wilkey</br>
-			    - CS 5410 - 
+		<p class="smaller">
+						Created by:</br>
+			 Malcolm Geldmacher & Wade Wilkey</br>
+			    		- CS 5410 - 
 		</p>
 
 

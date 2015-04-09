@@ -32,29 +32,23 @@ function showScores() {
 		error: function() { alert('GET failed'); },
 		success: function(data) {
 
-/*		
-			for(value = 0; value < data.length; value++){
-				MyGame.highScoresList.push({name: data[value].name, score: data[value].score})
-				console.log(data[value]);
-			}
-			var list = $('#id-high-scores'),
-			*/
-			var
-			value,
-			text;
+			var value;
 			console.log(data);
 
+			//Update highScoreList
+			MyGame.highScoresList = [];
 			for(value = 0; value < data.length; value++){
 				MyGame.highScoresList.push(data[value]);
 			}
-			/*
-			list.empty();
-			for (value = 0; value < data.length; value++) {
-				console.log(data[value].name);
-				text = (data[value].name + ' : ' + data[value].score);
-				list.append($('<li>', { text: text }));
+
+			MyGame.highScoresList.sort(function(a, b){
+				return b.score - a.score;
+			});
+
+			while(MyGame.highScoresList.length > 10){
+				MyGame.highScoresList.pop();
 			}
-			*/
+			
 		}
 	});
 }

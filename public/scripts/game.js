@@ -4,6 +4,7 @@ MyGame.newGame = function(gameType){
 	//MyGame.playSound('audio/gameLoop');
 	MyGame.gameType = gameType;
 	requestAnimationFrame(MyGame.gameLoop);
+	showScores();
 }
 
 MyGame.drawBackground = function() {
@@ -287,7 +288,7 @@ MyGame.drawScores = function(){
 	showScores();
 	//Draw Score
 	for(i = 1; i <= MyGame.highScoresList.length; i++){
-		console.log(MyGame.highScoresList[i].name);
+		console.log(MyGame.highScoresList[i - 1].name);
 		MyGame.sctx.font = '30px Georgia';
 		MyGame.sctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
 		text = i + ": " + MyGame.highScoresList[i - 1].name + " " + MyGame.highScoresList[i - 1].score;

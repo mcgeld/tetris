@@ -201,7 +201,7 @@ MyGame.initialize = (function initialize(){
 		MyGame.attractModeTimer += elapsedTime;
 		//console.log(MyGame.attractModeTimer + " " );
 		if(MyGame.attractModeTimer >= 5 && MyGame.inPlay === false){//10){
-			MyGame.toNewGame(1);
+			//MyGame.toNewGame(1);
 		}
 		else if(MyGame.receivedInput === false)
 			requestAnimationFrame(MyGame.updateAttractTime);
@@ -606,7 +606,7 @@ MyGame.activePieceCanRotate = function(){
 };
 
 MyGame.playSound = function(sound){
-	MyGame.sounds[sound + "." + MyGame.audioExt].play();
+	//MyGame.sounds[sound + "." + MyGame.audioExt].play();
 };
 
 MyGame.pauseSound = function(sound){
@@ -635,6 +635,8 @@ MyGame.toControls = function(){
 	document.getElementById('softDropKey').innerHTML = MyGame.keyboardMap[MyGame.keys[2].key];
 	document.getElementById('rotateLeftKey').innerHTML = MyGame.keyboardMap[MyGame.keys[3].key];
 	document.getElementById('rotateRightKey').innerHTML = MyGame.keyboardMap[MyGame.keys[4].key];
+	document.getElementById('moveLeftKey').innerHTML = MyGame.keyboardMap[MyGame.keys[5].key];
+	document.getElementById('moveRightKey').innerHTML = MyGame.keyboardMap[MyGame.keys[6].key];
 	document.getElementById('controlScreen').hidden = false;
 };
 

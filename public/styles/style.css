@@ -1,3 +1,40 @@
+body{
+	background-color: #212227;
+}
+
+h1, h2{
+	font-family: Arial;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	color: white;
+}
+
+div.menu{
+	display: inline-block;
+}
+
+div.buttons{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	
+}
+
+div.frame{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+table.controlTable{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+
+	margin: 0 auto;
+}
+
 td{
 	text-align: center;
 }
@@ -13,7 +50,8 @@ td.score{
 
 td.emptyScore{
 	text-align: center;
-	background-color: darkGray;
+	/*background-color: darkGray;*/
+	background-color: white;
 	color: lightGray;
 	font-family: Arial;
 	font-size: 60px;
