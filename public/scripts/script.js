@@ -201,7 +201,7 @@ MyGame.initialize = (function initialize(){
 		MyGame.attractModeTimer += elapsedTime;
 		//console.log(MyGame.attractModeTimer + " " );
 		if(MyGame.attractModeTimer >= 5 && MyGame.inPlay === false){//10){
-			//MyGame.toNewGame(1);
+			MyGame.toNewGame(1);
 		}
 		else if(MyGame.receivedInput === false)
 			requestAnimationFrame(MyGame.updateAttractTime);
@@ -360,7 +360,7 @@ MyGame.updateGame = function(elapsedTime){
 		}
 		if(MyGame.AIReady)
 		{
-			if(MyGame.AICount > 3){
+			if(MyGame.AICount > 4){
 				MyGame.AIReadyWait = true;
 				MyGame.AICount = 0;
 			}
@@ -451,7 +451,7 @@ MyGame.runAI = function(){
 		j,
 		k,
 		score,
-		maxScore = -1000,
+		maxScore = -1000000000000,
 		currentMove = [],
 		bestMove = [];
 
@@ -467,11 +467,9 @@ MyGame.runAI = function(){
 	//FOR EACH ROTATION:
 	for(i = 0; i < 4; i++)
 	{
-		currentMove = [];
-
 		for(j = 0; j < 10; j++)
 		{
-
+			currentMove = [];
 			for(k = 0; k <= i; k++)
 			{
 				MyGame.rotateLeft();
@@ -498,6 +496,7 @@ MyGame.runAI = function(){
 			if(Math.floor(score) > maxScore)
 			{
 				maxScore = Math.floor(score);
+				bestMove = [];
 				bestMove = currentMove.slice();
 			}
 
@@ -515,7 +514,7 @@ MyGame.runAI = function(){
 			MyGame.printGrid(MyGame.grid.getGrid());*/
 			//MyGame.activePiece.restorePieceLocation(prePiece);
 			MyGame.activePiece.reset();
-			for(k = 0; k < 3; k++)
+			for(k = 0; k < 4; k++)
 				MyGame.activePiece.update(100);
 		}
 		//MyGame.activePiece.restorePieceRotation(prePiece);

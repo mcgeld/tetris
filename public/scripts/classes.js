@@ -87,8 +87,14 @@
 				potHoleCount,
 				prevHeight,
 				fullRowsArr,
-				score;
-			MyGame.printGrid(grid);
+				score,
+				holes,
+				completeLines,
+				bumpiness,
+				maxHeight,
+				minHeight;
+			maxHeight = 0;
+			minHeight = 25;
 			score = 0;
 			aggregateHeight = 0;
 			completeLines = 0;
@@ -116,7 +122,15 @@
 						potHoleCount++;
 					}
 				}
-				aggregateHeight += highest;
+				if(highest > maxHeight)
+				{
+					maxHeight = highest;
+				}
+				if(highest < minHeight)
+				{
+					minHeight = highest;
+				}
+				//aggregateHeight += highest;
 				if(i != 0)
 				{
 					bumpiness += Math.abs(prevHeight - highest);
@@ -124,13 +138,18 @@
 				prevHeight = highest;
 			}
 			fullRowsArr = that.checkFullRows();
-			completeLines = fullRowsArr.length;
+			completeLines = 100 * fullRowsArr.length;
+			aggregateHeight = maxHeight - minHeight;
 
-			score += -0.96569 * aggregateHeight;
-			score += 1.99275 * completeLines;
-			score += -0.86544 * holes;
-			score += -0.24077 * bumpiness;
+			score += -5.94077 * aggregateHeight;
+			score += completeLines;
+			score += -10.96544 * holes;
+			score += -1.66569 * bumpiness;
 
+
+			MyGame.printGrid(grid);
+			console.log('AH: ' + aggregateHeight + ', Lines: ' + completeLines + ', Holes: ' + holes + ', Bump: ' + bumpiness);
+			console.log('Score: ' + score);
 			return score;
 		}
 		
