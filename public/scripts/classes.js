@@ -237,7 +237,7 @@
 	}
 
 	//Piece of Piece Template
-	function PieceOfPiece(id, bricks){
+	/*function PieceOfPiece(id, bricks){
 		var that = {},
 			i;
 		for(i = 0; i < bricks.length; i++)
@@ -310,7 +310,7 @@
 		};
 		
 		return that;
-	}
+	}*/
 	//
 	//Piece Template
 	function Piece(id, type) {
@@ -443,13 +443,13 @@
 		};
 
 		that.hardDrop = function(elapsedTime) {
-			while(canMove() === true){
+			while(canMovePiece() === true){
 				that.update(elapsedTime);
 			}
 		};
 
 		that.softDrop = function(elapsedTime) {
-			if(canMove() === true){
+			if(canMovePiece() === true){
 				for(i = 0; i < bricks.length; i++){
 					bricks[i].update(elapsedTime);
 				}
@@ -638,7 +638,8 @@
  
 		function canMove(partGroup) {
 			var canMove = true,
-				groupExists = false;
+				groupExists = false,
+				i;
 			for(i = 0; i < bricks.length; i++){
 				if(bricks[i].active === true && bricks[i].partID === partGroup)
 				{
@@ -657,6 +658,23 @@
 			{
 				return canMove;
 			}
+		}
+
+		function canMovePiece() {
+			var canMove = true,
+				i;
+			for(i = 0; i < bricks.length; i++)
+			{
+				if(bricks[i].active === true)
+				{
+					if(bricks[i].canMove() === false)
+					{
+						canMove = false;
+						break;
+					}
+				}
+			}
+			return canMove;
 		}
 
 		function updateOrientation(direction){
