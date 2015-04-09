@@ -10,7 +10,6 @@ function addScore(newScore) {
 	$.ajax({
 		url: 'http://localhost:3000/v1/high-scores?name=' + name + '&score=' + score,
 		type: 'POST',
-		dataType: 'text',
 		error: function() { alert('POST failed'); },
 		success: function() {
 			showScores();
@@ -33,20 +32,29 @@ function showScores() {
 		error: function() { alert('GET failed'); },
 		success: function(data) {
 
+/*		
 			for(value = 0; value < data.length; value++){
 				MyGame.highScoresList.push({name: data[value].name, score: data[value].score})
 				console.log(data[value]);
 			}
 			var list = $('#id-high-scores'),
+			*/
+			var
 			value,
 			text;
-			
+			console.log(data);
+
+			for(value = 0; value < data.length; value++){
+				MyGame.highScoresList.push(data[value]);
+			}
+			/*
 			list.empty();
 			for (value = 0; value < data.length; value++) {
 				console.log(data[value].name);
 				text = (data[value].name + ' : ' + data[value].score);
 				list.append($('<li>', { text: text }));
 			}
+			*/
 		}
 	});
 }

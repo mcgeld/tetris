@@ -287,9 +287,10 @@ MyGame.drawScores = function(){
 	showScores();
 	//Draw Score
 	for(i = 1; i <= MyGame.highScoresList.length; i++){
+		console.log(MyGame.highScoresList[i].name);
 		MyGame.sctx.font = '30px Georgia';
 		MyGame.sctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-		text = i + ": " + MyGame.highScoresList[i - 1];
+		text = i + ": " + MyGame.highScoresList[i - 1].name + " " + MyGame.highScoresList[i - 1].score;
 		MyGame.sctx.fillText(text, MyGame.bucketLeft + 40, 110 + (i * 35));
 	}
 	
