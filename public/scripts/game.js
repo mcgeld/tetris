@@ -14,7 +14,7 @@ MyGame.newGame = function(gameType){
 	MyGame.gameOver = false;
 	MyGame.activePiece = null;
 	MyGame.firstPiece = true;
-	//MyGame.playSound('audio/gameLoop');
+	MyGame.playSound('audio/gameLoop');
 	MyGame.gameType = gameType;
 	requestAnimationFrame(MyGame.gameLoop);
 
@@ -204,7 +204,7 @@ MyGame.drawBackground = function() {
 		//Draw Score
 		MyGame.context.font = '50px Georgia';
 		MyGame.context.fillStyle = 'rgba(0, 0, 0, 1)';
-		MyGame.context.fillText(score, MyGame.bucketRight + MyGame.windowBuffer + 60, MyGame.pieceWindowHeight + 165);
+		MyGame.context.fillText(MyGame.score, MyGame.bucketRight + MyGame.windowBuffer + 30, MyGame.pieceWindowHeight + 165);
 
 		//
 		//Draw Level Window
@@ -255,7 +255,7 @@ MyGame.drawBackground = function() {
 		//Draw # Rows Cleared
 		MyGame.context.font = '40px Georgia';
 		MyGame.context.fillStyle = 'rgba(255, 255, 255, 1)';
-		MyGame.context.fillText(MyGame.rowsCleared, MyGame.bucketRight + MyGame.windowBuffer + 60, MyGame.rowsWindowHeight + 490);
+		MyGame.context.fillText(MyGame.rowsClearedCount, MyGame.bucketRight + MyGame.windowBuffer + 60, MyGame.rowsWindowHeight + 490);
 	
 
 		

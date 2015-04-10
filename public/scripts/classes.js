@@ -68,9 +68,9 @@
 		};
 
 		that.restoreGrid = function(storedGrid){
-			console.log("------------------------------STORED GRID------------------------");
+			//console.log("------------------------------STORED GRID------------------------");
 			MyGame.printGrid(storedGrid);
-			console.log("------------------------------GRID------------------------");
+			//console.log("------------------------------GRID------------------------");
 			MyGame.printGrid(grid);
 			var i;
 			grid = new Array();
@@ -151,8 +151,8 @@
 
 
 			MyGame.printGrid(grid);
-			console.log('AH: ' + aggregateHeight + ', Lines: ' + completeLines + ', Holes: ' + holes + ', Bump: ' + bumpiness);
-			console.log('Score: ' + score);
+			//console.log('AH: ' + aggregateHeight + ', Lines: ' + completeLines + ', Holes: ' + holes + ', Bump: ' + bumpiness);
+			//console.log('Score: ' + score);
 			return score;
 		};
 		
@@ -480,9 +480,9 @@
 
 		that.restorePieceLocation = function(info){
 			
-			console.log(info.bricks[0].getY());
+			//console.log(info.bricks[0].getY());
 			bricks = info.bricks.slice();
-			console.log(info.bricks[0].getY());
+			//console.log(info.bricks[0].getY());
 		};
 
 		that.restorePieceRotation = function(info){
@@ -530,7 +530,7 @@
 			}
 			if(state === 3)
 			{
-				console.log("SPLIT THE PIECE!");
+				//console.log("SPLIT THE PIECE!");
 				var tempArray = [];
 				var partID = 0;
 				for(i = 0; i < 4; i++)
@@ -696,7 +696,7 @@
 			
 			
 
-			console.log("orientation: " + that.orientation);
+			//console.log("orientation: " + that.orientation);
 		}
 
 
@@ -882,7 +882,7 @@
 							break;
 						}
 					}
-					console.log("brick: " + i + " check: " + newBrick + " can: " + canMove);
+					//console.log("brick: " + i + " check: " + newBrick + " can: " + canMove);
 				}
 
 				//Move

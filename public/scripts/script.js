@@ -214,7 +214,7 @@ MyGame.initialize = (function initialize(){
 		else if(MyGame.terminateAI === true){
 			MyGame.attractModeTimer = 0;
 		}
-		console.log("updating time");
+		//console.log("updating time");
 
 	};
 
@@ -334,7 +334,7 @@ MyGame.updateGame = function(elapsedTime){
 			{
 				piece = MyGame.grid.getId(i, j).piece;
 				
-				console.log("Piece: " + piece);
+				//console.log("Piece: " + piece);
 				
 				if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false && MyGame.pieceArr[piece].active === true)
 				{
@@ -448,7 +448,7 @@ MyGame.checkMoving = function(elapsedTime){
 		}
 		else{
 			MyGame.grid.clearRow(fullRows);
-			//MyGame.updateScore(fullRows.length);
+			MyGame.updateScore(fullRows.length);
 			MyGame.playSound('audio/clear-line')
 		}
 
@@ -583,6 +583,8 @@ MyGame.updateScore = function(rowsCleared){
 	else if(rowsCleared === 4){
 		MyGame.score += 1200 * (MyGame.currentLevel + 1);
 	}
+
+	console.log(MyGame.score);
 
 	MyGame.rowsCleared = 0;
 };
