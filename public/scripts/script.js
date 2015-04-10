@@ -606,7 +606,7 @@ MyGame.updateLevel = function(){
 		MyGame.currentLevel++;
 		if(MyGame.timeQuantum >= 0.05)
 		{
-			MyGame.timeQuantum -= 0.05;
+			MyGame.timeQuantum -= 0.08;
 			MyGame.AIQuantum = MyGame.timeQuantum * .3;
 		}
 		MyGame.rowsClearedCount = 0;
