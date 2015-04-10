@@ -13,6 +13,12 @@ To Do
 - Clean up high scores
 - AI Working Betta’
 
+---CLEAN GRID
+I think that splitting the pieces is using some sort of 
+array thing that we shouldn't be using. I'm thinking of
+a different way of splitting. We can have a part ID on
+the bricks. Then assign different part ids when we split.
+
 
 WADE:
 	x Left Rotation

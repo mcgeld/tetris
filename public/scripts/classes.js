@@ -19,7 +19,7 @@
 			for(j = 0; j < cols; j++)
 				grid[i][j] = null;
 
-		that.addBrick = function(brickID, pieceID, x, y){
+		that.addBrick = function(brickID, pieceID, partID, bActive, x, y){
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
 				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
 			if(row > 21)
@@ -28,7 +28,9 @@
 			}
 			grid[row][col] = {
 				brick: brickID,
-				piece: pieceID
+				piece: pieceID,
+				part: partID,
+				active: bActive
 			};
 		};
 
@@ -46,7 +48,8 @@
 			if(grid[x][y] === null){
 				return {
 						brick: -1,
-						piece: -1
+						piece: -1,
+						part: -1
 				};
 			}
 			else{
@@ -62,7 +65,7 @@
 				copy[i] = grid[i].slice();
 			}
 			return copy;
-		}
+		};
 
 		that.restoreGrid = function(storedGrid){
 			console.log("------------------------------STORED GRID------------------------");
@@ -76,7 +79,7 @@
 				grid[i] = storedGrid[i].slice();
 			}
 			//grid = storedGrid;
-		}
+		};
 
 		that.scoreGrid = function(){
 			var aggregateHeight,
@@ -151,7 +154,7 @@
 			console.log('AH: ' + aggregateHeight + ', Lines: ' + completeLines + ', Holes: ' + holes + ', Bump: ' + bumpiness);
 			console.log('Score: ' + score);
 			return score;
-		}
+		};
 		
 		that.checkBrick = function(x, y) {
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
@@ -209,7 +212,7 @@
 			{
 				MyGame.pieceArr[piece].clearBricks(hashArray[piece]);
 			}
-		}
+		};
 		
 
 
@@ -235,7 +238,7 @@
 	}
 
 	//Piece of Piece Template
-	function PieceOfPiece(id, bricks){
+	/*function PieceOfPiece(id, bricks){
 		var that = {},
 			i;
 		for(i = 0; i < bricks.length; i++)
@@ -308,7 +311,7 @@
 		};
 		
 		return that;
-	}
+	}*/
 	//
 	//Piece Template
 	function Piece(id, type) {
@@ -441,13 +444,13 @@
 		};
 
 		that.hardDrop = function(elapsedTime) {
-			while(canMove() === true){
+			while(canMovePiece() === true){
 				that.update(elapsedTime);
 			}
 		};
 
 		that.softDrop = function(elapsedTime) {
-			if(canMove() === true){
+			if(canMovePiece() === true){
 				for(i = 0; i < bricks.length; i++){
 					bricks[i].update(elapsedTime);
 				}
@@ -498,6 +501,7 @@
 																}
 														}));
 				bricks[bricksToClear[brick] - 1].active = false;
+				bricks[bricksToClear[brick] - 1].removeFromGrid();
 			}
 			var state = 0;
 			for(var i = 0; i < 4; i++)
@@ -528,27 +532,35 @@
 			{
 				console.log("SPLIT THE PIECE!");
 				var tempArray = [];
+				var partID = 0;
 				for(i = 0; i < 4; i++)
 				{
 					if(bricks[i].active === true)
 					{
-						tempArray.push(bricks[i]);
+						bricks[i].setPartID(partID);
+						/*OLD CODE
+						tempArray.push(i);
+						*/
 					}
 					else if(bricks[i].active === false)
 					{
-						bricks[i].removeFromGrid();
+						bricks[i].setPartID(partID++);
+						/* OLD CODE
 						if(tempArray.length > 0)
 						{
 							MyGame.pieceArr.push(new PieceOfPiece(MyGame.nextPieceId(), tempArray));
 							tempArray = [];
 						}
+						*/
 					}
 				}
+				/*OLD CODE
 				if(tempArray.length > 0)
 				{
 					MyGame.pieceArr.push(new PieceOfPiece(MyGame.nextPieceId(), tempArray));
 				}
 				MyGame.pieceArr[id].active = false;
+				*/
 			}
 			else
 			{
@@ -557,7 +569,6 @@
 				{
 					if(bricks[i].active === false)
 					{
-						bricks[i].removeFromGrid();
 						goneCount++;
 					}
 				}
@@ -578,29 +589,29 @@
 		};
 
 		that.update = function(elapsedTime) {
-			if(that.active === true && canMove() === true){
-				for(i = 0; i < bricks.length; i++){
-					if(bricks[i].active)
-					{
-						bricks[i].update(elapsedTime);
+			var somethingMoved = false;
+			for(var m = 0; m < bricks.length; m++)
+			{
+				if(that.active === true && canMove(m) === true){
+					for(i = 0; i < bricks.length; i++){
+						if(bricks[i].active && bricks[i].partID === m)
+						{
+							bricks[i].update(elapsedTime);
+						}
 					}
-				}
 
+					somethingMoved = true;
+				}
 				for(i = 0; i < bricks.length; i++){
 					if(bricks[i].active)
 					{
-						//console.log('Piece AddToGrid');
 						bricks[i].addToGrid();
 					}
 				}
-				return true;
 			}
-			else
-			{
-				return false;
-			}
+			return somethingMoved;
 
-			MyGame.checkMoving(elapsedTime)
+			//MyGame.checkMoving(elapsedTime)
 		};
 
 		that.draw = function() {
@@ -623,13 +634,40 @@
 			return canRotate;
 		}
 
-
-		function canMove() {
-			var canMove = true;
+ 
+		function canMove(partGroup) {
+			var canMove = true,
+				groupExists = false,
+				i;
 			for(i = 0; i < bricks.length; i++){
+				if(bricks[i].active === true && bricks[i].partID === partGroup)
+				{
+					groupExists = true;
+					if(bricks[i].canMove() === false){
+						canMove = false;
+						break;
+					}
+				}
+			}
+			if(groupExists === false)
+			{
+				return false;
+			}
+			else if(groupExists === true)
+			{
+				return canMove;
+			}
+		}
+
+		function canMovePiece() {
+			var canMove = true,
+				i;
+			for(i = 0; i < bricks.length; i++)
+			{
 				if(bricks[i].active === true)
 				{
-					if(bricks[i].canMove() === false){
+					if(bricks[i].canMove() === false)
+					{
 						canMove = false;
 						break;
 					}
@@ -1695,7 +1733,11 @@
 			var below = MyGame.grid.checkBrick(spec.position.x, spec.position.y + MyGame.cellWidth);
 			if(below != null)
 			{
-				if(below === -1)
+				if(below.active === false)
+				{
+					return false;
+				}
+				else if(below === -1)
 				{
 					//Looking past bottom
 					return false;
@@ -1708,7 +1750,14 @@
 				else
 				{
 					//Same piece below
-					return true;
+					if(below.part != that.partID)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
 				}
 			}
 			else
@@ -1721,7 +1770,11 @@
 			var left = MyGame.grid.checkBrick(spec.position.x - MyGame.cellWidth, spec.position.y);
 			if(left != null)
 			{
-				if(left === -1)
+				if(left.active === false)
+				{
+					return false;
+				}
+				else if(left === -1)
 				{
 					//Looking past border
 					return false;
@@ -1734,7 +1787,14 @@
 				else
 				{
 					//Same piece left
-					return true;
+					if(left.part != that.partID)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
 				}
 			}
 			else
@@ -1752,20 +1812,31 @@
 			var right = MyGame.grid.checkBrick(spec.position.x + MyGame.cellWidth, spec.position.y);
 			if(right != null)
 			{
-				if(right === -1)
+				if(right.active === false)
+				{
+					return false;
+				}
+				else if(right === -1)
 				{
 					//Looking past border
 					return false;
 				}
 				else if(right.piece != spec.pieceID)
 				{
-					//Different piece left
+					//Different piece right
 					return false;
 				}
 				else
 				{
-					//Same piece left
-					return true;
+					//Same piece right
+					if(right.part != that.partID)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
 				}
 			}
 			else
@@ -1778,13 +1849,14 @@
 			spec.position.x = x;
 			spec.position.y = y;
 			//console.log('Brick SetPosition');
-            MyGame.grid.addBrick(spec.brickID, spec.pieceID, x, y);
+            MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, x, y);
 		};
 		
 		that.getId = function() {
 			return {
 				piece: spec.pieceID,
-				brick: spec.brickID
+				brick: spec.brickID,
+				part: that.partID
 			};
 		};
 		
@@ -1792,7 +1864,7 @@
 			spec.pieceID = newPieceId;
 			spec.brickID = newId;
 			//console.log('Brick SetPieceId');
-            MyGame.grid.addBrick(spec.brickID, spec.pieceID, spec.position.x, spec.position.y);
+            MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, spec.position.x, spec.position.y);
 		};
 
 		that.getCoordinates = function() {
@@ -1806,14 +1878,20 @@
 
 		that.addToGrid = function() {
 			//console.log('Brick AddToGrid');
-			 MyGame.grid.addBrick(spec.brickID, spec.pieceID, spec.position.x, spec.position.y);
+			 MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, spec.position.x, spec.position.y);
 		};
 
 		that.removeFromGrid = function() {
 			MyGame.grid.removeBrick(spec.position.x, spec.position.y);
 		};
+
+		that.setPartID = function(newID)
+		{
+			that.partID = newID;
+		}
 		
 		that.active = true;
+		that.partID = 0;
 
 		that.draw = function() {
 			MyGame.context.save();
