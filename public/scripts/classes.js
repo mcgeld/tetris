@@ -133,7 +133,6 @@
 				{
 					minHeight = highest;
 				}
-				//aggregateHeight += highest;
 				if(i != 0)
 				{
 					bumpiness += Math.abs(prevHeight - highest);
@@ -148,11 +147,6 @@
 			score += completeLines;
 			score += -10.96544 * holes;
 			score += -1.66569 * bumpiness;
-
-
-			MyGame.printGrid(grid);
-			//console.log('AH: ' + aggregateHeight + ', Lines: ' + completeLines + ', Holes: ' + holes + ', Bump: ' + bumpiness);
-			//console.log('Score: ' + score);
 			return score;
 		};
 		
