@@ -196,6 +196,14 @@ MyGame.initialize = (function initialize(){
 			MyGame.toMainMenu();
 	};
 
+	MyGame.playSound = function(sound){
+		MyGame.sounds[sound + "." + MyGame.audioExt].play();
+	};
+
+	MyGame.pauseSound = function(sound){
+		MyGame.sounds[sound + "." + MyGame.audioExt].pause();
+	};
+
 	MyGame.updateAttractTime = function(){
 
 		aiTime = new Date().getTime();
@@ -219,6 +227,7 @@ MyGame.initialize = (function initialize(){
 	};
 
 	MyGame.toMainMenu = function(){
+		
 		MyGame.attractModeTimer = 0;
 		MyGame.inPlay = false;
 		MyGame.terminateAI = false;
@@ -232,6 +241,8 @@ MyGame.initialize = (function initialize(){
 		document.getElementById('creditScreen').hidden = true;
 		document.getElementById('mainMenuScreen').hidden = false;
 	};
+
+
 
 	MyGame.toMainMenu();
 
@@ -574,15 +585,10 @@ MyGame.activePieceCanRotate = function(){
 	return MyGame.activePiece.notAtTop();
 };
 
-MyGame.playSound = function(sound){
-	MyGame.sounds[sound + "." + MyGame.audioExt].play();
-};
 
-MyGame.pauseSound = function(sound){
-	MyGame.sounds[sound + "." + MyGame.audioExt].pause();
-}
 
 MyGame.toNewGame = function(gameType){
+	MyGame.pauseSound('audio/gameLoop');
 	MyGame.inPlay = true;
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('newGameScreen').hidden = false;
@@ -591,6 +597,7 @@ MyGame.toNewGame = function(gameType){
 };
 
 MyGame.toHighScores = function(){
+	MyGame.pauseSound('audio/gameLoop');
 	MyGame.inPlay = true;
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('highScoreScreen').hidden = false;
@@ -599,6 +606,7 @@ MyGame.toHighScores = function(){
 };
 
 MyGame.toControls = function(){
+	MyGame.pauseSound('audio/gameLoop');
 	MyGame.inPlay = true;
 	document.getElementById('mainMenuScreen').hidden = true;
     document.getElementById('waitingScreen').hidden = true;
