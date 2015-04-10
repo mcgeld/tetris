@@ -19,7 +19,7 @@
 			for(j = 0; j < cols; j++)
 				grid[i][j] = null;
 
-		that.addBrick = function(brickID, pieceID, partID, x, y){
+		that.addBrick = function(brickID, pieceID, partID, bActive, x, y){
 			var col = Math.floor((x - MyGame.bucketLeft) / MyGame.cellWidth),
 				row = Math.floor((y - MyGame.startLocation) / MyGame.cellWidth);
 			if(row > 21)
@@ -29,7 +29,8 @@
 			grid[row][col] = {
 				brick: brickID,
 				piece: pieceID,
-				part: partID
+				part: partID,
+				active: bActive
 			};
 		};
 
@@ -543,7 +544,7 @@
 					}
 					else if(bricks[i].active === false)
 					{
-						partID++;
+						bricks[i].setPartID(partID++);
 						/* OLD CODE
 						if(tempArray.length > 0)
 						{
@@ -568,7 +569,6 @@
 				{
 					if(bricks[i].active === false)
 					{
-						bricks[i].removeFromGrid();
 						goneCount++;
 					}
 				}
@@ -600,19 +600,18 @@
 						}
 					}
 
-					for(i = 0; i < bricks.length; i++){
-						if(bricks[i].active && bricks[i].partID === m)
-						{
-							//console.log('Piece AddToGrid');
-							bricks[i].addToGrid();
-						}
-					}
 					somethingMoved = true;
+				}
+				for(i = 0; i < bricks.length; i++){
+					if(bricks[i].active)
+					{
+						bricks[i].addToGrid();
+					}
 				}
 			}
 			return somethingMoved;
 
-			MyGame.checkMoving(elapsedTime)
+			//MyGame.checkMoving(elapsedTime)
 		};
 
 		that.draw = function() {
@@ -1734,7 +1733,11 @@
 			var below = MyGame.grid.checkBrick(spec.position.x, spec.position.y + MyGame.cellWidth);
 			if(below != null)
 			{
-				if(below === -1)
+				if(below.active === false)
+				{
+					return false;
+				}
+				else if(below === -1)
 				{
 					//Looking past bottom
 					return false;
@@ -1767,12 +1770,16 @@
 			var left = MyGame.grid.checkBrick(spec.position.x - MyGame.cellWidth, spec.position.y);
 			if(left != null)
 			{
-				if(left === -1)
+				if(left.active === false)
+				{
+					return false;
+				}
+				else if(left === -1)
 				{
 					//Looking past border
 					return false;
 				}
-				else if(left.piece != spec.pieceID && left.part != that.partID)
+				else if(left.piece != spec.pieceID)
 				{
 					//Different piece left
 					return false;
@@ -1805,12 +1812,16 @@
 			var right = MyGame.grid.checkBrick(spec.position.x + MyGame.cellWidth, spec.position.y);
 			if(right != null)
 			{
-				if(right === -1)
+				if(right.active === false)
+				{
+					return false;
+				}
+				else if(right === -1)
 				{
 					//Looking past border
 					return false;
 				}
-				else if(right.piece != spec.pieceID && right.part != that.partID)
+				else if(right.piece != spec.pieceID)
 				{
 					//Different piece right
 					return false;
@@ -1838,7 +1849,7 @@
 			spec.position.x = x;
 			spec.position.y = y;
 			//console.log('Brick SetPosition');
-            MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, x, y);
+            MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, x, y);
 		};
 		
 		that.getId = function() {
@@ -1853,7 +1864,7 @@
 			spec.pieceID = newPieceId;
 			spec.brickID = newId;
 			//console.log('Brick SetPieceId');
-            MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, spec.position.x, spec.position.y);
+            MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, spec.position.x, spec.position.y);
 		};
 
 		that.getCoordinates = function() {
@@ -1867,7 +1878,7 @@
 
 		that.addToGrid = function() {
 			//console.log('Brick AddToGrid');
-			 MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, spec.position.x, spec.position.y);
+			 MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, spec.position.x, spec.position.y);
 		};
 
 		that.removeFromGrid = function() {
