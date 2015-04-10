@@ -18,7 +18,10 @@ MyGame.input = (function() {
 			key;
 		
 		function keyPress(e) {
-			if(MyGame.getSetKey() === true)
+			if(MyGame.gameType === 1)
+				MyGame.terminateAI = true;
+
+			else if(MyGame.getSetKey() === true)
 			{
 				MyGame.setKey(e);
 			}
@@ -41,8 +44,12 @@ MyGame.input = (function() {
 		}
 		
 		function keyRelease(e) {
-            that.keysUp[e.keyCode] = e.timeStamp;
-			delete that.keysDown[e.keyCode];
+			if(MyGame.gameType === 1)
+				MyGame.terminateAI = true;
+			else{
+	            that.keysUp[e.keyCode] = e.timeStamp;
+				delete that.keysDown[e.keyCode];
+			}
 		}
 		
 		// ------------------------------------------------------------------

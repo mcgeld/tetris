@@ -1,10 +1,23 @@
 MyGame.newGame = function(gameType){
+	MyGame.score = 0;
+	MyGame.rowsCleared = 0;
+	MyGame.rowsClearedCount = 0;
+	MyGame.currentLevel = 0;
+	MyGame.timeQuantum = 0.75;
+	MyGame.emitters = [];
+	MyGame.grid = null;
+	MyGame.resetNextPieceId();
+	MyGame.terminateAI = false;
 	MyGame.grid = new Grid(MyGame.numCols, MyGame.numRows);
 	MyGame.pieceArr = [];
+	MyGame.score = 0;
+	MyGame.gameOver = false;
+	MyGame.activePiece = null;
+	MyGame.firstPiece = true;
 	//MyGame.playSound('audio/gameLoop');
 	MyGame.gameType = gameType;
 	requestAnimationFrame(MyGame.gameLoop);
-	showScores();
+
 }
 
 MyGame.drawBackground = function() {
@@ -252,7 +265,7 @@ MyGame.drawBackground = function() {
 
 MyGame.drawScores = function(){
 	var text;
-
+	showScores();
 
 	//SET SIZE VARIABLES
 	MyGame.bucketHeight = MyGame.sctx.canvas.height - 100;
@@ -292,7 +305,7 @@ MyGame.drawScores = function(){
 		MyGame.sctx.font = '30px Georgia';
 		MyGame.sctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
 		text = i + ": " + MyGame.highScoresList[i - 1].name + " " + MyGame.highScoresList[i - 1].score;
-		MyGame.sctx.fillText(text, MyGame.bucketLeft + 40, 110 + (i * 35));
+		MyGame.sctx.fillText(text, MyGame.bucketLeft + 40, 120 + (i * 35));
 	}
 	
 	

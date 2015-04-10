@@ -60,6 +60,9 @@ MyGame.initialize = (function initialize(){
 		return nextPieceId++;
 	};
 
+	MyGame.resetNextPieceId = function(){
+		nextPieceId = 0;
+	};
 	MyGame.getNextPieceType = function() {
 		return nextPieceType;
 	};
@@ -99,6 +102,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.inPlay = false;
 	MyGame.AIReady = false;
 	MyGame.AIReadyWait = false;
+	MyGame.terminateAI = false;
 	MyGame.AICount = 0;
 	MyGame.gameType = 0;
 	MyGame.score = 0;
@@ -121,7 +125,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.frameUpdated = false;
 	MyGame.stuffMoving = false;
 	MyGame.linesCleared = false;
-	MyGame.receivedInput = false;
+
 	MyGame.gameOver = false;
 	MyGame.numCols = 10;
 	MyGame.numRows = 20;
@@ -130,10 +134,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.emitters = [];
 	MyGame.timeMod = 25 / 1000;
 
-
 	MyGame.attractModeTimer = 0;
-
-	MyGame.highScores = ["1000", "2000"];
 	
 	MyGame.keyboard = myKeyboard;
 	MyGame.sctx = scoreCtx;
@@ -189,8 +190,10 @@ MyGame.initialize = (function initialize(){
 		//RENDER GAME//
 		MyGame.render();
 
-		if(MyGame.gameOver === false)
+		if(MyGame.gameOver === false && MyGame.terminateAI === false)
 			requestAnimationFrame(MyGame.gameLoop);
+		else if(MyGame.terminateAI === true)
+			MyGame.toMainMenu();
 	};
 
 	MyGame.updateAttractTime = function(){
@@ -200,17 +203,28 @@ MyGame.initialize = (function initialize(){
 		aiPrevTime = aiTime;
 
 		MyGame.attractModeTimer += elapsedTime;
-		//console.log(MyGame.attractModeTimer + " " );
-		if(MyGame.attractModeTimer >= 5 && MyGame.inPlay === false){//10){
+		
+		if(MyGame.attractModeTimer >= 5 && MyGame.inPlay === false){
 			MyGame.toNewGame(1);
+
 		}
-		else if(MyGame.receivedInput === false)
+		else if(MyGame.inPlay === false){
 			requestAnimationFrame(MyGame.updateAttractTime);
+		}
+		else if(MyGame.terminateAI === true){
+			MyGame.attractModeTimer = 0;
+		}
+		console.log("updating time");
+
 	};
 
 	MyGame.toMainMenu = function(){
 		MyGame.attractModeTimer = 0;
+		MyGame.inPlay = false;
+		MyGame.terminateAI = false;
+		MyGame.gameOver = true;
 		var time = new Date().getTime();
+		aiPrevTime = time;
 		requestAnimationFrame(MyGame.updateAttractTime);
 		document.getElementById('newGameScreen').hidden = true;
 		document.getElementById('highScoreScreen').hidden = true;
@@ -319,10 +333,9 @@ MyGame.updateGame = function(elapsedTime){
 			for(j = 0; j < MyGame.numCols; j++)
 			{
 				piece = MyGame.grid.getId(i, j).piece;
-				if(piece > 5)
-				{
-					//console.log(piece);
-				}
+				
+				console.log("Piece: " + piece);
+				
 				if(piece != -1 && MyGame.pieceArr[piece].alreadyMoved === false && MyGame.pieceArr[piece].active === true)
 				{
 					pieceMoved = MyGame.pieceArr[piece].update(elapsedTime);
@@ -390,9 +403,6 @@ MyGame.render = function(elapsedTime){
     }
 };
 
-MyGame.gameOverCheck = function(elapsedTime){
-
-};
 
 MyGame.checkMoving = function(elapsedTime){
 	var fullRows,
@@ -457,13 +467,6 @@ MyGame.runAI = function(){
 		currentMove = [],
 		bestMove = [];
 
-	//STORE OFF CURRENT STATE
-	/*preGrid = MyGame.grid.getGrid();
-	prePiece = MyGame.activePiece.getPiece();
-	console.log("prevPiece: " + prePiece.bricks[0].getY());
-	console.log("--------------------------------------------------------------------------------------");
-
-	MyGame.printGrid(preGrid);*/
 
 	//Do stuff
 	//FOR EACH ROTATION:
@@ -502,26 +505,14 @@ MyGame.runAI = function(){
 				bestMove = currentMove.slice();
 			}
 
-			/*for(k = 0; k <= 5 + j + 1; k++)
-			{
-				currentMove.pop();
-				currentMove.pop();
-			}*/
-
-			//MyGame.activePiece.draw();
-			/*console.log("---------------------------PRE-RESTORE------------------------");
-			MyGame.printGrid(MyGame.grid.getGrid());
-			MyGame.grid.restoreGrid(preGrid);
-			/*console.log("---------------------------POST-RESTORE------------------------");
-			MyGame.printGrid(MyGame.grid.getGrid());*/
-			//MyGame.activePiece.restorePieceLocation(prePiece);
+	
 			MyGame.activePiece.reset();
 			for(k = 0; k < 4; k++)
 				MyGame.activePiece.update(100);
 		}
 		//MyGame.activePiece.restorePieceRotation(prePiece);
 	}
-	console.log("Score: " + maxScore);
+	//console.log("Score: " + maxScore);
 
 	for(i = 0; i < bestMove.length; i++)
 	{
@@ -565,21 +556,20 @@ MyGame.printGrid = function(grid)
 		}
 		output += '\n';
 	}
-	console.log(output);
+	//console.log(output);
 }
 
 MyGame.updateLevel = function(){
 	if(MyGame.rowsClearedCount === 10){
 		MyGame.currentLevel++;
 		if(MyGame.timeQuantum >= 0.05)
-			MyGame.timeQuantum -= 0.02;
+			MyGame.timeQuantum -= 0.1;
 		MyGame.rowsClearedCount = 0;
 	}
 };
 
 MyGame.updateScore = function(rowsCleared){
 	showScores();
-	console.log("score: " + MyGame.highScoresList.length);
 	
 	if(rowsCleared === 1){
 		MyGame.score += 40 * (MyGame.currentLevel + 1);
@@ -623,6 +613,7 @@ MyGame.toNewGame = function(gameType){
 };
 
 MyGame.toHighScores = function(){
+	MyGame.inPlay = true;
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('highScoreScreen').hidden = false;
 
@@ -630,6 +621,7 @@ MyGame.toHighScores = function(){
 };
 
 MyGame.toControls = function(){
+	MyGame.inPlay = true;
 	document.getElementById('mainMenuScreen').hidden = true;
     document.getElementById('waitingScreen').hidden = true;
 	document.getElementById('hardDropKey').innerHTML = MyGame.keyboardMap[MyGame.keys[1].key];
@@ -642,6 +634,7 @@ MyGame.toControls = function(){
 };
 
 MyGame.toCredits = function(){
+	MyGame.inPlay = true;
 	document.getElementById('mainMenuScreen').hidden = true;
 	document.getElementById('creditScreen').hidden = false;
 };

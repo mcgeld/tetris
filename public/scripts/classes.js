@@ -372,7 +372,7 @@
 		that.setStartLocation();
 
 		that.rotate = function(elapsedTime, direction) {
-
+			
 			if(MyGame.activePieceCanRotate() === true){
 				if(type === 1)
 					rotate_I();
@@ -896,8 +896,8 @@
 
 					//Check if valid
 				}
-				
 
+				
 				for(i = 0; i < 4; i++){
 					x = bricks[i].getX();
 					y = bricks[i].getY();
@@ -1427,11 +1427,11 @@
 				var col, row;
 				if(that.orientation === 1){
 					col = x + MyGame.cellWidth * 2;
-					row = y + MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
 				}
 				else if(that.orientation === 2){
 					col = x - MyGame.cellWidth * 2;
-					row = y - MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
 				}
 				
 				return {x: col, y: row};
@@ -1455,11 +1455,11 @@
 				var col, row;
 				if(that.orientation === 1){
 					col = x;
-					row = y + MyGame.cellWidth;
+					row = y - MyGame.cellWidth;
 				}
 				else if(that.orientation === 2){
 					col = x;
-					row = y - MyGame.cellWidth;
+					row = y + MyGame.cellWidth;
 				}
 
 				return {x: col, y: row};
