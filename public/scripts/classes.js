@@ -67,20 +67,6 @@
 			return copy;
 		};
 
-		that.restoreGrid = function(storedGrid){
-			console.log("------------------------------STORED GRID------------------------");
-			MyGame.printGrid(storedGrid);
-			console.log("------------------------------GRID------------------------");
-			MyGame.printGrid(grid);
-			var i;
-			grid = new Array();
-			for(i = 0; i < storedGrid.length; i++)
-			{
-				grid[i] = storedGrid[i].slice();
-			}
-			//grid = storedGrid;
-		};
-
 		that.scoreGrid = function(){
 			var aggregateHeight,
 				i,
@@ -149,10 +135,6 @@
 			score += -10.96544 * holes;
 			score += -1.66569 * bumpiness;
 
-
-			MyGame.printGrid(grid);
-			console.log('AH: ' + aggregateHeight + ', Lines: ' + completeLines + ', Holes: ' + holes + ', Bump: ' + bumpiness);
-			console.log('Score: ' + score);
 			return score;
 		};
 		
@@ -194,8 +176,6 @@
 				rowY,
 				hashArray = {};
 			for(i = 0; i < list.length; i++){
-				//rowY = MyGame.startLocation + (list[i] * MyGame.cellWidth);
-				//MyGame.score++;
 				for(j = 0; j < MyGame.numCols; j++){
 					brickId = that.getId(list[i], j).brick;
 					pieceId = that.getId(list[i], j).piece;
@@ -237,81 +217,7 @@
 
 	}
 
-	//Piece of Piece Template
-	/*function PieceOfPiece(id, bricks){
-		var that = {},
-			i;
-		for(i = 0; i < bricks.length; i++)
-		{
-			bricks[i].setId(id, i + 1);
-		}
-		that.active = true;
-		that.alreadyMoved = false;
-		that.update = function(elapsedTime){
-			if(canMove() === true){
-				for(i = 0; i < bricks.length; i++){
-					if(bricks[i].active)
-					{
-						bricks[i].update(elapsedTime);
-					}
-				}
 
-				for(i = 0; i < bricks.length; i++){
-					if(bricks[i].active)
-					{
-						//console.log('PieceOfPiece AddToGrid');
-						bricks[i].addToGrid();
-					}
-				}
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		
-		function canMove(){
-			var canMove = true;
-			for(i = 0; i < bricks.length; i++){
-				if(bricks[i].active === true)
-				{
-					if(bricks[i].canMove() === false){
-						canMove = false;
-						break;
-					}
-				}
-			}
-			return canMove;
-		}
-		
-		that.draw = function() {
-			for(i = 0; i < bricks.length; i++){
-				if(bricks[i].active === true)
-				{
-					bricks[i].draw();
-				}
-			}
-		};
-		
-		that.clearBricks = function(bricksToClear) {
-			for(var brick in bricksToClear)
-			{
-				MyGame.emitters.push(new MyGame.sparkEmitter({
-																image: bricks[bricksToClear[brick] - 1].getImage(),
-																myContext: MyGame.context,
-																center: {
-																			x: bricks[bricksToClear[brick] - 1].getCoordinates().x + MyGame.cellWidth / 2,
-																			y: bricks[bricksToClear[brick] - 1].getCoordinates().y + MyGame.cellWidth / 2
-																}
-														}));
-				bricks[bricksToClear[brick] - 1].active = false;
-				bricks[bricksToClear[brick] - 1].removeFromGrid();
-			}
-		};
-		
-		return that;
-	}*/
 	//
 	//Piece Template
 	function Piece(id, type) {
@@ -456,7 +362,6 @@
 				}
 
 				for(i = 0; i < bricks.length; i++){
-					//console.log('softDrop AddToGrid');
 					bricks[i].addToGrid();
 				}
 				MyGame.playSound('audio/soft-drop');
@@ -538,29 +443,12 @@
 					if(bricks[i].active === true)
 					{
 						bricks[i].setPartID(partID);
-						/*OLD CODE
-						tempArray.push(i);
-						*/
 					}
 					else if(bricks[i].active === false)
 					{
 						bricks[i].setPartID(partID++);
-						/* OLD CODE
-						if(tempArray.length > 0)
-						{
-							MyGame.pieceArr.push(new PieceOfPiece(MyGame.nextPieceId(), tempArray));
-							tempArray = [];
-						}
-						*/
 					}
 				}
-				/*OLD CODE
-				if(tempArray.length > 0)
-				{
-					MyGame.pieceArr.push(new PieceOfPiece(MyGame.nextPieceId(), tempArray));
-				}
-				MyGame.pieceArr[id].active = false;
-				*/
 			}
 			else
 			{
@@ -577,11 +465,6 @@
 					MyGame.pieceArr[id].active = false;
 				}
 			}
-		};
-
-		that.inPlace = function() {
-			//return atBottom();
-			return false;
 		};
 
 		that.getBricks = function() {
@@ -610,8 +493,6 @@
 				}
 			}
 			return somethingMoved;
-
-			//MyGame.checkMoving(elapsedTime)
 		};
 
 		that.draw = function() {
@@ -837,12 +718,10 @@
 
 					newBrick = MyGame.grid.checkBrick(x, y);
 					
-					//console.log(newBrick !== -1 + " " + newBrick !== null + " " + newBrick !== -1 ? newBrick.getId.piece : 0);
 					if(i !== 1 && newBrick !== -1 && newBrick !== null && newBrick.piece !== bricks[i].getId().piece){
 						canMove = false;
 						break;
 					}
-					//console.log("brick: " + i + " check: " + newBrick);
 				}
 				
 				//Move
@@ -1848,7 +1727,6 @@
 		that.setPosition = function(x, y) {
 			spec.position.x = x;
 			spec.position.y = y;
-			//console.log('Brick SetPosition');
             MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, x, y);
 		};
 		
@@ -1863,7 +1741,6 @@
 		that.setId = function(newPieceId, newId){
 			spec.pieceID = newPieceId;
 			spec.brickID = newId;
-			//console.log('Brick SetPieceId');
             MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, spec.position.x, spec.position.y);
 		};
 
@@ -1877,7 +1754,6 @@
 		};
 
 		that.addToGrid = function() {
-			//console.log('Brick AddToGrid');
 			 MyGame.grid.addBrick(spec.brickID, spec.pieceID, that.partID, that.active, spec.position.x, spec.position.y);
 		};
 

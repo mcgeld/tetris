@@ -30,14 +30,14 @@ MyGame.initialize = (function initialize(){
 	};
 
 	MyGame.moveLeft = function(elapsedTime){
-		if(MyGame.activePiece != null && MyGame.moveLeftPressed === false && MyGame.activePiece.inPlace() === false){
+		if(MyGame.activePiece != null && MyGame.moveLeftPressed === false){
 			MyGame.activePiece.moveLeft(elapsedTime);
 			MyGame.moveLeftPressed = true;
 		}
 	};
 
 	MyGame.moveRight = function(elapsedTime){
-		if(MyGame.activePiece != null && MyGame.moveRightPressed === false && MyGame.activePiece.inPlace() === false){
+		if(MyGame.activePiece != null && MyGame.moveRightPressed === false){
 			MyGame.activePiece.moveRight(elapsedTime);
 			MyGame.moveRightPressed = true;
 		}
@@ -533,30 +533,6 @@ MyGame.runAI = function(){
 	}
 	MyGame.hardDrop();
 	MyGame.setHardDropPressed();
-}
-
-MyGame.printGrid = function(grid)
-{
-	var i,
-		j,
-		output;
-	output = '';
-	for(i = 0; i < grid.length; i++)
-	{
-		for(j = 0; j < grid[i].length; j++)
-		{
-			if(grid[i][j] === null)
-			{
-				output += ' ';
-			}
-			else
-			{
-				output += 'X';
-			}
-		}
-		output += '\n';
-	}
-	//console.log(output);
 }
 
 MyGame.updateLevel = function(){
