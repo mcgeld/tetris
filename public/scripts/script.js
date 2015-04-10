@@ -98,8 +98,9 @@ MyGame.initialize = (function initialize(){
 	MyGame.setMoveRightPressed = function() {
 		MyGame.moveRightPressed = false;;
 	};
-
+	MyGame.bestMove = [];
 	MyGame.inPlay = false;
+	MyGame.AIQuantum = 0.1;
 	MyGame.AIReady = false;
 	MyGame.AIReadyWait = false;
 	MyGame.terminateAI = false;
@@ -156,6 +157,7 @@ MyGame.initialize = (function initialize(){
 	MyGame.settingKey = false;
 
 	MyGame.time = 0;
+	MyGame.AITime = 0;
 
 	MyGame.registerCommandKeyDown = function(key, func){
 		myKeyboard.registerCommandKeyDown(key, func);
@@ -212,7 +214,7 @@ MyGame.initialize = (function initialize(){
 
 		MyGame.attractModeTimer += elapsedTime;
 		
-		if(MyGame.attractModeTimer >= 5 && MyGame.inPlay === false){
+		if(MyGame.attractModeTimer >= 10 && MyGame.inPlay === false){
 			MyGame.toNewGame(1);
 
 		}
@@ -335,6 +337,7 @@ MyGame.updateGame = function(elapsedTime){
 	
 
 	MyGame.time += elapsedTime;
+	MyGame.AITime += elapsedTime;
 
 	if(MyGame.time > MyGame.timeQuantum){
 		MyGame.updateLevel();
@@ -385,13 +388,37 @@ MyGame.updateGame = function(elapsedTime){
 		}
 		if(MyGame.AIReady)
 		{
-			if(MyGame.AICount > 4){
+			if(MyGame.AICount > 3){
 				MyGame.AIReadyWait = true;
 				MyGame.AICount = 0;
 			}
 		}
-
 	}
+
+	if(MyGame.AITime > MyGame.AIQuantum && MyGame.bestMove.length > 0)
+	{
+		MyGame.AITime = 0;
+		switch(MyGame.bestMove[0]){
+			case 1:
+				MyGame.rotateLeft();
+				MyGame.setRotateLeftPressed();
+				break;
+			case 2:
+				MyGame.moveRight();
+				MyGame.setMoveRightPressed();
+				break;
+			case 3:
+				MyGame.moveLeft();
+				MyGame.setMoveLeftPressed();
+				break;
+			case 4:
+				MyGame.hardDrop();
+				MyGame.setHardDropPressed();
+				break;
+		}
+		MyGame.bestMove.shift();
+	}
+
 	for(var i = 0; i < MyGame.emitters.length; i++)
 	{
 		if(MyGame.emitters[i].update(elapsedTime) === false)
@@ -475,8 +502,8 @@ MyGame.runAI = function(){
 		k,
 		score,
 		maxScore = -1000000000000,
-		currentMove = [],
-		bestMove = [];
+		currentMove = [];
+		MyGame.bestMove = [];
 
 
 	//Do stuff
@@ -486,13 +513,13 @@ MyGame.runAI = function(){
 		for(j = 0; j < 10; j++)
 		{
 			currentMove = [];
-			for(k = 0; k <= i; k++)
+			for(k = 0; k < i; k++)
 			{
 				MyGame.rotateLeft();
 				MyGame.setRotateLeftPressed();
 				currentMove.push(1);
 			}
-			for(k = 0; k <= 5; k++)
+			for(k = 0; k <= 4; k++)
 			{
 				MyGame.moveRight();
 				MyGame.setMoveRightPressed();
@@ -506,51 +533,82 @@ MyGame.runAI = function(){
 			}
 			MyGame.hardDrop();
 			MyGame.setHardDropPressed();
+			currentMove.push(4);
 
 			score = MyGame.grid.scoreGrid();
 
-			if(Math.floor(score) > maxScore)
+			if(score > maxScore)
 			{
-				maxScore = Math.floor(score);
-				bestMove = [];
-				bestMove = currentMove.slice();
+				maxScore = score;
+				MyGame.bestMove = [];
+				MyGame.bestMove = currentMove.slice();
+				//MyGame.normalizeMove();
 			}
 
 	
 			MyGame.activePiece.reset();
-			for(k = 0; k < 4; k++)
+			for(k = 0; k < 3; k++)
 				MyGame.activePiece.update(100);
 		}
-		//MyGame.activePiece.restorePieceRotation(prePiece);
 	}
-	//console.log("Score: " + maxScore);
+}
 
-	for(i = 0; i < bestMove.length; i++)
+MyGame.normalizeMove = function(){
+	var removeTwos,
+		removeThrees,
+		twos = 0,
+		threes = 0,
+		i;
+	for(i = 0; i < MyGame.bestMove.length; i++)
 	{
-		switch(bestMove[i]){
-			case 1:
-				MyGame.rotateLeft();
-				MyGame.setRotateLeftPressed();
-				break;
-			case 2:
-				MyGame.moveRight();
-				MyGame.setMoveRightPressed();
-				break;
-			case 3:
-				MyGame.moveLeft();
-				MyGame.setMoveLeftPressed();
-				break;
+		if(MyGame.bestMove[i] === 2)
+		{
+			twos++;
+		}
+		else if(MyGame.bestMove[i] === 3)
+		{
+			threes++;
 		}
 	}
-	MyGame.hardDrop();
-	MyGame.setHardDropPressed();
+	if(twos > threes)
+	{
+		removeTwos = threes;
+		removeThrees = 0;
+	}
+	else if(twos < threes)
+	{
+		removeThrees = twos;
+		removeTwos = 0;
+	}
+	else
+	{
+		removeThrees = threes;
+		removeTwos = twos;
+	}
+
+	for(i = 0; i < MyGame.bestMove.length; i++)
+	{
+		if(MyGame.bestMove[i] === 2 && removeTwos > 0)
+		{
+			MyGame.bestMove.splice(i, 1);
+			removeTwos--;
+		}
+		else if(MyGame.bestMove[i] === 3 && removeThrees > 0)
+		{
+			MyGame.bestMove.splice(i, 1);
+			removeThrees--;
+		}
+	}
 }
 
 MyGame.updateLevel = function(){
 	if(MyGame.rowsClearedCount === 10){
 		MyGame.currentLevel++;
 		if(MyGame.timeQuantum >= 0.05)
-			MyGame.timeQuantum -= 0.1;
+		{
+			MyGame.timeQuantum -= 0.05;
+			MyGame.AIQuantum = MyGame.timeQuantum * .3;
+		}
 		MyGame.rowsClearedCount = 0;
 	}
 };
